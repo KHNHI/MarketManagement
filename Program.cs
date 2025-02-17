@@ -16,7 +16,7 @@ namespace MarketManagement
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new panelMain());
+            Application.Run(new Form1());
         }
     }
 }

@@ -10,71 +10,11 @@ using System.Windows.Forms;
 
 namespace MarketManagement
 {
-    public partial class panelMain : Form
+    public partial class Form1 : Form
     {
-        public panelMain()
+        public Form1()
         {
             InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void btnDashboard_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblUsẻName_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel6_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void btnStockEntry_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnStockAdjustment_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnSaleHistory_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnPOSRecord_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
