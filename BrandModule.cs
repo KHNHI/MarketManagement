@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace MarketManagement
 {
-    public partial class Brand : Form
+    public partial class BrandModule: Form
     {
-        public Brand()
+        public BrandModule()
         {
             InitializeComponent();
         }
@@ -22,7 +22,17 @@ namespace MarketManagement
 
         }
 
-        private void dgvBrand_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }
