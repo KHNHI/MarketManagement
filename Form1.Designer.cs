@@ -129,7 +129,7 @@
             this.btnStore.BackColor = System.Drawing.Color.SeaShell;
             this.btnStore.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnStore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStore.ForeColor = System.Drawing.Color.Crimson;
+            this.btnStore.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnStore.Location = new System.Drawing.Point(0, 48);
             this.btnStore.Name = "btnStore";
             this.btnStore.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -145,7 +145,7 @@
             this.btnUser.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnUser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUser.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUser.ForeColor = System.Drawing.Color.Crimson;
+            this.btnUser.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnUser.Location = new System.Drawing.Point(0, 0);
             this.btnUser.Name = "btnUser";
             this.btnUser.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -157,11 +157,11 @@
             // 
             // btnSetting
             // 
-            this.btnSetting.BackColor = System.Drawing.Color.Crimson;
+            this.btnSetting.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnSetting.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSetting.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSetting.ForeColor = System.Drawing.Color.White;
+            this.btnSetting.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnSetting.Location = new System.Drawing.Point(0, 743);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -187,7 +187,7 @@
             this.btnPOSRecord.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnPOSRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPOSRecord.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPOSRecord.ForeColor = System.Drawing.Color.Crimson;
+            this.btnPOSRecord.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnPOSRecord.Location = new System.Drawing.Point(0, 48);
             this.btnPOSRecord.Name = "btnPOSRecord";
             this.btnPOSRecord.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -204,7 +204,7 @@
             this.btnSaleHistory.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSaleHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSaleHistory.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaleHistory.ForeColor = System.Drawing.Color.Crimson;
+            this.btnSaleHistory.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnSaleHistory.Location = new System.Drawing.Point(0, 0);
             this.btnSaleHistory.Name = "btnSaleHistory";
             this.btnSaleHistory.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -217,11 +217,11 @@
             // 
             // btnRecord
             // 
-            this.btnRecord.BackColor = System.Drawing.Color.Crimson;
+            this.btnRecord.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnRecord.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRecord.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecord.ForeColor = System.Drawing.Color.White;
+            this.btnRecord.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnRecord.Location = new System.Drawing.Point(0, 600);
             this.btnRecord.Name = "btnRecord";
             this.btnRecord.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -233,11 +233,11 @@
             // 
             // btnSupplier
             // 
-            this.btnSupplier.BackColor = System.Drawing.Color.Crimson;
+            this.btnSupplier.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnSupplier.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSupplier.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSupplier.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSupplier.ForeColor = System.Drawing.Color.White;
+            this.btnSupplier.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnSupplier.Location = new System.Drawing.Point(0, 552);
             this.btnSupplier.Name = "btnSupplier";
             this.btnSupplier.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -304,7 +304,7 @@
             this.btnStockAdjustment.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnStockAdjustment.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStockAdjustment.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStockAdjustment.ForeColor = System.Drawing.Color.Crimson;
+            this.btnStockAdjustment.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnStockAdjustment.Location = new System.Drawing.Point(0, 48);
             this.btnStockAdjustment.Name = "btnStockAdjustment";
             this.btnStockAdjustment.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -321,7 +321,7 @@
             this.btnStockEntry.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnStockEntry.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStockEntry.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStockEntry.ForeColor = System.Drawing.Color.Crimson;
+            this.btnStockEntry.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnStockEntry.Location = new System.Drawing.Point(0, 0);
             this.btnStockEntry.Name = "btnStockEntry";
             this.btnStockEntry.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -334,11 +334,11 @@
             // 
             // btnInStock
             // 
-            this.btnInStock.BackColor = System.Drawing.Color.Crimson;
+            this.btnInStock.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnInStock.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnInStock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInStock.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInStock.ForeColor = System.Drawing.Color.White;
+            this.btnInStock.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnInStock.Location = new System.Drawing.Point(0, 409);
             this.btnInStock.Name = "btnInStock";
             this.btnInStock.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -366,7 +366,7 @@
             this.btnBrand.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnBrand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBrand.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBrand.ForeColor = System.Drawing.Color.Crimson;
+            this.btnBrand.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnBrand.Location = new System.Drawing.Point(0, 96);
             this.btnBrand.Name = "btnBrand";
             this.btnBrand.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -382,7 +382,7 @@
             this.btnCategory.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCategory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCategory.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCategory.ForeColor = System.Drawing.Color.Crimson;
+            this.btnCategory.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnCategory.Location = new System.Drawing.Point(0, 48);
             this.btnCategory.Name = "btnCategory";
             this.btnCategory.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -398,7 +398,7 @@
             this.btnProductList.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnProductList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProductList.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnProductList.ForeColor = System.Drawing.Color.Crimson;
+            this.btnProductList.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnProductList.Location = new System.Drawing.Point(0, 0);
             this.btnProductList.Name = "btnProductList";
             this.btnProductList.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -410,11 +410,11 @@
             // 
             // btnProduct
             // 
-            this.btnProduct.BackColor = System.Drawing.Color.Crimson;
+            this.btnProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnProduct.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProduct.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnProduct.ForeColor = System.Drawing.Color.White;
+            this.btnProduct.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnProduct.Location = new System.Drawing.Point(0, 219);
             this.btnProduct.Name = "btnProduct";
             this.btnProduct.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -427,11 +427,11 @@
             // 
             // btnDashboard
             // 
-            this.btnDashboard.BackColor = System.Drawing.Color.Crimson;
+            this.btnDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDashboard.ForeColor = System.Drawing.Color.White;
+            this.btnDashboard.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnDashboard.Location = new System.Drawing.Point(0, 171);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -444,7 +444,7 @@
             // 
             // panelLogo
             // 
-            this.panelLogo.BackColor = System.Drawing.Color.LavenderBlush;
+            this.panelLogo.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panelLogo.Controls.Add(this.lblUsẻName);
             this.panelLogo.Controls.Add(this.label1);
             this.panelLogo.Controls.Add(this.pictureBox1);
@@ -482,7 +482,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(57, 16);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 100);
+            this.pictureBox1.Size = new System.Drawing.Size(96, 96);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
@@ -514,7 +514,7 @@
             // 
             // panelTitle
             // 
-            this.panelTitle.BackColor = System.Drawing.Color.Crimson;
+            this.panelTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(130)))));
             this.panelTitle.Controls.Add(this.lblTitleName);
             this.panelTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitle.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -528,7 +528,8 @@
             // 
             this.lblTitleName.AutoSize = true;
             this.lblTitleName.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitleName.Location = new System.Drawing.Point(482, 11);
+            this.lblTitleName.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.lblTitleName.Location = new System.Drawing.Point(483, 16);
             this.lblTitleName.Name = "lblTitleName";
             this.lblTitleName.Size = new System.Drawing.Size(113, 23);
             this.lblTitleName.TabIndex = 0;
@@ -538,7 +539,7 @@
             // 
             // panel6
             // 
-            this.panel6.BackColor = System.Drawing.Color.LavenderBlush;
+            this.panel6.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.panel6.ForeColor = System.Drawing.Color.Crimson;
             this.panel6.Location = new System.Drawing.Point(225, 60);
             this.panel6.Name = "panel6";
