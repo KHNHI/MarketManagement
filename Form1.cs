@@ -12,6 +12,9 @@ namespace MarketManagement
 {
     public partial class panelMain : Form
     {
+        UseControl.Product product = new UseControl.Product();
+
+
         public panelMain()
         {
             InitializeComponent();
@@ -19,7 +22,7 @@ namespace MarketManagement
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+          
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -34,7 +37,9 @@ namespace MarketManagement
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            panel1.Controls.Clear();
+            panel1.Controls.Add(product);
+            product.Dock = DockStyle.Fill;
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -83,6 +88,21 @@ namespace MarketManagement
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSupplier_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panelTitle_Paint(object sender, PaintEventArgs e)
         {
 
         }
