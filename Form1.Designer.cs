@@ -59,6 +59,7 @@
             // 
             this.panelSlide.AutoScroll = true;
             this.panelSlide.BackColor = System.Drawing.Color.White;
+            this.panelSlide.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelSlide.Controls.Add(this.btnSetting);
             this.panelSlide.Controls.Add(this.btnRecord);
             this.panelSlide.Controls.Add(this.btnSupplier);
@@ -87,7 +88,7 @@
             this.btnSetting.Location = new System.Drawing.Point(0, 363);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnSetting.Size = new System.Drawing.Size(225, 48);
+            this.btnSetting.Size = new System.Drawing.Size(223, 48);
             this.btnSetting.TabIndex = 9;
             this.btnSetting.Text = "Setting";
             this.btnSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -108,7 +109,7 @@
             this.btnRecord.Location = new System.Drawing.Point(0, 315);
             this.btnRecord.Name = "btnRecord";
             this.btnRecord.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnRecord.Size = new System.Drawing.Size(225, 48);
+            this.btnRecord.Size = new System.Drawing.Size(223, 48);
             this.btnRecord.TabIndex = 7;
             this.btnRecord.Text = "Record";
             this.btnRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -129,7 +130,7 @@
             this.btnSupplier.Location = new System.Drawing.Point(0, 267);
             this.btnSupplier.Name = "btnSupplier";
             this.btnSupplier.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnSupplier.Size = new System.Drawing.Size(225, 48);
+            this.btnSupplier.Size = new System.Drawing.Size(223, 48);
             this.btnSupplier.TabIndex = 6;
             this.btnSupplier.Text = "Supplier";
             this.btnSupplier.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -152,7 +153,7 @@
             this.btnProduct.Location = new System.Drawing.Point(0, 219);
             this.btnProduct.Name = "btnProduct";
             this.btnProduct.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnProduct.Size = new System.Drawing.Size(225, 48);
+            this.btnProduct.Size = new System.Drawing.Size(223, 48);
             this.btnProduct.TabIndex = 3;
             this.btnProduct.Text = "Product";
             this.btnProduct.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -174,7 +175,7 @@
             this.btnDashboard.Location = new System.Drawing.Point(0, 171);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnDashboard.Size = new System.Drawing.Size(225, 48);
+            this.btnDashboard.Size = new System.Drawing.Size(223, 48);
             this.btnDashboard.TabIndex = 2;
             this.btnDashboard.Text = "Dashboard";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -191,7 +192,7 @@
             this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelLogo.Location = new System.Drawing.Point(0, 0);
             this.panelLogo.Name = "panelLogo";
-            this.panelLogo.Size = new System.Drawing.Size(225, 171);
+            this.panelLogo.Size = new System.Drawing.Size(223, 171);
             this.panelLogo.TabIndex = 1;
             // 
             // lblUsẻName
@@ -200,7 +201,7 @@
             this.lblUsẻName.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUsẻName.Location = new System.Drawing.Point(64, 119);
             this.lblUsẻName.Name = "lblUsẻName";
-            this.lblUsẻName.Size = new System.Drawing.Size(93, 20);
+            this.lblUsẻName.Size = new System.Drawing.Size(141, 27);
             this.lblUsẻName.TabIndex = 1;
             this.lblUsẻName.Text = "User Name ";
             this.lblUsẻName.Click += new System.EventHandler(this.lblUsẻName_Click);
@@ -211,7 +212,7 @@
             this.label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(81, 137);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 20);
+            this.label1.Size = new System.Drawing.Size(87, 27);
             this.label1.TabIndex = 1;
             this.label1.Text = "Admin";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -254,6 +255,7 @@
             // panelTitle
             // 
             this.panelTitle.BackColor = System.Drawing.Color.White;
+            this.panelTitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelTitle.Controls.Add(this.lblTitleName);
             this.panelTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitle.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -271,7 +273,7 @@
             this.lblTitleName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.lblTitleName.Location = new System.Drawing.Point(417, 16);
             this.lblTitleName.Name = "lblTitleName";
-            this.lblTitleName.Size = new System.Drawing.Size(298, 23);
+            this.lblTitleName.Size = new System.Drawing.Size(451, 36);
             this.lblTitleName.TabIndex = 0;
             this.lblTitleName.Text = "MANAGEMENT MARKET SYSTEM ";
             this.lblTitleName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -290,15 +292,17 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(0, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1105, 316);
+            this.panel1.Size = new System.Drawing.Size(1105, 657);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint_1);
             // 
             // panelMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LavenderBlush;
             this.ClientSize = new System.Drawing.Size(1330, 757);

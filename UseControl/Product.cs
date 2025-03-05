@@ -21,5 +21,15 @@ namespace MarketManagement.UseControl
         {
 
         }
+
+        private void dgvBrand_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
