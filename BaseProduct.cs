@@ -7,45 +7,66 @@ using System.Threading.Tasks;
 
 namespace MarketManagement
 {
-    
-        [Serializable]
-        public class BaseProduct : ISerializable
+
+    [Serializable]
+    public class BaseProduct : BaseEntity, ISerializable
+    {
+        public string ProductName { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+
+        public BaseProduct()
         {
-            public string ProductId { get; set; }
-            public string ProductName { get; set; }
-            public int ProductQuantity { get; set; }
-            public decimal ProductPrice { get; set; }
-            public string Description { get; set; }
-            public string CategoryName { get; set; }
+            Id = GenerateId();
+        }
 
-            public BaseProduct()
+        protected BaseProduct(SerializationInfo info, StreamingContext context)
+        {
+            Id = info.GetString("Id");
+            ProductName = info.GetString("ProductName");
+            Quantity = info.GetInt32("Quantity");
+            Price = info.GetDecimal("Price");
+            Description = info.GetString("Description");
+            Category = info.GetString("Category");
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id);
+            info.AddValue("ProductName", ProductName);
+            info.AddValue("Quantity", Quantity);
+            info.AddValue("Price", Price);
+            info.AddValue("Description", Description);
+            info.AddValue("Category", Category);
+        }
+
+        public override bool Validate()
+        {
+            return !string.IsNullOrEmpty(ProductName) &&
+                   Price >= 0 &&
+                   Quantity >= 0;
+        }
+
+        public override string GenerateId()
+        {
+            if (Category == "Electronic")
             {
-                ProductId = GenerateId();
+                return "EL" + DateTime.Now.ToString("yyyyMMddHHmmss");
             }
-
-            protected BaseProduct(SerializationInfo info, StreamingContext context)
+            else if (Category == "Food")
             {
-                ProductId = info.GetString("ProductId");
-                ProductName = info.GetString("ProductName");
-                ProductQuantity = info.GetInt32("ProductQuantity");
-                ProductPrice = info.GetDecimal("ProductPrice");
-                Description = info.GetString("Description");
-                CategoryName = info.GetString("CategoryName");
+                return "FO" + DateTime.Now.ToString("yyyyMMddHHmmss");
             }
-
-            public void GetObjectData(SerializationInfo info, StreamingContext context)
+            else if (Category == "Clothes")
             {
-                info.AddValue("ProductId", ProductId);
-                info.AddValue("ProductName", ProductName);
-                info.AddValue("ProductQuantity", ProductQuantity);
-                info.AddValue("ProductPrice", ProductPrice);
-                info.AddValue("Description", Description);
-                info.AddValue("CategoryName", CategoryName);
+                return "CL" + DateTime.Now.ToString("yyyyMMddHHmmss");
             }
-
-            private string GenerateId()
+            else
             {
-                return DateTime.Now.ToString("yyyyMMddHHmmss");
+                return "O" + DateTime.Now.ToString("yyyyMMddHHmmss");
             }
         }
     }
+}

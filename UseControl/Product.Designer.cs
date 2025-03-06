@@ -30,22 +30,25 @@
         {
             this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtProductID = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtProductName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtProductPrice = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtProductCategory = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.txtProductDiscription = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.txtProductQuantity = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnAddProduct = new System.Windows.Forms.Button();
+            this.btnUpdateProduct = new System.Windows.Forms.Button();
+            this.btnRemoveProduct = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.dvgProduct = new System.Windows.Forms.DataGridView();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -60,13 +63,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Product ID";
             // 
-            // textBox1
+            // txtProductID
             // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(55, 57);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(356, 35);
-            this.textBox1.TabIndex = 1;
+            this.txtProductID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductID.Location = new System.Drawing.Point(55, 57);
+            this.txtProductID.Name = "txtProductID";
+            this.txtProductID.Size = new System.Drawing.Size(356, 35);
+            this.txtProductID.TabIndex = 1;
+            //this.txtProductID.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // contextMenuStrip1
             // 
@@ -74,13 +78,13 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // textBox2
+            // txtProductName
             // 
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.Location = new System.Drawing.Point(55, 145);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(356, 35);
-            this.textBox2.TabIndex = 4;
+            this.txtProductName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductName.Location = new System.Drawing.Point(55, 145);
+            this.txtProductName.Name = "txtProductName";
+            this.txtProductName.Size = new System.Drawing.Size(356, 35);
+            this.txtProductName.TabIndex = 4;
             // 
             // label2
             // 
@@ -93,13 +97,13 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Product Name";
             // 
-            // textBox3
+            // txtProductPrice
             // 
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(55, 237);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(356, 35);
-            this.textBox3.TabIndex = 6;
+            this.txtProductPrice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductPrice.Location = new System.Drawing.Point(55, 237);
+            this.txtProductPrice.Name = "txtProductPrice";
+            this.txtProductPrice.Size = new System.Drawing.Size(356, 35);
+            this.txtProductPrice.TabIndex = 6;
             // 
             // label3
             // 
@@ -112,13 +116,13 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Product Price";
             // 
-            // textBox4
+            // txtProductCategory
             // 
-            this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox4.Location = new System.Drawing.Point(476, 237);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(356, 35);
-            this.textBox4.TabIndex = 12;
+            this.txtProductCategory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductCategory.Location = new System.Drawing.Point(476, 237);
+            this.txtProductCategory.Name = "txtProductCategory";
+            this.txtProductCategory.Size = new System.Drawing.Size(356, 35);
+            this.txtProductCategory.TabIndex = 12;
             // 
             // label4
             // 
@@ -132,13 +136,13 @@
             this.label4.TabIndex = 11;
             this.label4.Text = "Category Name";
             // 
-            // textBox5
+            // txtProductDiscription
             // 
-            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox5.Location = new System.Drawing.Point(476, 145);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(356, 35);
-            this.textBox5.TabIndex = 10;
+            this.txtProductDiscription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductDiscription.Location = new System.Drawing.Point(476, 145);
+            this.txtProductDiscription.Name = "txtProductDiscription";
+            this.txtProductDiscription.Size = new System.Drawing.Size(356, 35);
+            this.txtProductDiscription.TabIndex = 10;
             // 
             // label5
             // 
@@ -151,13 +155,13 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "Discription";
             // 
-            // textBox6
+            // txtProductQuantity
             // 
-            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox6.Location = new System.Drawing.Point(476, 57);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(356, 35);
-            this.textBox6.TabIndex = 8;
+            this.txtProductQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProductQuantity.Location = new System.Drawing.Point(476, 57);
+            this.txtProductQuantity.Name = "txtProductQuantity";
+            this.txtProductQuantity.Size = new System.Drawing.Size(356, 35);
+            this.txtProductQuantity.TabIndex = 8;
             // 
             // label6
             // 
@@ -170,57 +174,58 @@
             this.label6.TabIndex = 7;
             this.label6.Text = "Product Quantity";
             // 
-            // button1
+            // btnAddProduct
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button1.FlatAppearance.BorderSize = 2;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(201)))), ((int)(((byte)(50)))), ((int)(((byte)(93)))));
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(914, 81);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(137, 41);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnAddProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.btnAddProduct.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnAddProduct.FlatAppearance.BorderSize = 2;
+            this.btnAddProduct.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(201)))), ((int)(((byte)(50)))), ((int)(((byte)(93)))));
+            this.btnAddProduct.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnAddProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddProduct.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddProduct.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnAddProduct.Location = new System.Drawing.Point(914, 81);
+            this.btnAddProduct.Name = "btnAddProduct";
+            this.btnAddProduct.Size = new System.Drawing.Size(137, 41);
+            this.btnAddProduct.TabIndex = 13;
+            this.btnAddProduct.Text = "Add";
+            this.btnAddProduct.UseVisualStyleBackColor = false;
+            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
             // 
-            // button2
+            // btnUpdateProduct
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(249)))));
-            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button2.FlatAppearance.BorderSize = 2;
-            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(110)))), ((int)(((byte)(173)))));
-            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(173)))), ((int)(((byte)(217)))));
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(58)))), ((int)(((byte)(94)))));
-            this.button2.Location = new System.Drawing.Point(914, 137);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(137, 41);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "Update";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnUpdateProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(249)))));
+            this.btnUpdateProduct.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnUpdateProduct.FlatAppearance.BorderSize = 2;
+            this.btnUpdateProduct.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(110)))), ((int)(((byte)(173)))));
+            this.btnUpdateProduct.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(173)))), ((int)(((byte)(217)))));
+            this.btnUpdateProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdateProduct.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUpdateProduct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(58)))), ((int)(((byte)(94)))));
+            this.btnUpdateProduct.Location = new System.Drawing.Point(914, 137);
+            this.btnUpdateProduct.Name = "btnUpdateProduct";
+            this.btnUpdateProduct.Size = new System.Drawing.Size(137, 41);
+            this.btnUpdateProduct.TabIndex = 14;
+            this.btnUpdateProduct.Text = "Update";
+            this.btnUpdateProduct.UseVisualStyleBackColor = false;
+            this.btnUpdateProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
             // 
-            // button3
+            // btnRemoveProduct
             // 
-            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
-            this.button3.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button3.FlatAppearance.BorderSize = 2;
-            this.button3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
-            this.button3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.button3.Location = new System.Drawing.Point(914, 192);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(137, 41);
-            this.button3.TabIndex = 15;
-            this.button3.Text = "Remove";
-            this.button3.UseVisualStyleBackColor = false;
+            this.btnRemoveProduct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
+            this.btnRemoveProduct.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnRemoveProduct.FlatAppearance.BorderSize = 2;
+            this.btnRemoveProduct.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
+            this.btnRemoveProduct.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
+            this.btnRemoveProduct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRemoveProduct.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRemoveProduct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
+            this.btnRemoveProduct.Location = new System.Drawing.Point(914, 192);
+            this.btnRemoveProduct.Name = "btnRemoveProduct";
+            this.btnRemoveProduct.Size = new System.Drawing.Size(137, 41);
+            this.btnRemoveProduct.TabIndex = 15;
+            this.btnRemoveProduct.Text = "Remove";
+            this.btnRemoveProduct.UseVisualStyleBackColor = false;
             // 
             // panel1
             // 
@@ -228,36 +233,54 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel1.Controls.Add(this.dvgProduct);
             this.panel1.Location = new System.Drawing.Point(0, 318);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1117, 341);
             this.panel1.TabIndex = 16;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            //this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // dvgProduct
+            // 
+            this.dvgProduct.AllowUserToAddRows = false;
+            this.dvgProduct.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dvgProduct.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dvgProduct.Location = new System.Drawing.Point(3, 3);
+            this.dvgProduct.MultiSelect = false;
+            this.dvgProduct.Name = "dvgProduct";
+            this.dvgProduct.RowHeadersWidth = 62;
+            this.dvgProduct.RowTemplate.Height = 28;
+            this.dvgProduct.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dvgProduct.Size = new System.Drawing.Size(1111, 296);
+            this.dvgProduct.TabIndex = 0;
             // 
             // Product
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.btnRemoveProduct);
+            this.Controls.Add(this.btnUpdateProduct);
+            this.Controls.Add(this.btnAddProduct);
+            this.Controls.Add(this.txtProductCategory);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.txtProductDiscription);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox6);
+            this.Controls.Add(this.txtProductQuantity);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.txtProductPrice);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtProductName);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtProductID);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Product";
             this.Size = new System.Drawing.Size(1117, 696);
+            //this.Load += new System.EventHandler(this.Product_Load);
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,21 +289,22 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtProductID;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtProductName;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtProductPrice;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtProductCategory;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox txtProductDiscription;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox txtProductQuantity;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnAddProduct;
+        private System.Windows.Forms.Button btnUpdateProduct;
+        private System.Windows.Forms.Button btnRemoveProduct;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.DataGridView dvgProduct;
     }
 }
