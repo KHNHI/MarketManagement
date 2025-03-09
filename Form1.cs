@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketManagement.UseControl;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +14,8 @@ namespace MarketManagement
     public partial class panelMain : Form
     {
         UseControl.Product product = new UseControl.Product();
+        UseControl.CustomerUC customer = new UseControl.CustomerUC();
+
 
 
         public panelMain()
@@ -94,11 +97,19 @@ namespace MarketManagement
 
         private void btnSupplier_Click(object sender, EventArgs e)
         {
+            CustomerUC customer = new CustomerUC();
+            customer.Dock = DockStyle.Fill; // Đảm bảo hiển thị đầy đủ
+            panel1.Controls.Clear(); // Xóa nội dung cũ nếu có
+            panel1.Controls.Add(customer);
+            customer.BringToFront(); // Đưa lên trước
+
 
         }
 
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
+            panel1.AutoScroll = true; // Bật cuộn nếu nội dung lớn hơn Panel
+            panel1.Dock = DockStyle.Fill;
 
         }
 

@@ -32,7 +32,7 @@
             this.panelSlide = new System.Windows.Forms.Panel();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
-            this.btnSupplier = new System.Windows.Forms.Button();
+            this.btnCustomer = new System.Windows.Forms.Button();
             this.btnProduct = new System.Windows.Forms.Button();
             this.btnDashboard = new System.Windows.Forms.Button();
             this.panelLogo = new System.Windows.Forms.Panel();
@@ -62,7 +62,7 @@
             this.panelSlide.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelSlide.Controls.Add(this.btnSetting);
             this.panelSlide.Controls.Add(this.btnRecord);
-            this.panelSlide.Controls.Add(this.btnSupplier);
+            this.panelSlide.Controls.Add(this.btnCustomer);
             this.panelSlide.Controls.Add(this.btnProduct);
             this.panelSlide.Controls.Add(this.btnDashboard);
             this.panelSlide.Controls.Add(this.panelLogo);
@@ -116,27 +116,27 @@
             this.btnRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRecord.UseVisualStyleBackColor = false;
             // 
-            // btnSupplier
+            // btnCustomer
             // 
-            this.btnSupplier.BackColor = System.Drawing.Color.White;
-            this.btnSupplier.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSupplier.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
-            this.btnSupplier.FlatAppearance.BorderSize = 0;
-            this.btnSupplier.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
-            this.btnSupplier.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(169)))), ((int)(((byte)(191)))));
-            this.btnSupplier.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
-            this.btnSupplier.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSupplier.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSupplier.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.btnSupplier.Location = new System.Drawing.Point(0, 267);
-            this.btnSupplier.Name = "btnSupplier";
-            this.btnSupplier.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnSupplier.Size = new System.Drawing.Size(223, 48);
-            this.btnSupplier.TabIndex = 6;
-            this.btnSupplier.Text = "Customer";
-            this.btnSupplier.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSupplier.UseVisualStyleBackColor = false;
-            this.btnSupplier.Click += new System.EventHandler(this.btnSupplier_Click);
+            this.btnCustomer.BackColor = System.Drawing.Color.White;
+            this.btnCustomer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCustomer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
+            this.btnCustomer.FlatAppearance.BorderSize = 0;
+            this.btnCustomer.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
+            this.btnCustomer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(169)))), ((int)(((byte)(191)))));
+            this.btnCustomer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
+            this.btnCustomer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCustomer.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCustomer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.btnCustomer.Location = new System.Drawing.Point(0, 267);
+            this.btnCustomer.Name = "btnCustomer";
+            this.btnCustomer.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.btnCustomer.Size = new System.Drawing.Size(223, 48);
+            this.btnCustomer.TabIndex = 6;
+            this.btnCustomer.Text = "Customer";
+            this.btnCustomer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCustomer.UseVisualStyleBackColor = false;
+            this.btnCustomer.Click += new System.EventHandler(this.btnSupplier_Click);
             // 
             // btnProduct
             // 
@@ -339,7 +339,7 @@
         private System.Windows.Forms.Panel panelTitle;
         private System.Windows.Forms.Button btnDashboard;
         private System.Windows.Forms.Button btnProduct;
-        private System.Windows.Forms.Button btnSupplier;
+        private System.Windows.Forms.Button btnCustomer;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Label label1;

@@ -10,7 +10,8 @@ using System.Windows.Forms;
 
 namespace MarketManagement.UseControl
 {
-    public partial class Product : UserControl
+    public partial class Product : System.Windows.Forms.UserControl
+
     {
         private ProductManager productManager;
         private BaseProduct currentProduct;
@@ -153,6 +154,11 @@ namespace MarketManagement.UseControl
             //cboCategory.SelectedIndex = -1;
             currentProduct = null;
             currentProduct = null;
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
         }
     }
        

@@ -63,10 +63,16 @@
     <Compile Include="Manager\ProductManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserControl\Product.cs">
+    <Compile Include="UserControls\CustomerUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControl\Product.Designer.cs">
+    <Compile Include="UserControls\CustomerUC.Designer.cs">
+      <DependentUpon>CustomerUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Product.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Product.Designer.cs">
       <DependentUpon>Product.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
@@ -81,7 +87,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="UserControl\Product.resx">
+    <EmbeddedResource Include="UserControls\CustomerUC.resx">
+      <DependentUpon>CustomerUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Product.resx">
       <DependentUpon>Product.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
