@@ -16,8 +16,8 @@ namespace MarketManagement
         UseControl.Product product = new UseControl.Product();
         UseControl.CustomerUC customer = new UseControl.CustomerUC();
         UserControls.Order order = new UserControls.Order();
-
-
+        UserControls.Dashboard dashboard = new UserControls.Dashboard();
+        UserControls.Billing billing = new UserControls.Billing();
         public panelMain()
         {
             InitializeComponent();
@@ -35,7 +35,9 @@ namespace MarketManagement
 
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-
+            panel1.Controls.Clear();
+            panel1.Controls.Add(dashboard);
+            dashboard.Dock = DockStyle.Fill;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -121,7 +123,14 @@ namespace MarketManagement
         {
             panel1.Controls.Clear();
             panel1.Controls.Add(order);
-            order.Dock = DockStyle.Fill;Li
+            order.Dock = DockStyle.Fill;
+        }
+
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(billing);
+            billing.Dock = DockStyle.Fill;
         }
     }
 }
