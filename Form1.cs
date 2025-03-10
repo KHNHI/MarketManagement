@@ -15,7 +15,7 @@ namespace MarketManagement
     {
         UseControl.Product product = new UseControl.Product();
         UseControl.CustomerUC customer = new UseControl.CustomerUC();
-
+        UserControls.Order order = new UserControls.Order();
 
 
         public panelMain()
@@ -108,14 +108,20 @@ namespace MarketManagement
 
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
-            panel1.AutoScroll = true; // Bật cuộn nếu nội dung lớn hơn Panel
-            panel1.Dock = DockStyle.Fill;
+            
 
         }
 
         private void panelTitle_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btnRecord_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(order);
+            order.Dock = DockStyle.Fill;Li
         }
     }
 }

@@ -115,6 +115,7 @@
             this.btnRecord.Text = "Order";
             this.btnRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRecord.UseVisualStyleBackColor = false;
+            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
             // btnCustomer
             // 
