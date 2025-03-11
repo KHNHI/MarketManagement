@@ -30,14 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(panelMain));
             this.panelSlide = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
             this.btnCustomer = new System.Windows.Forms.Button();
             this.btnProduct = new System.Windows.Forms.Button();
             this.btnDashboard = new System.Windows.Forms.Button();
             this.panelLogo = new System.Windows.Forms.Panel();
-            this.lblUsẻName = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -60,6 +60,8 @@
             this.panelSlide.AutoScroll = true;
             this.panelSlide.BackColor = System.Drawing.Color.White;
             this.panelSlide.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSlide.Controls.Add(this.button1);
+            this.panelSlide.Controls.Add(this.button2);
             this.panelSlide.Controls.Add(this.btnSetting);
             this.panelSlide.Controls.Add(this.btnRecord);
             this.panelSlide.Controls.Add(this.btnCustomer);
@@ -73,6 +75,50 @@
             this.panelSlide.Size = new System.Drawing.Size(225, 757);
             this.panelSlide.TabIndex = 0;
             this.panelSlide.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.White;
+            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(169)))), ((int)(((byte)(191)))));
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(226)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.button1.Location = new System.Drawing.Point(0, 459);
+            this.button1.Name = "button1";
+            this.button1.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.button1.Size = new System.Drawing.Size(223, 48);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Seller";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.White;
+            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(250)))), ((int)(((byte)(255)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
+            this.button2.Location = new System.Drawing.Point(0, 411);
+            this.button2.Name = "button2";
+            this.button2.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.button2.Size = new System.Drawing.Size(223, 48);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Category";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // btnSetting
             // 
@@ -188,8 +234,6 @@
             // panelLogo
             // 
             this.panelLogo.BackColor = System.Drawing.Color.White;
-            this.panelLogo.Controls.Add(this.lblUsẻName);
-            this.panelLogo.Controls.Add(this.label1);
             this.panelLogo.Controls.Add(this.pictureBox1);
             this.panelLogo.Controls.Add(this.panel3);
             this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
@@ -198,32 +242,10 @@
             this.panelLogo.Size = new System.Drawing.Size(223, 171);
             this.panelLogo.TabIndex = 1;
             // 
-            // lblUsẻName
-            // 
-            this.lblUsẻName.AutoSize = true;
-            this.lblUsẻName.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUsẻName.Location = new System.Drawing.Point(64, 119);
-            this.lblUsẻName.Name = "lblUsẻName";
-            this.lblUsẻName.Size = new System.Drawing.Size(93, 20);
-            this.lblUsẻName.TabIndex = 1;
-            this.lblUsẻName.Text = "User Name ";
-            this.lblUsẻName.Click += new System.EventHandler(this.lblUsẻName_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(81, 137);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 20);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Admin";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(57, 16);
+            this.pictureBox1.Location = new System.Drawing.Point(54, 32);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -344,13 +366,13 @@
         private System.Windows.Forms.Button btnCustomer;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnSetting;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label lblUsẻName;
         private System.Windows.Forms.Label lblTitleName;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 

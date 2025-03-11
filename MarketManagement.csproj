@@ -70,6 +70,12 @@
     <Compile Include="UserControls\Billing.Designer.cs">
       <DependentUpon>Billing.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Category.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Category.Designer.cs">
+      <DependentUpon>Category.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\CustomerUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -94,6 +100,12 @@
     <Compile Include="UserControls\Product.Designer.cs">
       <DependentUpon>Product.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Seller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Seller.Designer.cs">
+      <DependentUpon>Seller.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -109,6 +121,9 @@
     <EmbeddedResource Include="UserControls\Billing.resx">
       <DependentUpon>Billing.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Category.resx">
+      <DependentUpon>Category.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\CustomerUC.resx">
       <DependentUpon>CustomerUC.cs</DependentUpon>
     </EmbeddedResource>
@@ -120,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Product.resx">
       <DependentUpon>Product.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Seller.resx">
+      <DependentUpon>Seller.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
