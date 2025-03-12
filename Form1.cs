@@ -15,7 +15,11 @@ namespace MarketManagement
     {
         UseControl.Product product = new UseControl.Product();
         UseControl.CustomerUC customer = new UseControl.CustomerUC();
-
+        UserControls.Order order = new UserControls.Order();
+        UserControls.Dashboard dashboard = new UserControls.Dashboard();
+        UserControls.Billing billing = new UserControls.Billing();
+        UserControls.Seller seller = new UserControls.Seller();
+        UserControls.Category category = new UserControls.Category();
 
 
         public panelMain()
@@ -35,7 +39,9 @@ namespace MarketManagement
 
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-
+            panel1.Controls.Clear();
+            panel1.Controls.Add(dashboard);
+            dashboard.Dock = DockStyle.Fill;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -108,14 +114,41 @@ namespace MarketManagement
 
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
-            panel1.AutoScroll = true; // Bật cuộn nếu nội dung lớn hơn Panel
-            panel1.Dock = DockStyle.Fill;
+            
 
         }
 
         private void panelTitle_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btnRecord_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(order);
+            order.Dock = DockStyle.Fill;
+        }
+
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(billing);
+            billing.Dock = DockStyle.Fill;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(category);
+            category.Dock = DockStyle.Fill;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            panel1.Controls.Clear();
+            panel1.Controls.Add(seller);
+            seller.Dock = DockStyle.Fill;
         }
     }
 }
