@@ -156,10 +156,7 @@ namespace MarketManagement.UseControl
             currentProduct = null;
         }
 
-        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
-        {
-
-        }
+       
     }
        
     }

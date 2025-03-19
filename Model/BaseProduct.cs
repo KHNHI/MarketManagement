@@ -21,6 +21,7 @@ namespace MarketManagement
         {
             Id = GenerateId();
         }
+        public string GetId() => Id;
 
         protected BaseProduct(SerializationInfo info, StreamingContext context)
         {

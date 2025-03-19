@@ -59,7 +59,7 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label1.Location = new System.Drawing.Point(52, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 18);
+            this.label1.Size = new System.Drawing.Size(104, 23);
             this.label1.TabIndex = 0;
             this.label1.Text = "Product ID";
             // 
@@ -68,7 +68,7 @@
             this.txtProductID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductID.Location = new System.Drawing.Point(55, 57);
             this.txtProductID.Name = "txtProductID";
-            this.txtProductID.Size = new System.Drawing.Size(356, 26);
+            this.txtProductID.Size = new System.Drawing.Size(356, 30);
             this.txtProductID.TabIndex = 1;
             // 
             // contextMenuStrip1
@@ -76,14 +76,14 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+           
             // 
             // txtProductName
             // 
             this.txtProductName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductName.Location = new System.Drawing.Point(55, 145);
             this.txtProductName.Name = "txtProductName";
-            this.txtProductName.Size = new System.Drawing.Size(356, 26);
+            this.txtProductName.Size = new System.Drawing.Size(356, 30);
             this.txtProductName.TabIndex = 4;
             // 
             // label2
@@ -93,7 +93,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label2.Location = new System.Drawing.Point(52, 120);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(113, 18);
+            this.label2.Size = new System.Drawing.Size(143, 23);
             this.label2.TabIndex = 3;
             this.label2.Text = "Product Name";
             // 
@@ -102,7 +102,7 @@
             this.txtProductPrice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductPrice.Location = new System.Drawing.Point(55, 237);
             this.txtProductPrice.Name = "txtProductPrice";
-            this.txtProductPrice.Size = new System.Drawing.Size(356, 26);
+            this.txtProductPrice.Size = new System.Drawing.Size(356, 30);
             this.txtProductPrice.TabIndex = 6;
             // 
             // label3
@@ -112,7 +112,7 @@
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label3.Location = new System.Drawing.Point(52, 212);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(105, 18);
+            this.label3.Size = new System.Drawing.Size(132, 23);
             this.label3.TabIndex = 5;
             this.label3.Text = "Product Price";
             // 
@@ -121,7 +121,7 @@
             this.txtProductCategory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductCategory.Location = new System.Drawing.Point(476, 237);
             this.txtProductCategory.Name = "txtProductCategory";
-            this.txtProductCategory.Size = new System.Drawing.Size(356, 26);
+            this.txtProductCategory.Size = new System.Drawing.Size(356, 30);
             this.txtProductCategory.TabIndex = 12;
             // 
             // label4
@@ -132,7 +132,7 @@
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label4.Location = new System.Drawing.Point(473, 212);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(127, 18);
+            this.label4.Size = new System.Drawing.Size(160, 23);
             this.label4.TabIndex = 11;
             this.label4.Text = "Category Name";
             // 
@@ -141,8 +141,9 @@
             this.txtProductDiscription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductDiscription.Location = new System.Drawing.Point(476, 145);
             this.txtProductDiscription.Name = "txtProductDiscription";
-            this.txtProductDiscription.Size = new System.Drawing.Size(356, 26);
+            this.txtProductDiscription.Size = new System.Drawing.Size(356, 30);
             this.txtProductDiscription.TabIndex = 10;
+           
             // 
             // label5
             // 
@@ -151,7 +152,7 @@
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label5.Location = new System.Drawing.Point(473, 120);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 18);
+            this.label5.Size = new System.Drawing.Size(106, 23);
             this.label5.TabIndex = 9;
             this.label5.Text = "Discription";
             // 
@@ -160,7 +161,7 @@
             this.txtProductQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductQuantity.Location = new System.Drawing.Point(476, 57);
             this.txtProductQuantity.Name = "txtProductQuantity";
-            this.txtProductQuantity.Size = new System.Drawing.Size(356, 26);
+            this.txtProductQuantity.Size = new System.Drawing.Size(356, 30);
             this.txtProductQuantity.TabIndex = 8;
             // 
             // label6
@@ -170,7 +171,7 @@
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label6.Location = new System.Drawing.Point(473, 31);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(130, 18);
+            this.label6.Size = new System.Drawing.Size(165, 23);
             this.label6.TabIndex = 7;
             this.label6.Text = "Product Quantity";
             // 
@@ -255,7 +256,7 @@
             // 
             // Product
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnRemoveProduct);
