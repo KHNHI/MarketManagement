@@ -2,11 +2,11 @@
   "Orders": [
     {
       "InvoiceDate": "2025-03-20",
-      "InvoiceNo": "INV-000001",
+      "InvoiceNo": "34915",
       "CustomerId": "CUST001",
-      "CustomerName": "John Doe",
-      "Contact": "+1 (555) 123-4567",
-      "Address": "123 Main Street, Anytown, CA 94105",
+      "CustomerName": "Nguyễn Văn An",
+      "Contact": "+84 (555) 123-4567",
+      "Address": "123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh",
       "GrandTotal": 2599.98,
       "OrderDetails": [
         {
@@ -20,11 +20,11 @@
     },
     {
       "InvoiceDate": "2025-03-18",
-      "InvoiceNo": "INV-000002",
+      "InvoiceNo": "28966",
       "CustomerId": "CUST002",
-      "CustomerName": "Jane Smith",
-      "Contact": "+1 (555) 987-6543",
-      "Address": "456 Oak Avenue, Somewhere, NY 10001",
+      "CustomerName": "Trần Thị Bình",
+      "Contact": "+84 (555) 987-6543",
+      "Address": "456 Đường Nguyễn Huệ, Quận Ba Đình, Hà Nội",
       "GrandTotal": 1799.98,
       "OrderDetails": [
         {
@@ -38,11 +38,11 @@
     },
     {
       "InvoiceDate": "2025-03-15",
-      "InvoiceNo": "INV-000003",
+      "InvoiceNo": "98015",
       "CustomerId": "CUST003",
-      "CustomerName": "Robert Johnson",
-      "Contact": "+1 (555) 456-7890",
-      "Address": "789 Pine Road, Nowhere, TX 75001",
+      "CustomerName": "Lê Hoàng Cường",
+      "Contact": "+84 (555) 456-7890",
+      "Address": "789 Đường Trần Phú, Quận Hải Châu, Đà Nẵng",
       "GrandTotal": 3099.97,
       "OrderDetails": [
         {
@@ -58,6 +58,74 @@
           "Quantity": 2,
           "Price": 899.99,
           "Total": 1799.98
+        }
+      ]
+    },
+    {
+      "InvoiceDate": "2025-03-19",
+      "InvoiceNo": "73456",
+      "CustomerId": "CUST004",
+      "CustomerName": "Phạm Thu Dung",
+      "Contact": "+84 (555) 234-5678",
+      "Address": "258 Đường Phan Đình Phùng, TP. Huế",
+      "GrandTotal": 4999.96,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100137",
+          "ProductName": "Màn hình LG OLED 4K",
+          "Quantity": 2,
+          "Price": 2499.98,
+          "Total": 4999.96
+        }
+      ]
+    },
+    {
+      "InvoiceDate": "2025-03-17",
+      "InvoiceNo": "28915",
+      "CustomerId": "CUST005",
+      "CustomerName": "Vũ Đình Em",
+      "Contact": "+84 (555) 345-6789",
+      "Address": "147 Đường Cách Mạng Tháng Tám, TP. Cần Thơ",
+      "GrandTotal": 3599.97,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100138",
+          "ProductName": "Tai nghe Apple AirPods Pro",
+          "Quantity": 3,
+          "Price": 249.99,
+          "Total": 749.97
+        },
+        {
+          "ProductId": "EL20250312100139",
+          "ProductName": "iPad Pro 2025",
+          "Quantity": 1,
+          "Price": 2850.00,
+          "Total": 2850.00
+        }
+      ]
+    },
+    {
+      "InvoiceDate": "2025-03-14",
+      "InvoiceNo": "64371",
+      "CustomerId": "CUST006",
+      "CustomerName": "Hoàng Thị Giang",
+      "Contact": "+84 (555) 567-8901",
+      "Address": "369 Đường Điện Biên Phủ, Quận 3, TP. Hồ Chí Minh",
+      "GrandTotal": 5349.97,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100140",
+          "ProductName": "MacBook Pro M4",
+          "Quantity": 1,
+          "Price": 2199.99,
+          "Total": 2199.99
+        },
+        {
+          "ProductId": "EL20250312100141",
+          "ProductName": "Máy ảnh Sony Alpha A7R V",
+          "Quantity": 1,
+          "Price": 3149.98,
+          "Total": 3149.98
         }
       ]
     }
