@@ -97,6 +97,7 @@
     <Compile Include="Manager\ProductManager.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Customer.cs" />
+    <Compile Include="Model\Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\Billing.cs">
@@ -175,8 +176,15 @@
     <EmbeddedResource Include="UserControls\Seller.resx">
       <DependentUpon>Seller.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Data\products.json" />
+    <None Include="Data\orders.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\products.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\BaseProduct.datasource" />
+    <None Include="Properties\DataSources\MarketManagement.Model.Order.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

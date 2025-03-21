@@ -15,6 +15,9 @@ namespace MarketManagement.UseControl
     {
         private ProductManager productManager;
         private BaseProduct currentProduct;
+
+        // Thư - 20/03. Thêm vào đề xài trong Billing 
+        public List<Product> Products { get; set; }
         public Product()
         {
             InitializeComponent();

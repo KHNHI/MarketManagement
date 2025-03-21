@@ -1,0 +1,65 @@
+﻿{
+  "Orders": [
+    {
+      "InvoiceDate": "2025-03-20",
+      "InvoiceNo": "INV-000001",
+      "CustomerId": "CUST001",
+      "CustomerName": "John Doe",
+      "Contact": "+1 (555) 123-4567",
+      "Address": "123 Main Street, Anytown, CA 94105",
+      "GrandTotal": 2599.98,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100135",
+          "ProductName": "Laptop Dell XPS 13",
+          "Quantity": 2,
+          "Price": 1299.99,
+          "Total": 2599.98
+        }
+      ]
+    },
+    {
+      "InvoiceDate": "2025-03-18",
+      "InvoiceNo": "INV-000002",
+      "CustomerId": "CUST002",
+      "CustomerName": "Jane Smith",
+      "Contact": "+1 (555) 987-6543",
+      "Address": "456 Oak Avenue, Somewhere, NY 10001",
+      "GrandTotal": 1799.98,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100136",
+          "ProductName": "Samsung Galaxy S25",
+          "Quantity": 2,
+          "Price": 899.99,
+          "Total": 1799.98
+        }
+      ]
+    },
+    {
+      "InvoiceDate": "2025-03-15",
+      "InvoiceNo": "INV-000003",
+      "CustomerId": "CUST003",
+      "CustomerName": "Robert Johnson",
+      "Contact": "+1 (555) 456-7890",
+      "Address": "789 Pine Road, Nowhere, TX 75001",
+      "GrandTotal": 3099.97,
+      "OrderDetails": [
+        {
+          "ProductId": "EL20250312100135",
+          "ProductName": "Laptop Dell XPS 13",
+          "Quantity": 1,
+          "Price": 1299.99,
+          "Total": 1299.99
+        },
+        {
+          "ProductId": "EL20250312100136",
+          "ProductName": "Samsung Galaxy S25",
+          "Quantity": 2,
+          "Price": 899.99,
+          "Total": 1799.98
+        }
+      ]
+    }
+  ]
+}
