@@ -176,6 +176,9 @@
     <EmbeddedResource Include="UserControls\Seller.resx">
       <DependentUpon>Seller.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Data\customers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\orders.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

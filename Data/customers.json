@@ -1,0 +1,20 @@
+{
+  "Customers": [
+    {
+      "Id": "CUS202403210001",
+      "CustomerName": "John Doe",
+      "Address": "123 Main Street, Cityville",
+      "PhoneNumber": "123-456-7890",
+      "Email": "johndoe@example.com",
+      "IsVIP": false
+    },
+    {
+      "Id": "VIP202403210002",
+      "CustomerName": "Alice Smith",
+      "Address": "456 Elm Street, Townsville",
+      "PhoneNumber": "987-654-3210",
+      "Email": "alice@example.com",
+      "IsVIP": true
+    }
+  ]
+}

@@ -37,7 +37,7 @@
             this.txt_contact = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txt_productId = new System.Windows.Forms.TextBox();
-            this.txtProductName = new System.Windows.Forms.TextBox();
+            this.txt_customerid = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lbl_productid = new System.Windows.Forms.Label();
@@ -62,6 +62,12 @@
             this.label10 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.db_dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.txt_productname = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txt_customername = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btn_check_product = new System.Windows.Forms.Button();
+            this.btn_check_customer = new System.Windows.Forms.Button();
             this.productNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,11 +75,6 @@
             this.categoryDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.baseProductBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.txt_productname = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txt_customername = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.btn_check_product = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -92,7 +93,7 @@
             this.btn_remove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_remove.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_remove.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.btn_remove.Location = new System.Drawing.Point(934, 153);
+            this.btn_remove.Location = new System.Drawing.Point(946, 87);
             this.btn_remove.Name = "btn_remove";
             this.btn_remove.Size = new System.Drawing.Size(132, 41);
             this.btn_remove.TabIndex = 31;
@@ -128,7 +129,7 @@
             this.btn_addtocard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_addtocard.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_addtocard.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btn_addtocard.Location = new System.Drawing.Point(934, 97);
+            this.btn_addtocard.Location = new System.Drawing.Point(946, 24);
             this.btn_addtocard.Name = "btn_addtocard";
             this.btn_addtocard.Size = new System.Drawing.Size(132, 41);
             this.btn_addtocard.TabIndex = 29;
@@ -183,13 +184,14 @@
             this.txt_productId.Size = new System.Drawing.Size(262, 30);
             this.txt_productId.TabIndex = 22;
             // 
-            // txtProductName
+            // txt_customerid
             // 
-            this.txtProductName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductName.Location = new System.Drawing.Point(16, 36);
-            this.txtProductName.Name = "txtProductName";
-            this.txtProductName.Size = new System.Drawing.Size(262, 30);
-            this.txtProductName.TabIndex = 20;
+            this.txt_customerid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_customerid.Location = new System.Drawing.Point(16, 36);
+            this.txt_customerid.Name = "txt_customerid";
+            this.txt_customerid.Size = new System.Drawing.Size(262, 30);
+            this.txt_customerid.TabIndex = 20;
+            this.txt_customerid.TextChanged += new System.EventHandler(this.txt_customerid_TextChanged);
             // 
             // label2
             // 
@@ -315,7 +317,7 @@
             this.panel3.Controls.Add(this.label7);
             this.panel3.Controls.Add(this.txt_contact);
             this.panel3.Controls.Add(this.label5);
-            this.panel3.Controls.Add(this.txtProductName);
+            this.panel3.Controls.Add(this.txt_customerid);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Location = new System.Drawing.Point(3, 109);
             this.panel3.Name = "panel3";
@@ -470,6 +472,82 @@
             this.db_dataGridView1.TabIndex = 46;
             this.db_dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.db_procardsDataGridView_CellClick);
             // 
+            // txt_productname
+            // 
+            this.txt_productname.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_productname.Location = new System.Drawing.Point(330, 328);
+            this.txt_productname.Name = "txt_productname";
+            this.txt_productname.Size = new System.Drawing.Size(262, 30);
+            this.txt_productname.TabIndex = 39;
+            this.txt_productname.TextChanged += new System.EventHandler(this.txt_productId_TextChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
+            this.label11.Location = new System.Drawing.Point(328, 292);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(143, 23);
+            this.label11.TabIndex = 37;
+            this.label11.Text = "Product Name";
+            // 
+            // txt_customername
+            // 
+            this.txt_customername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_customername.Location = new System.Drawing.Point(20, 328);
+            this.txt_customername.Name = "txt_customername";
+            this.txt_customername.Size = new System.Drawing.Size(262, 30);
+            this.txt_customername.TabIndex = 37;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label13.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.label13.Location = new System.Drawing.Point(16, 292);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(160, 23);
+            this.label13.TabIndex = 39;
+            this.label13.Text = "Customer Name";
+            // 
+            // btn_check_product
+            // 
+            this.btn_check_product.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
+            this.btn_check_product.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_check_product.FlatAppearance.BorderSize = 2;
+            this.btn_check_product.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
+            this.btn_check_product.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
+            this.btn_check_product.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_check_product.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_check_product.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
+            this.btn_check_product.Location = new System.Drawing.Point(946, 240);
+            this.btn_check_product.Name = "btn_check_product";
+            this.btn_check_product.Size = new System.Drawing.Size(132, 41);
+            this.btn_check_product.TabIndex = 47;
+            this.btn_check_product.Text = "Check Product";
+            this.btn_check_product.UseVisualStyleBackColor = false;
+            this.btn_check_product.Click += new System.EventHandler(this.btn_check_product_Click);
+            // 
+            // btn_check_customer
+            // 
+            this.btn_check_customer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
+            this.btn_check_customer.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_check_customer.FlatAppearance.BorderSize = 2;
+            this.btn_check_customer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
+            this.btn_check_customer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
+            this.btn_check_customer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_check_customer.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_check_customer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
+            this.btn_check_customer.Location = new System.Drawing.Point(946, 175);
+            this.btn_check_customer.Name = "btn_check_customer";
+            this.btn_check_customer.Size = new System.Drawing.Size(132, 41);
+            this.btn_check_customer.TabIndex = 48;
+            this.btn_check_customer.Text = "Check Customer";
+            this.btn_check_customer.UseVisualStyleBackColor = false;
+            this.btn_check_customer.Click += new System.EventHandler(this.btn_check_customer_Click);
+            // 
             // productNameDataGridViewTextBoxColumn
             // 
             this.productNameDataGridViewTextBoxColumn.DataPropertyName = "ProductName";
@@ -528,69 +606,11 @@
             // 
             this.baseProductBindingSource.DataSource = typeof(MarketManagement.BaseProduct);
             // 
-            // txt_productname
-            // 
-            this.txt_productname.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txt_productname.Location = new System.Drawing.Point(330, 328);
-            this.txt_productname.Name = "txt_productname";
-            this.txt_productname.Size = new System.Drawing.Size(262, 30);
-            this.txt_productname.TabIndex = 39;
-            this.txt_productname.TextChanged += new System.EventHandler(this.txt_productId_TextChanged);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
-            this.label11.Location = new System.Drawing.Point(328, 292);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(143, 23);
-            this.label11.TabIndex = 37;
-            this.label11.Text = "Product Name";
-            // 
-            // txt_customername
-            // 
-            this.txt_customername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txt_customername.Location = new System.Drawing.Point(20, 328);
-            this.txt_customername.Name = "txt_customername";
-            this.txt_customername.Size = new System.Drawing.Size(262, 30);
-            this.txt_customername.TabIndex = 37;
-            this.txt_customername.TextChanged += new System.EventHandler(this.txt_customername_TextChanged);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label13.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label13.Location = new System.Drawing.Point(16, 292);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(160, 23);
-            this.label13.TabIndex = 39;
-            this.label13.Text = "Customer Name";
-            // 
-            // btn_check_product
-            // 
-            this.btn_check_product.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
-            this.btn_check_product.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btn_check_product.FlatAppearance.BorderSize = 2;
-            this.btn_check_product.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
-            this.btn_check_product.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
-            this.btn_check_product.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_check_product.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_check_product.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.btn_check_product.Location = new System.Drawing.Point(934, 232);
-            this.btn_check_product.Name = "btn_check_product";
-            this.btn_check_product.Size = new System.Drawing.Size(132, 41);
-            this.btn_check_product.TabIndex = 47;
-            this.btn_check_product.Text = "Check Product";
-            this.btn_check_product.UseVisualStyleBackColor = false;
-            this.btn_check_product.Click += new System.EventHandler(this.btn_check_product_Click);
-            // 
             // Billing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btn_check_customer);
             this.Controls.Add(this.btn_check_product);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.txt_customername);
@@ -638,7 +658,7 @@
         private System.Windows.Forms.TextBox txt_contact;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_productId;
-        private System.Windows.Forms.TextBox txtProductName;
+        private System.Windows.Forms.TextBox txt_customerid;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Label lbl_productid;
@@ -675,5 +695,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource baseProductBindingSource;
         private System.Windows.Forms.Button btn_check_product;
+        private System.Windows.Forms.Button btn_check_customer;
     }
 }
