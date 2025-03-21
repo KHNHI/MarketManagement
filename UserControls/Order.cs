@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.IO;
 using MarketManagement.Model;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MarketManagement.UserControls
 {
@@ -88,96 +89,245 @@ namespace MarketManagement.UserControls
         {
             try
             {
+                // Gọi phương thức LoadInvoicesToGrid để tải lại dữ liệu
                 LoadInvoicesToGrid();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi làm mới dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error refreshing orders data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        //private void LoadInvoicesToGrid()
+        //{
+        //    try
+        //    {
+        //        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "orders.json");
+
+
+        //        if (!File.Exists(filePath))
+        //        {
+        //            db_ordersDataGridView.DataSource = null;
+        //            return;
+        //        }
+
+        //        string jsonData = File.ReadAllText(filePath);
+        //        var orders = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, string>>>(jsonData) ?? new List<Dictionary<string, string>>();
+
+
+        //        db_ordersDataGridView.DataSource = orders;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error loading invoices: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
 
 
         private void LoadInvoicesToGrid()
         {
             try
             {
-                string filePath = Path.Combine(Application.StartupPath, "Data", "orders.json");
+                // Thử cả hai đường dẫn có thể
+                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
+                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
+                string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
 
-                if (!File.Exists(filePath))
+                string jsonFilePath = "";
+
+                // Kiểm tra file tồn tại ở đường dẫn nào
+                if (File.Exists(filePath1))
                 {
-                    MessageBox.Show("Không tìm thấy file orders.json", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    jsonFilePath = filePath1;
+                }
+                else if (File.Exists(filePath2))
+                {
+                    jsonFilePath = filePath2;
+                }
+                else
+                {
+                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     db_ordersDataGridView.DataSource = null;
                     return;
                 }
 
                 // Đọc nội dung file
-                string jsonData = File.ReadAllText(filePath);
+                string jsonData = File.ReadAllText(jsonFilePath);
 
-                // Sử dụng JsonDocument để phân tích JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                // Kiểm tra file có dữ liệu không
+                if (string.IsNullOrWhiteSpace(jsonData))
                 {
-                    JsonElement root = doc.RootElement;
+                    MessageBox.Show("Orders file is empty", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    db_ordersDataGridView.DataSource = null;
+                    return;
+                }
 
-                    // Kiểm tra nếu root có thuộc tính "Orders"
-                    if (root.TryGetProperty("Orders", out JsonElement ordersElement) &&
-                        ordersElement.ValueKind == JsonValueKind.Array)
+                // Tạo DataTable để hiển thị dữ liệu
+                DataTable dt = new DataTable();
+                dt.Columns.Add("InvoiceDate", typeof(string));
+                dt.Columns.Add("InvoiceNo", typeof(string));
+                dt.Columns.Add("CustomerId", typeof(string));
+                dt.Columns.Add("CustomerName", typeof(string));
+                dt.Columns.Add("Contact", typeof(string));
+                dt.Columns.Add("Address", typeof(string));
+                dt.Columns.Add("GrandTotal", typeof(decimal));
+
+                bool dataLoaded = false;
+
+                try
+                {
+                    // In ra console để debug
+                    Console.WriteLine("Loading invoice data from: " + jsonFilePath);
+                    Console.WriteLine("JSON Data (first 100 chars): " + jsonData.Substring(0, Math.Min(100, jsonData.Length)));
+
+                    // Sử dụng JObject để đọc dữ liệu - cách này linh hoạt nhất
+                    JObject jsonObject = JObject.Parse(jsonData);
+
+                    // Kiểm tra nếu có thuộc tính Orders
+                    if (jsonObject["Orders"] != null && jsonObject["Orders"].Type == JTokenType.Array)
                     {
-                        // Tạo DataTable để hiển thị thông tin order (không bao gồm OrderDetails)
-                        DataTable dt = new DataTable();
-
-                        // Thêm các cột vào DataTable
-                        dt.Columns.Add("InvoiceDate");
-                        dt.Columns.Add("InvoiceNo");
-                        dt.Columns.Add("CustomerId");
-                        dt.Columns.Add("CustomerName");
-                        dt.Columns.Add("Contact");
-                        dt.Columns.Add("Address");
-                        dt.Columns.Add("GrandTotal");
-
-                        // Thêm dữ liệu từ mỗi đơn hàng
-                        foreach (JsonElement order in ordersElement.EnumerateArray())
+                        JArray ordersArray = (JArray)jsonObject["Orders"];
+                        foreach (JToken orderToken in ordersArray)
                         {
+                            string invoiceNo = orderToken["InvoiceNo"]?.ToString() ?? "";
+                            string customerName = orderToken["CustomerName"]?.ToString() ?? "";
+
+                            // In thông tin debug
+                            Console.WriteLine($"Found order: {invoiceNo} - {customerName}");
+
                             DataRow row = dt.NewRow();
+                            row["InvoiceDate"] = orderToken["InvoiceDate"]?.ToString() ?? "";
+                            row["InvoiceNo"] = invoiceNo;
+                            row["CustomerId"] = orderToken["CustomerId"]?.ToString() ?? "";
+                            row["CustomerName"] = customerName;
+                            row["Contact"] = orderToken["Contact"]?.ToString() ?? "";
+                            row["Address"] = orderToken["Address"]?.ToString() ?? "";
 
-                            if (order.TryGetProperty("InvoiceDate", out JsonElement invoiceDateElement))
-                                row["InvoiceDate"] = invoiceDateElement.GetString();
-
-                            if (order.TryGetProperty("InvoiceNo", out JsonElement invoiceNoElement))
-                                row["InvoiceNo"] = invoiceNoElement.GetString();
-
-                            if (order.TryGetProperty("CustomerId", out JsonElement customerIdElement))
-                                row["CustomerId"] = customerIdElement.GetString();
-
-                            if (order.TryGetProperty("CustomerName", out JsonElement customerNameElement))
-                                row["CustomerName"] = customerNameElement.GetString();
-
-                            if (order.TryGetProperty("Contact", out JsonElement contactElement))
-                                row["Contact"] = contactElement.GetString();
-
-                            if (order.TryGetProperty("Address", out JsonElement addressElement))
-                                row["Address"] = addressElement.GetString();
-
-                            if (order.TryGetProperty("GrandTotal", out JsonElement grandTotalElement))
-                                row["GrandTotal"] = grandTotalElement.GetDouble().ToString("N2");
+                            decimal grandTotal = 0;
+                            if (orderToken["GrandTotal"] != null)
+                            {
+                                decimal.TryParse(orderToken["GrandTotal"].ToString(), out grandTotal);
+                            }
+                            row["GrandTotal"] = grandTotal;
 
                             dt.Rows.Add(row);
+                            dataLoaded = true;
                         }
-
-                        // Gán DataTable làm nguồn dữ liệu cho DataGridView
-                        db_ordersDataGridView.DataSource = dt;
-                        db_ordersDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                     }
                     else
                     {
-                        MessageBox.Show("File JSON không có cấu trúc Orders mong đợi", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Thử với cách khác nếu không có thuộc tính Orders
+                        dynamic dynamicData = JsonConvert.DeserializeObject(jsonData);
+                        if (dynamicData != null)
+                        {
+                            if (dynamicData.Orders != null)
+                            {
+                                foreach (var order in dynamicData.Orders)
+                                {
+                                    DataRow row = dt.NewRow();
+
+                                    // Xử lý từng trường dữ liệu
+                                    try { row["InvoiceDate"] = order.InvoiceDate?.ToString() ?? ""; } catch { row["InvoiceDate"] = ""; }
+                                    try { row["InvoiceNo"] = order.InvoiceNo?.ToString() ?? ""; } catch { row["InvoiceNo"] = ""; }
+                                    try { row["CustomerId"] = order.CustomerId?.ToString() ?? ""; } catch { row["CustomerId"] = ""; }
+                                    try { row["CustomerName"] = order.CustomerName?.ToString() ?? ""; } catch { row["CustomerName"] = ""; }
+                                    try { row["Contact"] = order.Contact?.ToString() ?? ""; } catch { row["Contact"] = ""; }
+                                    try { row["Address"] = order.Address?.ToString() ?? ""; } catch { row["Address"] = ""; }
+
+                                    decimal grandTotal = 0;
+                                    try
+                                    {
+                                        string grandTotalStr = order.GrandTotal?.ToString() ?? "0";
+                                        decimal.TryParse(grandTotalStr, out grandTotal);
+                                    }
+                                    catch { grandTotal = 0; }
+
+                                    row["GrandTotal"] = grandTotal;
+                                    dt.Rows.Add(row);
+                                    dataLoaded = true;
+                                }
+                            }
+                        }
                     }
+                }
+                catch (Exception parseEx)
+                {
+                    // Log lỗi
+                    Console.WriteLine("Error parsing JSON: " + parseEx.Message);
+
+                    // Thử phương pháp cuối cùng - đọc toàn bộ JSON
+                    try
+                    {
+                        dynamic fullData = JsonConvert.DeserializeObject(jsonData);
+
+                        // Duyệt qua tất cả thuộc tính để tìm một mảng
+                        if (fullData != null)
+                        {
+                            foreach (var prop in fullData)
+                            {
+                                if (prop is JArray array)
+                                {
+                                    // Thử đọc từng mảng
+                                    foreach (var item in array)
+                                    {
+                                        if (item["InvoiceNo"] != null || item["CustomerName"] != null)
+                                        {
+                                            DataRow row = dt.NewRow();
+
+                                            try { row["InvoiceDate"] = item["InvoiceDate"]?.ToString() ?? ""; } catch { row["InvoiceDate"] = ""; }
+                                            try { row["InvoiceNo"] = item["InvoiceNo"]?.ToString() ?? ""; } catch { row["InvoiceNo"] = ""; }
+                                            try { row["CustomerId"] = item["CustomerId"]?.ToString() ?? ""; } catch { row["CustomerId"] = ""; }
+                                            try { row["CustomerName"] = item["CustomerName"]?.ToString() ?? ""; } catch { row["CustomerName"] = ""; }
+                                            try { row["Contact"] = item["Contact"]?.ToString() ?? ""; } catch { row["Contact"] = ""; }
+                                            try { row["Address"] = item["Address"]?.ToString() ?? ""; } catch { row["Address"] = ""; }
+
+                                            decimal grandTotal = 0;
+                                            try { decimal.TryParse(item["GrandTotal"]?.ToString() ?? "0", out grandTotal); } catch { }
+
+                                            row["GrandTotal"] = grandTotal;
+                                            dt.Rows.Add(row);
+                                            dataLoaded = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception lastEx)
+                    {
+                        // Ghi lại lỗi cuối cùng
+                        Console.WriteLine("Final error: " + lastEx.Message);
+                    }
+                }
+
+                // Cập nhật DataGridView
+                db_ordersDataGridView.DataSource = dt;
+
+                // Định dạng cột GrandTotal để hiển thị tiền tệ
+                if (db_ordersDataGridView.Columns["GrandTotal"] != null)
+                {
+                    db_ordersDataGridView.Columns["GrandTotal"].DefaultCellStyle.Format = "C2";
+                }
+
+                // Hiển thị thông báo nếu không có dữ liệu
+                if (!dataLoaded || dt.Rows.Count == 0)
+                {
+                    MessageBox.Show("No orders found or data format is not recognized.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading invoices: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                db_ordersDataGridView.DataSource = null;
             }
         }
+
+
+
+
 
 
 
@@ -186,189 +336,421 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                // Đường dẫn tới file JSON
-                string filePath = Path.Combine(Application.StartupPath, "Data", "orders.json");
-                if (!File.Exists(filePath))
+                // Kiểm tra nếu không có số hóa đơn nhập vào
+                if (string.IsNullOrWhiteSpace(txt_invoiceno.Text))
                 {
-                    MessageBox.Show("Không tìm thấy file orders.json", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    db_ordersDataGridView.DataSource = null;
+                    MessageBox.Show("Please enter an invoice number to search.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txt_invoiceno.Focus();
                     return;
                 }
 
-                // Đọc nội dung file
-                string jsonData = File.ReadAllText(filePath);
+                // Thử cả hai đường dẫn có thể
+                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
+                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
+                string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
 
-                // Sử dụng JsonDocument để phân tích JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                string jsonFilePath = "";
+
+                // Kiểm tra file tồn tại ở đường dẫn nào
+                if (File.Exists(filePath1))
                 {
-                    JsonElement root = doc.RootElement;
+                    jsonFilePath = filePath1;
+                }
+                else if (File.Exists(filePath2))
+                {
+                    jsonFilePath = filePath2;
+                }
+                else
+                {
+                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                    // Kiểm tra nếu root có thuộc tính "Orders"
-                    if (root.TryGetProperty("Orders", out JsonElement ordersElement) &&
-                        ordersElement.ValueKind == JsonValueKind.Array)
+                // Đọc nội dung file JSON
+                string jsonData = File.ReadAllText(jsonFilePath);
+
+                // Kiểm tra nếu file trống
+                if (string.IsNullOrWhiteSpace(jsonData))
+                {
+                    MessageBox.Show("Orders file is empty", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Tạo DataTable để hiển thị kết quả
+                DataTable dt = new DataTable();
+                dt.Columns.Add("InvoiceDate", typeof(string));
+                dt.Columns.Add("InvoiceNo", typeof(string));
+                dt.Columns.Add("CustomerId", typeof(string));
+                dt.Columns.Add("CustomerName", typeof(string));
+                dt.Columns.Add("Contact", typeof(string));
+                dt.Columns.Add("Address", typeof(string));
+                dt.Columns.Add("GrandTotal", typeof(decimal));
+
+                bool orderFound = false;
+                string searchInvoiceNo = txt_invoiceno.Text.Trim();
+
+                // Debug info
+                Console.WriteLine("Searching for invoice: " + searchInvoiceNo);
+                Console.WriteLine("JSON file path: " + jsonFilePath);
+
+                try
+                {
+                    // Sử dụng JObject - cách linh hoạt nhất
+                    JObject jsonObject = JObject.Parse(jsonData);
+
+                    // Kiểm tra nhiều cấu trúc có thể
+                    if (jsonObject["Orders"] != null && jsonObject["Orders"].Type == JTokenType.Array)
                     {
-                        // Tạo DataTable để hiển thị thông tin order
-                        DataTable dt = new DataTable();
+                        JArray ordersArray = (JArray)jsonObject["Orders"];
+                        Console.WriteLine("Found Orders array with " + ordersArray.Count + " items");
 
-                        // Thêm các cột vào DataTable
-                        dt.Columns.Add("InvoiceDate");
-                        dt.Columns.Add("InvoiceNo");
-                        dt.Columns.Add("CustomerId");
-                        dt.Columns.Add("CustomerName");
-                        dt.Columns.Add("Contact");
-                        dt.Columns.Add("Address");
-                        dt.Columns.Add("GrandTotal");
-
-                        // Biến để kiểm tra nếu tìm thấy hóa đơn
-                        bool found = false;
-
-                        // Lọc và thêm dữ liệu từ mỗi đơn hàng phù hợp với InvoiceNo
-                        foreach (JsonElement order in ordersElement.EnumerateArray())
+                        foreach (JToken orderToken in ordersArray)
                         {
-                            // Kiểm tra nếu InvoiceNo khớp với giá trị tìm kiếm
-                            if (order.TryGetProperty("InvoiceNo", out JsonElement invoiceNoElement) &&
-                                invoiceNoElement.GetString() == txt_invoiceno.Text)
-                            {
-                                found = true;
-                                DataRow row = dt.NewRow();
+                            string invoiceNo = orderToken["InvoiceNo"]?.ToString();
+                            Console.WriteLine($"Checking invoice: {invoiceNo} against {searchInvoiceNo}");
 
-                                if (order.TryGetProperty("InvoiceDate", out JsonElement invoiceDateElement))
-                                    row["InvoiceDate"] = invoiceDateElement.GetString();
-                                if (order.TryGetProperty("InvoiceNo", out _)) // Đã kiểm tra ở trên
-                                    row["InvoiceNo"] = invoiceNoElement.GetString();
-                                if (order.TryGetProperty("CustomerId", out JsonElement customerIdElement))
-                                    row["CustomerId"] = customerIdElement.GetString();
-                                if (order.TryGetProperty("CustomerName", out JsonElement customerNameElement))
-                                    row["CustomerName"] = customerNameElement.GetString();
-                                if (order.TryGetProperty("Contact", out JsonElement contactElement))
-                                    row["Contact"] = contactElement.GetString();
-                                if (order.TryGetProperty("Address", out JsonElement addressElement))
-                                    row["Address"] = addressElement.GetString();
-                                if (order.TryGetProperty("GrandTotal", out JsonElement grandTotalElement))
-                                    row["GrandTotal"] = grandTotalElement.GetDouble().ToString("N2");
+                            if (!string.IsNullOrEmpty(invoiceNo) &&
+                                invoiceNo.Equals(searchInvoiceNo, StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Invoice match found!");
+                                DataRow row = dt.NewRow();
+                                row["InvoiceDate"] = orderToken["InvoiceDate"]?.ToString() ?? "";
+                                row["InvoiceNo"] = invoiceNo;
+                                row["CustomerId"] = orderToken["CustomerId"]?.ToString() ?? "";
+                                row["CustomerName"] = orderToken["CustomerName"]?.ToString() ?? "";
+                                row["Contact"] = orderToken["Contact"]?.ToString() ?? "";
+                                row["Address"] = orderToken["Address"]?.ToString() ?? "";
+
+                                decimal grandTotal = 0;
+                                if (orderToken["GrandTotal"] != null)
+                                {
+                                    decimal.TryParse(orderToken["GrandTotal"].ToString(), out grandTotal);
+                                }
+                                row["GrandTotal"] = grandTotal;
 
                                 dt.Rows.Add(row);
+                                orderFound = true;
                             }
-                        }
-
-                        // Gán DataTable làm nguồn dữ liệu cho DataGridView
-                        db_ordersDataGridView.DataSource = dt;
-                        db_ordersDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-                        // Hiển thị thông báo nếu không tìm thấy hóa đơn
-                        if (!found)
-                        {
-                            MessageBox.Show("No invoice found with invoice number: " + txt_invoiceno.Text,
-                                "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("File JSON không có cấu trúc Orders mong đợi", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Thử xem có mảng nào khác không
+                        foreach (var prop in jsonObject.Properties())
+                        {
+                            Console.WriteLine("Checking property: " + prop.Name);
+                            if (prop.Value.Type == JTokenType.Array)
+                            {
+                                JArray array = (JArray)prop.Value;
+                                Console.WriteLine("Found array in property " + prop.Name + " with " + array.Count + " items");
+
+                                foreach (JToken item in array)
+                                {
+                                    string invoiceNo = item["InvoiceNo"]?.ToString();
+                                    if (!string.IsNullOrEmpty(invoiceNo) &&
+                                        invoiceNo.Equals(searchInvoiceNo, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        DataRow row = dt.NewRow();
+                                        row["InvoiceDate"] = item["InvoiceDate"]?.ToString() ?? "";
+                                        row["InvoiceNo"] = invoiceNo;
+                                        row["CustomerId"] = item["CustomerId"]?.ToString() ?? "";
+                                        row["CustomerName"] = item["CustomerName"]?.ToString() ?? "";
+                                        row["Contact"] = item["Contact"]?.ToString() ?? "";
+                                        row["Address"] = item["Address"]?.ToString() ?? "";
+
+                                        decimal grandTotal = 0;
+                                        if (item["GrandTotal"] != null)
+                                        {
+                                            decimal.TryParse(item["GrandTotal"].ToString(), out grandTotal);
+                                        }
+                                        row["GrandTotal"] = grandTotal;
+
+                                        dt.Rows.Add(row);
+                                        orderFound = true;
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    // Nếu không tìm thấy, thử cách khác
+                    if (!orderFound)
+                    {
+                        dynamic dynamicData = JsonConvert.DeserializeObject(jsonData);
+                        if (dynamicData != null && dynamicData.Orders != null)
+                        {
+                            foreach (var order in dynamicData.Orders)
+                            {
+                                string invoiceNo = order.InvoiceNo?.ToString();
+                                if (!string.IsNullOrEmpty(invoiceNo) &&
+                                    invoiceNo.Equals(searchInvoiceNo, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    DataRow row = dt.NewRow();
+                                    row["InvoiceDate"] = order.InvoiceDate?.ToString() ?? "";
+                                    row["InvoiceNo"] = invoiceNo;
+                                    row["CustomerId"] = order.CustomerId?.ToString() ?? "";
+                                    row["CustomerName"] = order.CustomerName?.ToString() ?? "";
+                                    row["Contact"] = order.Contact?.ToString() ?? "";
+                                    row["Address"] = order.Address?.ToString() ?? "";
+
+                                    decimal grandTotal = 0;
+                                    try
+                                    {
+                                        string grandTotalStr = order.GrandTotal?.ToString() ?? "0";
+                                        decimal.TryParse(grandTotalStr, out grandTotal);
+                                    }
+                                    catch { grandTotal = 0; }
+
+                                    row["GrandTotal"] = grandTotal;
+                                    dt.Rows.Add(row);
+                                    orderFound = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception parseEx)
+                {
+                    // Ghi lại lỗi phân tích
+                    Console.WriteLine("Error parsing JSON: " + parseEx.Message);
+
+                    // Hiển thị nội dung JSON để debug
+                    MessageBox.Show($"Error parsing orders data: {parseEx.Message}\n\nFile content sample: {jsonData.Substring(0, Math.Min(100, jsonData.Length))}...",
+                        "Debug Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                // Cập nhật DataGridView với kết quả tìm kiếm
+                db_ordersDataGridView.DataSource = dt;
+
+                // Định dạng cột GrandTotal để hiển thị tiền tệ
+                if (db_ordersDataGridView.Columns["GrandTotal"] != null)
+                {
+                    db_ordersDataGridView.Columns["GrandTotal"].DefaultCellStyle.Format = "C2";
+                }
+
+                // Hiển thị thông báo nếu không tìm thấy hóa đơn
+                if (!orderFound)
+                {
+                    MessageBox.Show("No invoice found with invoice number: " + searchInvoiceNo,
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tìm kiếm hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error searching for invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
-
-
         private void btn_search_by_customer_Id_Click(object sender, EventArgs e)
         {
             try
             {
-                // Đường dẫn tới file JSON
-                string filePath = Path.Combine(Application.StartupPath, "Data", "orders.json");
-                if (!File.Exists(filePath))
+                // Kiểm tra nếu không có tên khách hàng nhập vào
+                if (string.IsNullOrWhiteSpace(txt_customerId.Text))
                 {
-                    MessageBox.Show("Không tìm thấy file orders.json", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    db_ordersDataGridView.DataSource = null;
+                    MessageBox.Show("Please enter a customer name to search.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txt_customerId.Focus();
                     return;
                 }
 
-                // Đọc nội dung file
-                string jsonData = File.ReadAllText(filePath);
+                // Thử cả hai đường dẫn có thể
+                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
+                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
+                string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
 
-                // Sử dụng JsonDocument để phân tích JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                string jsonFilePath = "";
+
+                // Kiểm tra file tồn tại ở đường dẫn nào
+                if (File.Exists(filePath1))
                 {
-                    JsonElement root = doc.RootElement;
+                    jsonFilePath = filePath1;
+                }
+                else if (File.Exists(filePath2))
+                {
+                    jsonFilePath = filePath2;
+                }
+                else
+                {
+                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                    // Kiểm tra nếu root có thuộc tính "Orders"
-                    if (root.TryGetProperty("Orders", out JsonElement ordersElement) &&
-                        ordersElement.ValueKind == JsonValueKind.Array)
+                // Đọc nội dung file JSON
+                string jsonData = File.ReadAllText(jsonFilePath);
+
+                // Kiểm tra nếu file trống
+                if (string.IsNullOrWhiteSpace(jsonData))
+                {
+                    MessageBox.Show("Orders file is empty", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Tạo DataTable để hiển thị kết quả
+                DataTable dt = new DataTable();
+                dt.Columns.Add("InvoiceDate", typeof(string));
+                dt.Columns.Add("InvoiceNo", typeof(string));
+                dt.Columns.Add("CustomerId", typeof(string));
+                dt.Columns.Add("CustomerName", typeof(string));
+                dt.Columns.Add("Contact", typeof(string));
+                dt.Columns.Add("Address", typeof(string));
+                dt.Columns.Add("GrandTotal", typeof(decimal));
+
+                bool orderFound = false;
+                string searchCustomerName = txt_customerId.Text.Trim().ToLower();
+
+                // Debug info
+                Console.WriteLine("Searching for customer name: " + searchCustomerName);
+                Console.WriteLine("JSON file path: " + jsonFilePath);
+
+                try
+                {
+                    // Sử dụng JObject - cách linh hoạt nhất
+                    JObject jsonObject = JObject.Parse(jsonData);
+
+                    // Kiểm tra nhiều cấu trúc có thể
+                    if (jsonObject["Orders"] != null && jsonObject["Orders"].Type == JTokenType.Array)
                     {
-                        // Tạo DataTable để hiển thị thông tin order
-                        DataTable dt = new DataTable();
+                        JArray ordersArray = (JArray)jsonObject["Orders"];
+                        Console.WriteLine("Found Orders array with " + ordersArray.Count + " items");
 
-                        // Thêm các cột vào DataTable
-                        dt.Columns.Add("InvoiceDate");
-                        dt.Columns.Add("InvoiceNo");
-                        dt.Columns.Add("CustomerId");
-                        dt.Columns.Add("CustomerName");
-                        dt.Columns.Add("Contact");
-                        dt.Columns.Add("Address");
-                        dt.Columns.Add("GrandTotal");
-
-                        // Biến để kiểm tra nếu tìm thấy hóa đơn
-                        bool found = false;
-
-                        // Lọc và thêm dữ liệu từ mỗi đơn hàng phù hợp với tên khách hàng
-                        foreach (JsonElement order in ordersElement.EnumerateArray())
+                        foreach (JToken orderToken in ordersArray)
                         {
-                            // Kiểm tra nếu CustomerName chứa giá trị tìm kiếm (không phân biệt hoa thường)
-                            if (order.TryGetProperty("CustomerName", out JsonElement customerNameElement) &&
-                                customerNameElement.GetString().ToLower().Contains(txt_customerId.Text.ToLower()))
-                            {
-                                found = true;
-                                DataRow row = dt.NewRow();
+                            string customerName = orderToken["CustomerName"]?.ToString() ?? "";
+                            Console.WriteLine($"Checking customer: {customerName} contains {searchCustomerName}");
 
-                                if (order.TryGetProperty("InvoiceDate", out JsonElement invoiceDateElement))
-                                    row["InvoiceDate"] = invoiceDateElement.GetString();
-                                if (order.TryGetProperty("InvoiceNo", out JsonElement invoiceNoElement))
-                                    row["InvoiceNo"] = invoiceNoElement.GetString();
-                                if (order.TryGetProperty("CustomerId", out JsonElement customerIdElement))
-                                    row["CustomerId"] = customerIdElement.GetString();
-                                if (order.TryGetProperty("CustomerName", out _)) // Đã kiểm tra ở trên
-                                    row["CustomerName"] = customerNameElement.GetString();
-                                if (order.TryGetProperty("Contact", out JsonElement contactElement))
-                                    row["Contact"] = contactElement.GetString();
-                                if (order.TryGetProperty("Address", out JsonElement addressElement))
-                                    row["Address"] = addressElement.GetString();
-                                if (order.TryGetProperty("GrandTotal", out JsonElement grandTotalElement))
-                                    row["GrandTotal"] = grandTotalElement.GetDouble().ToString("N2");
+                            if (!string.IsNullOrEmpty(customerName) &&
+                                customerName.ToLower().Contains(searchCustomerName))
+                            {
+                                Console.WriteLine("Customer match found!");
+                                DataRow row = dt.NewRow();
+                                row["InvoiceDate"] = orderToken["InvoiceDate"]?.ToString() ?? "";
+                                row["InvoiceNo"] = orderToken["InvoiceNo"]?.ToString() ?? "";
+                                row["CustomerId"] = orderToken["CustomerId"]?.ToString() ?? "";
+                                row["CustomerName"] = customerName;
+                                row["Contact"] = orderToken["Contact"]?.ToString() ?? "";
+                                row["Address"] = orderToken["Address"]?.ToString() ?? "";
+
+                                decimal grandTotal = 0;
+                                if (orderToken["GrandTotal"] != null)
+                                {
+                                    decimal.TryParse(orderToken["GrandTotal"].ToString(), out grandTotal);
+                                }
+                                row["GrandTotal"] = grandTotal;
 
                                 dt.Rows.Add(row);
+                                orderFound = true;
                             }
-                        }
-
-                        // Gán DataTable làm nguồn dữ liệu cho DataGridView
-                        db_ordersDataGridView.DataSource = dt;
-                        db_ordersDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-                        // Hiển thị thông báo nếu không tìm thấy hóa đơn
-                        if (!found)
-                        {
-                            MessageBox.Show("No invoices found for customer name: " + txt_customerId.Text,
-                                "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("File JSON không có cấu trúc Orders mong đợi", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Thử xem có mảng nào khác không
+                        foreach (var prop in jsonObject.Properties())
+                        {
+                            Console.WriteLine("Checking property: " + prop.Name);
+                            if (prop.Value.Type == JTokenType.Array)
+                            {
+                                JArray array = (JArray)prop.Value;
+                                Console.WriteLine("Found array in property " + prop.Name + " with " + array.Count + " items");
+
+                                foreach (JToken item in array)
+                                {
+                                    string customerName = item["CustomerName"]?.ToString() ?? "";
+                                    if (!string.IsNullOrEmpty(customerName) &&
+                                        customerName.ToLower().Contains(searchCustomerName))
+                                    {
+                                        DataRow row = dt.NewRow();
+                                        row["InvoiceDate"] = item["InvoiceDate"]?.ToString() ?? "";
+                                        row["InvoiceNo"] = item["InvoiceNo"]?.ToString() ?? "";
+                                        row["CustomerId"] = item["CustomerId"]?.ToString() ?? "";
+                                        row["CustomerName"] = customerName;
+                                        row["Contact"] = item["Contact"]?.ToString() ?? "";
+                                        row["Address"] = item["Address"]?.ToString() ?? "";
+
+                                        decimal grandTotal = 0;
+                                        if (item["GrandTotal"] != null)
+                                        {
+                                            decimal.TryParse(item["GrandTotal"].ToString(), out grandTotal);
+                                        }
+                                        row["GrandTotal"] = grandTotal;
+
+                                        dt.Rows.Add(row);
+                                        orderFound = true;
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    // Nếu không tìm thấy, thử cách khác
+                    if (!orderFound)
+                    {
+                        dynamic dynamicData = JsonConvert.DeserializeObject(jsonData);
+                        if (dynamicData != null && dynamicData.Orders != null)
+                        {
+                            foreach (var order in dynamicData.Orders)
+                            {
+                                string customerName = order.CustomerName?.ToString() ?? "";
+                                if (!string.IsNullOrEmpty(customerName) &&
+                                    customerName.ToLower().Contains(searchCustomerName))
+                                {
+                                    DataRow row = dt.NewRow();
+                                    row["InvoiceDate"] = order.InvoiceDate?.ToString() ?? "";
+                                    row["InvoiceNo"] = order.InvoiceNo?.ToString() ?? "";
+                                    row["CustomerId"] = order.CustomerId?.ToString() ?? "";
+                                    row["CustomerName"] = customerName;
+                                    row["Contact"] = order.Contact?.ToString() ?? "";
+                                    row["Address"] = order.Address?.ToString() ?? "";
+
+                                    decimal grandTotal = 0;
+                                    try
+                                    {
+                                        string grandTotalStr = order.GrandTotal?.ToString() ?? "0";
+                                        decimal.TryParse(grandTotalStr, out grandTotal);
+                                    }
+                                    catch { grandTotal = 0; }
+
+                                    row["GrandTotal"] = grandTotal;
+                                    dt.Rows.Add(row);
+                                    orderFound = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception parseEx)
+                {
+                    // Ghi lại lỗi phân tích
+                    Console.WriteLine("Error parsing JSON: " + parseEx.Message);
+
+                    // Hiển thị nội dung JSON để debug
+                    MessageBox.Show($"Error parsing orders data: {parseEx.Message}\n\nFile content sample: {jsonData.Substring(0, Math.Min(100, jsonData.Length))}...",
+                        "Debug Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                // Cập nhật DataGridView với kết quả tìm kiếm
+                db_ordersDataGridView.DataSource = dt;
+
+                // Định dạng cột GrandTotal để hiển thị tiền tệ
+                if (db_ordersDataGridView.Columns["GrandTotal"] != null)
+                {
+                    db_ordersDataGridView.Columns["GrandTotal"].DefaultCellStyle.Format = "C2";
+                }
+
+                // Hiển thị thông báo nếu không tìm thấy hóa đơn
+                if (!orderFound)
+                {
+                    MessageBox.Show("No invoices found for customer name: " + searchCustomerName,
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tìm kiếm khách hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error searching for customer orders: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-       
+
     }
 }

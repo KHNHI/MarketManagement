@@ -124,6 +124,12 @@
     <Compile Include="UserControls\Dashboard.Designer.cs">
       <DependentUpon>Dashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\frm_invoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControls\frm_invoice.Designer.cs">
+      <DependentUpon>frm_invoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Order.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Dashboard.resx">
       <DependentUpon>Dashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\frm_invoice.resx">
+      <DependentUpon>frm_invoice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Order.resx">
       <DependentUpon>Order.cs</DependentUpon>

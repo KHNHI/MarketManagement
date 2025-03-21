@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btn_remove = new System.Windows.Forms.Button();
+            this.btn_remove_selected = new System.Windows.Forms.Button();
             this.btn_save = new System.Windows.Forms.Button();
             this.btn_addtocard = new System.Windows.Forms.Button();
             this.txt_productprice = new System.Windows.Forms.TextBox();
@@ -53,11 +53,11 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.lbl_customerid = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_removecart = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.btn_update = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btn_print = new System.Windows.Forms.Button();
             this.txt_totalprice = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -66,8 +66,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txt_customername = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.btn_check_product = new System.Windows.Forms.Button();
-            this.btn_check_customer = new System.Windows.Forms.Button();
             this.productNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -83,23 +81,23 @@
             ((System.ComponentModel.ISupportInitialize)(this.baseProductBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
-            // btn_remove
+            // btn_remove_selected
             // 
-            this.btn_remove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
-            this.btn_remove.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btn_remove.FlatAppearance.BorderSize = 2;
-            this.btn_remove.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
-            this.btn_remove.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
-            this.btn_remove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_remove.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_remove.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.btn_remove.Location = new System.Drawing.Point(946, 87);
-            this.btn_remove.Name = "btn_remove";
-            this.btn_remove.Size = new System.Drawing.Size(132, 41);
-            this.btn_remove.TabIndex = 31;
-            this.btn_remove.Text = "Remove ";
-            this.btn_remove.UseVisualStyleBackColor = false;
-            this.btn_remove.Click += new System.EventHandler(this.btn_remove_Click);
+            this.btn_remove_selected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
+            this.btn_remove_selected.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_remove_selected.FlatAppearance.BorderSize = 2;
+            this.btn_remove_selected.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
+            this.btn_remove_selected.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
+            this.btn_remove_selected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_remove_selected.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_remove_selected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
+            this.btn_remove_selected.Location = new System.Drawing.Point(201, 374);
+            this.btn_remove_selected.Name = "btn_remove_selected";
+            this.btn_remove_selected.Size = new System.Drawing.Size(132, 41);
+            this.btn_remove_selected.TabIndex = 31;
+            this.btn_remove_selected.Text = "Remove Item";
+            this.btn_remove_selected.UseVisualStyleBackColor = false;
+            this.btn_remove_selected.Click += new System.EventHandler(this.btn_remove_selected_Click);
             // 
             // btn_save
             // 
@@ -348,22 +346,23 @@
             this.panel4.Size = new System.Drawing.Size(925, 83);
             this.panel4.TabIndex = 41;
             // 
-            // button1
+            // btn_removecart
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button1.FlatAppearance.BorderSize = 2;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(201)))), ((int)(((byte)(50)))), ((int)(((byte)(93)))));
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(196, 374);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(142, 41);
-            this.button1.TabIndex = 42;
-            this.button1.Text = "Remove Order";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btn_removecart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.btn_removecart.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_removecart.FlatAppearance.BorderSize = 2;
+            this.btn_removecart.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(201)))), ((int)(((byte)(50)))), ((int)(((byte)(93)))));
+            this.btn_removecart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btn_removecart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_removecart.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_removecart.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btn_removecart.Location = new System.Drawing.Point(946, 97);
+            this.btn_removecart.Name = "btn_removecart";
+            this.btn_removecart.Size = new System.Drawing.Size(132, 41);
+            this.btn_removecart.TabIndex = 42;
+            this.btn_removecart.Text = "Remove All";
+            this.btn_removecart.UseVisualStyleBackColor = false;
+            this.btn_removecart.Click += new System.EventHandler(this.btn_removecart_Click);
             // 
             // textBox3
             // 
@@ -403,22 +402,23 @@
             this.btn_update.UseVisualStyleBackColor = false;
             this.btn_update.Click += new System.EventHandler(this.btn_update_Click);
             // 
-            // button3
+            // btn_print
             // 
-            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(249)))));
-            this.button3.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button3.FlatAppearance.BorderSize = 2;
-            this.button3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(110)))), ((int)(((byte)(173)))));
-            this.button3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(173)))), ((int)(((byte)(217)))));
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(58)))), ((int)(((byte)(94)))));
-            this.button3.Location = new System.Drawing.Point(506, 374);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(113, 41);
-            this.button3.TabIndex = 44;
-            this.button3.Text = "Print Bill";
-            this.button3.UseVisualStyleBackColor = false;
+            this.btn_print.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(249)))));
+            this.btn_print.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_print.FlatAppearance.BorderSize = 2;
+            this.btn_print.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(110)))), ((int)(((byte)(173)))));
+            this.btn_print.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(173)))), ((int)(((byte)(217)))));
+            this.btn_print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_print.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_print.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(58)))), ((int)(((byte)(94)))));
+            this.btn_print.Location = new System.Drawing.Point(506, 374);
+            this.btn_print.Name = "btn_print";
+            this.btn_print.Size = new System.Drawing.Size(113, 41);
+            this.btn_print.TabIndex = 44;
+            this.btn_print.Text = "Print Bill";
+            this.btn_print.UseVisualStyleBackColor = false;
+            this.btn_print.Click += new System.EventHandler(this.btn_print_Click);
             // 
             // txt_totalprice
             // 
@@ -512,42 +512,6 @@
             this.label13.TabIndex = 39;
             this.label13.Text = "Customer Name";
             // 
-            // btn_check_product
-            // 
-            this.btn_check_product.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
-            this.btn_check_product.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btn_check_product.FlatAppearance.BorderSize = 2;
-            this.btn_check_product.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
-            this.btn_check_product.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
-            this.btn_check_product.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_check_product.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_check_product.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.btn_check_product.Location = new System.Drawing.Point(946, 240);
-            this.btn_check_product.Name = "btn_check_product";
-            this.btn_check_product.Size = new System.Drawing.Size(132, 41);
-            this.btn_check_product.TabIndex = 47;
-            this.btn_check_product.Text = "Check Product";
-            this.btn_check_product.UseVisualStyleBackColor = false;
-            this.btn_check_product.Click += new System.EventHandler(this.btn_check_product_Click);
-            // 
-            // btn_check_customer
-            // 
-            this.btn_check_customer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
-            this.btn_check_customer.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btn_check_customer.FlatAppearance.BorderSize = 2;
-            this.btn_check_customer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(111)))), ((int)(((byte)(0)))));
-            this.btn_check_customer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(246)))), ((int)(((byte)(219)))));
-            this.btn_check_customer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_check_customer.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_check_customer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(72)))), ((int)(((byte)(8)))));
-            this.btn_check_customer.Location = new System.Drawing.Point(946, 175);
-            this.btn_check_customer.Name = "btn_check_customer";
-            this.btn_check_customer.Size = new System.Drawing.Size(132, 41);
-            this.btn_check_customer.TabIndex = 48;
-            this.btn_check_customer.Text = "Check Customer";
-            this.btn_check_customer.UseVisualStyleBackColor = false;
-            this.btn_check_customer.Click += new System.EventHandler(this.btn_check_customer_Click);
-            // 
             // productNameDataGridViewTextBoxColumn
             // 
             this.productNameDataGridViewTextBoxColumn.DataPropertyName = "ProductName";
@@ -610,23 +574,21 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.btn_check_customer);
-            this.Controls.Add(this.btn_check_product);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.txt_customername);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txt_productname);
             this.Controls.Add(this.db_dataGridView1);
             this.Controls.Add(this.panel5);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btn_print);
             this.Controls.Add(this.btn_update);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btn_removecart);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.btn_remove);
+            this.Controls.Add(this.btn_remove_selected);
             this.Controls.Add(this.btn_save);
             this.Controls.Add(this.btn_addtocard);
             this.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -650,7 +612,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button btn_remove;
+        private System.Windows.Forms.Button btn_remove_selected;
         private System.Windows.Forms.Button btn_save;
         private System.Windows.Forms.Button btn_addtocard;
         private System.Windows.Forms.TextBox txt_productprice;
@@ -669,11 +631,11 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_removecart;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btn_update;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_print;
         private System.Windows.Forms.TextBox txt_totalprice;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Panel panel5;
@@ -694,7 +656,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn categoryDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource baseProductBindingSource;
-        private System.Windows.Forms.Button btn_check_product;
-        private System.Windows.Forms.Button btn_check_customer;
     }
 }
