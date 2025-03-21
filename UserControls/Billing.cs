@@ -774,7 +774,7 @@ namespace MarketManagement.UserControls
                 {
                     InvoiceDate = dtp_invoicedate.Text,
                     InvoiceNo = txt_invoiceno.Text,
-                    CustomerId = string.IsNullOrEmpty(lbl_customerid.Text) ? txt_customerid.Text : lbl_customerid.Text,
+                    CustomerId = string.IsNullOrEmpty(txt_customerid.Text) ? txt_customerid.Text : txt_customerid.Text,
                     CustomerName = txt_customername.Text,
                     Contact = txt_contact.Text,
                     Address = txt_address.Text,
@@ -1112,19 +1112,51 @@ namespace MarketManagement.UserControls
         // Phương thức để reset form sau khi lưu
         private void ResetForm()
         {
-            // Làm mới các controls
-            txt_invoiceno.Text = GetNextInvoiceNumber(); // Phương thức để lấy số hóa đơn tiếp theo
+            // Làm mới tất cả các controls
+            auto(); // Tạo mã hóa đơn mới
+
+            // Clear tất cả các textbox
             txt_customername.Clear();
+            txt_customerid.Clear();
             txt_contact.Clear();
             txt_address.Clear();
-            lbl_customerid.Text = "";
+            txt_customerid.Text = "";
+
+            // Clear tất cả các trường sản phẩm
+            txt_productId.Clear();
+            txt_productname.Clear();
+            txt_productprice.Clear();
+            txt_productquantity.Clear();
             txt_totalprice.Clear();
 
-            // Làm mới DataGridView nếu có
+            // Reset ngày về ngày hiện tại
+            dtp_invoicedate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+
+            // Làm mới DataGridView - Cách tốt nhất để đảm bảo xóa hoàn toàn dữ liệu
             if (db_dataGridView1 != null)
             {
+                // Xóa DataSource trước
+                db_dataGridView1.DataSource = null;
+
+                // Xóa tất cả các hàng dữ liệu
                 db_dataGridView1.Rows.Clear();
+
+                // Tạo DataTable mới
+                DataTable emptyTable = new DataTable();
+
+                // Tạo các cột cần thiết
+                emptyTable.Columns.Add("ProductID", typeof(string));
+                emptyTable.Columns.Add("ProductName", typeof(string));
+                emptyTable.Columns.Add("Price", typeof(decimal));
+                emptyTable.Columns.Add("Quantity", typeof(int));
+                emptyTable.Columns.Add("TotalPrice", typeof(decimal));
+
+                // Gán DataTable mới làm DataSource
+                db_dataGridView1.DataSource = emptyTable;
             }
+
+            // Focus vào trường đầu tiên để sẵn sàng cho nhập liệu mới
+            txt_customerid.Focus();
         }
 
         // Phương thức lấy số hóa đơn tiếp theo
@@ -1132,7 +1164,7 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                string ordersFilePath = "orders.json";
+                string ordersFilePath = Path.Combine(Application.StartupPath, "Data", "orders.json");
                 if (File.Exists(ordersFilePath))
                 {
                     string jsonData = File.ReadAllText(ordersFilePath);
@@ -1221,7 +1253,7 @@ namespace MarketManagement.UserControls
                     address = txt_address.Text,
                     grandtotal = txt_totalprice.Text,
                     invono = txt_invoiceno.Text,
-                    cusid = lbl_customerid.Text
+                    cusid = txt_customerid.Text
                 };
 
                 string jsonString = System.Text.Json.JsonSerializer.Serialize(invoiceData, new JsonSerializerOptions { WriteIndented = true });
@@ -1288,7 +1320,7 @@ namespace MarketManagement.UserControls
                 // Tìm và xóa đơn hàng theo invoiceno và cusid
                 ordersData.Orders.RemoveAll(order =>
                     order.InvoiceNo == txt_invoiceno.Text &&
-                    order.CustomerId == lbl_customerid.Text);
+                    order.CustomerId == txt_customerid.Text);
 
                 // Ghi lại file JSON
                 string updatedJson = JsonConvert.SerializeObject(ordersData, Formatting.Indented);
