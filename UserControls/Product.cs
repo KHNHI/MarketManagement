@@ -162,5 +162,5 @@ namespace MarketManagement.UseControl
        
     }
        
-    }
+}
 

@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Manager\CategoryManager.cs" />
     <Compile Include="Manager\CustomerManager.cs" />
+    <Compile Include="Manager\SellerManager.cs" />
     <Compile Include="Model\BaseEntity.cs" />
     <Compile Include="BaseManager.cs" />
     <Compile Include="Model\BaseProduct.cs" />
@@ -96,8 +97,9 @@
     <Compile Include="Manager\IManager.cs" />
     <Compile Include="Manager\ProductManager.cs" />
     <Compile Include="Model\Category.cs" />
-    <Compile Include="Model\Customer.cs" />
+    <Compile Include="Model\BaseCustomer.cs" />
     <Compile Include="Model\Order.cs" />
+    <Compile Include="Model\Seller.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\Billing.cs">

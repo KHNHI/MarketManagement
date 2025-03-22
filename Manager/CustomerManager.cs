@@ -10,9 +10,9 @@ using MarketManagement.UseControl;
 
 namespace MarketManagement.Manager
 {
-    public class CustomerManager : IManager<Customer>
+    public class CustomerManager : IManager<BaseCustomer>
     {
-        private List<Customer> customers;
+        private List<BaseCustomer> customers;
         private readonly string filePath;
 
         public CustomerManager()
@@ -21,18 +21,18 @@ namespace MarketManagement.Manager
             customers = LoadFromFile();
         }
 
-        private List<Customer> LoadFromFile()
+        private List<BaseCustomer> LoadFromFile()
         {
             try
             {
                 if (File.Exists(filePath))
                 {
                     string jsonData = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<List<Customer>>(jsonData) ?? new List<Customer>();
+                    return JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData) ?? new List<BaseCustomer>();
                 }
             }
             catch { }
-            return new List<Customer>();
+            return new List<BaseCustomer>();
         }
 
         private void SaveToFile()
@@ -45,7 +45,7 @@ namespace MarketManagement.Manager
             catch { }
         }
 
-        public bool Add(Customer customer)
+        public bool Add(BaseCustomer customer)
         {
             if (customers.Any(c => c.Id == customer.Id))
             {
@@ -56,7 +56,7 @@ namespace MarketManagement.Manager
             return true;
         }
 
-        public bool Update(Customer customer)
+        public bool Update(BaseCustomer customer)
         {
             int index = customers.FindIndex(c => c.Id == customer.Id);
             if (index != -1)
@@ -75,21 +75,21 @@ namespace MarketManagement.Manager
             return true;
         }
 
-        public Customer GetById(string customerId)
+        public BaseCustomer GetById(string customerId)
         {
             return customers.FirstOrDefault(c => c.Id == customerId);
         }
 
-        public List<Customer> GetAll()
+        public List<BaseCustomer> GetAll()
         {
             return customers;
         }
 
         // Các phương thức bổ sung nếu cần
-        public List<Customer> GetVIPCustomers()
+        public List<BaseCustomer> GetVIPCustomers()
         {
-            List<Customer> vipCustomers = new List<Customer>();
-            foreach (Customer customer in customers)
+            List<BaseCustomer> vipCustomers = new List<BaseCustomer>();
+            foreach (BaseCustomer customer in customers)
             {
                 if (customer.IsVIP)
                 {
@@ -99,9 +99,9 @@ namespace MarketManagement.Manager
             return vipCustomers;
         }
 
-        public Customer GetByPhoneNumber(string phoneNumber)
+        public BaseCustomer GetByPhoneNumber(string phoneNumber)
         {
-            foreach (Customer customer in customers)
+            foreach (BaseCustomer customer in customers)
             {
                 if (customer.PhoneNumber == phoneNumber)
                 {
@@ -111,10 +111,10 @@ namespace MarketManagement.Manager
             return null;
         }
 
-        public List<Customer> SearchByName(string searchTerm)
+        public List<BaseCustomer> SearchByName(string searchTerm)
         {
-            List<Customer> results = new List<Customer>();
-            foreach (Customer customer in customers)
+            List<BaseCustomer> results = new List<BaseCustomer>();
+            foreach (BaseCustomer customer in customers)
             {
                 if (customer.CustomerName != null &&
                     customer.CustomerName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)

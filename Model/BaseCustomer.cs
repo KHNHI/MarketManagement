@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MarketManagement.Model
 {
-    public class Customer : BaseEntity, ISerializable
+    public class BaseCustomer : BaseEntity, ISerializable
     {
         public string CustomerName { get; set; }
         public string Address { get; set; }
@@ -16,16 +16,15 @@ namespace MarketManagement.Model
         public string Email { get; set; }
         public bool IsVIP { get; set; }
 
-        public Customer(string name, string address, string phoneNumber, string email, bool isVIP = false)
+        public BaseCustomer()
         {
-            CustomerName = name;
-            Address = address;
-            PhoneNumber = phoneNumber;
-            Email = email;
-            IsVIP = isVIP;
+            Id = GenerateId();
         }
+        public List<BaseCustomer> Customers { get; set; }
+      
+        public string GetId() => Id;
 
-        protected Customer(SerializationInfo info, StreamingContext context)
+        protected BaseCustomer(SerializationInfo info, StreamingContext context)
         {
             Id = info.GetString("Id");
             CustomerName = info.GetString("Name");
