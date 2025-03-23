@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MarketManagement.UserControls;
+using MarketManagement.Model;
 
 namespace MarketManagement.UseControl
 {
@@ -18,12 +20,17 @@ namespace MarketManagement.UseControl
 
         // Thư - 20/03. Thêm vào đề xài trong Billing 
         public List<Product> Products { get; set; }
+        private void LoadCategories()
+        {
+            cboCategory.DataSource = Enum.GetValues(typeof(ProductCategory));
+        }
         public Product()
         {
             InitializeComponent();
             productManager = new ProductManager();
             LoadData();
             SetupDataGridView();
+            LoadCategories(); // Load danh mục vào ComboBox
         }
         private void SetupDataGridView()
         {
@@ -77,10 +84,10 @@ namespace MarketManagement.UseControl
                 txtProductQuantity.Text = product.Quantity.ToString();
                 txtProductPrice.Text = product.Price.ToString();
                 txtProductDiscription.Text = product.Description;
-                txtProductCategory.Text = product.Category;
+                cboCategory.SelectedItem = product.Category; // Gán trực tiếp enum vào ComboBox
             }
         }
-       
+
         private void btnAddProduct_Click(object sender, EventArgs e)
         {
 
@@ -99,17 +106,17 @@ namespace MarketManagement.UseControl
         }
         private void btnUpdateProduct_Click(object sender, EventArgs e)
         {
-            
+
 
             // Enable các controls để sửa
             txtProductName.Enabled = true;
             txtProductQuantity.Enabled = true;
             txtProductPrice.Enabled = true;
             txtProductDiscription.Enabled = true;
-            txtProductCategory.Enabled = true;
+            cboCategory.Enabled = true;
             btnAddProduct.Enabled = true;
 
-            
+
         }
         private void btnDeleteProduct_Click(object sender, EventArgs e)
         {
@@ -117,14 +124,15 @@ namespace MarketManagement.UseControl
             {
                 MessageBox.Show("Please select a product to delete!");
                 return;
-            } else
+            }
+            else
             {
                 productManager.Remove(currentProduct.Id);
                 LoadData();
                 ClearInputs();
             }
 
-            
+
         }
         private BaseProduct GetProductFromInputs()
         {
@@ -138,7 +146,7 @@ namespace MarketManagement.UseControl
                 product.Quantity = int.Parse(txtProductQuantity.Text);
                 product.Price = decimal.Parse(txtProductPrice.Text);
                 product.Description = txtProductDiscription.Text;
-                product.Category = txtProductCategory.Text;
+                product.Category = (ProductCategory)cboCategory.SelectedItem; // Ép kiểu về enum
 
                 return product;
             }
@@ -154,13 +162,13 @@ namespace MarketManagement.UseControl
             txtProductPrice.Clear();
             txtProductQuantity.Clear();
             txtProductDiscription.Clear();
-            //cboCategory.SelectedIndex = -1;
+            cboCategory.SelectedIndex = -1; // Reset ComboBox về trạng thái mặc định
             currentProduct = null;
             currentProduct = null;
         }
 
-       
+
     }
-       
+
 }
 

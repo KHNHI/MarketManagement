@@ -1,4 +1,5 @@
-﻿using MarketManagement.UseControl;
+﻿using MarketManagement.Model;
+using MarketManagement.UseControl;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,65 +10,7 @@ using System.Threading.Tasks;
 
 namespace MarketManagement
 {
-    //public class ProductManager
-    //{
-    //    private List<BaseProduct> products;
-    //    private readonly FileHandler fileHandler;
 
-    //    public ProductManager()
-    //    {
-    //        fileHandler = new FileHandler("products");
-    //        LoadProducts();
-    //    }
-
-    //    private void LoadProducts()
-    //    {
-    //        try
-    //        {
-    //            products = fileHandler.LoadFromFile<List<BaseProduct>>() ?? new List<BaseProduct>();
-    //        }
-    //        catch
-    //        {
-    //            products = new List<BaseProduct>();
-    //        }
-    //    }
-
-    //    public void AddProduct(BaseProduct product)
-    //    {
-    //        if (products.Any(p => p.ProductId == product.ProductId))
-    //        {
-    //            throw new Exception("Product ID already exists!");
-    //        }
-    //        products.Add(product);
-    //        SaveChanges();
-    //    }
-
-    //    public void UpdateProduct(BaseProduct product)
-    //    {
-    //        int index = products.FindIndex(p => p.ProductId == product.ProductId);
-    //        if (index != -1)
-    //        {
-    //            products[index] = product;
-    //            SaveChanges();
-    //        }
-    //    }
-
-    //    public void RemoveProduct(string productId)
-    //    {
-    //        products.RemoveAll(p => p.ProductId == productId);
-    //        SaveChanges();
-    //    }
-
-    //    public List<BaseProduct> GetAllProducts()
-    //    {
-    //        return products;
-    //    }
-
-    //    private void SaveChanges()
-    //    {
-    //        fileHandler.SaveToFile(products);
-    //    }
-    //}
     public class ProductManager : IManager<BaseProduct>
     {
         private List<BaseProduct> products;
@@ -86,7 +29,11 @@ namespace MarketManagement
                 if (File.Exists(filePath))
                 {
                     string jsonData = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData) ?? new List<BaseProduct>();
+                    JsonSerializerSettings settings = new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    };
+                    return JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, settings) ?? new List<BaseProduct>();
                 }
             }
             catch { }
@@ -97,7 +44,12 @@ namespace MarketManagement
         {
             try
             {
-                string jsonData = JsonConvert.SerializeObject(products, Formatting.Indented);
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    Formatting = Formatting.Indented
+                };
+                string jsonData = JsonConvert.SerializeObject(products, settings);
                 File.WriteAllText(filePath, jsonData);
             }
             catch { }
@@ -108,8 +60,12 @@ namespace MarketManagement
             if (product == null || !product.Validate())
                 return false;
 
-            if (products.Any(p => p.Id == product.Id))
-                return false;
+            // Kiểm tra trùng ID
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Id == product.Id)
+                    return false;
+            }
 
             products.Add(product);
             SaveToFile();
@@ -121,7 +77,17 @@ namespace MarketManagement
             if (product == null || !product.Validate())
                 return false;
 
-            int index = products.FindIndex(p => p.Id == product.Id);
+            // Tìm index sản phẩm cần update
+            int index = -1;
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Id == product.Id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
             if (index == -1)
                 return false;
 
@@ -132,7 +98,17 @@ namespace MarketManagement
 
         public bool Remove(string id)
         {
-            int index = products.FindIndex(p => p.Id == id);
+            // Tìm index sản phẩm cần xóa
+            int index = -1;
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Id == id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
             if (index == -1)
                 return false;
 
@@ -143,12 +119,59 @@ namespace MarketManagement
 
         public BaseProduct GetById(string id)
         {
-            return products.FirstOrDefault(p => p.Id == id);
+            // Tìm sản phẩm theo ID
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Id == id)
+                    return products[i];
+            }
+            return null;
         }
 
         public List<BaseProduct> GetAll()
         {
             return products;
         }
+        public List<BaseProduct> GetByCategory(ProductCategory category)
+        {
+            List<BaseProduct> result = new List<BaseProduct>();
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Category == category)
+                {
+                    result.Add(products[i]);
+                }
+            }
+
+            return result;
+        }
+
+        //    // Factory method để tạo sản phẩm mới theo danh mục
+        //    public static BaseProduct CreateProduct(ProductCategory category)
+        //    {
+        //        BaseProduct product = null;
+
+        //        switch (category)
+        //        {
+        //            case ProductCategory.Food:
+        //                product = new FoodProduct();
+        //                break;
+        //            case ProductCategory.Drink:
+        //                product = new DrinkProduct();
+        //                break;
+        //            case ProductCategory.Appliance:
+        //                product = new ApplianceProduct();
+        //                break;
+        //            case ProductCategory.Clothes:
+        //                product = new ClothesProduct();
+        //                break;
+        //            case ProductCategory.Other:
+        //                product = new OtherProduct();
+        //                break;
+        //        }
+
+        //        return product;
+        //    }
     }
 }

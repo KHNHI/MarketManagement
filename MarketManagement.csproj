@@ -99,6 +99,7 @@
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\BaseCustomer.cs" />
     <Compile Include="Model\Order.cs" />
+    <Compile Include="Model\ProductCategory.cs" />
     <Compile Include="Model\Seller.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

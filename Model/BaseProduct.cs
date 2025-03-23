@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketManagement.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,8 +16,8 @@ namespace MarketManagement
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-        public string Category { get; set; }
-        public List<BaseProduct> Products { get; set; }
+        public ProductCategory Category { get; set; }
+        //public List<BaseProduct> Products { get; set; }
         public BaseProduct()
         {
             Id = GenerateId();
@@ -30,17 +31,17 @@ namespace MarketManagement
             Quantity = info.GetInt32("Quantity");
             Price = info.GetDecimal("Price");
             Description = info.GetString("Description");
-            Category = info.GetString("Category");
+            Category = (ProductCategory)info.GetInt32("Category");
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", Id);
             info.AddValue("ProductName", ProductName);
             info.AddValue("Quantity", Quantity);
             info.AddValue("Price", Price);
             info.AddValue("Description", Description);
-            info.AddValue("Category", Category);
+            info.AddValue("Category", (int)Category);
         }
 
         public override bool Validate()
@@ -52,21 +53,18 @@ namespace MarketManagement
 
         public override string GenerateId()
         {
-            if (Category == "Electronic")
+            switch (Category)
             {
-                return "EL" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            }
-            else if (Category == "Food")
-            {
-                return "FO" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            }
-            else if (Category == "Clothes")
-            {
-                return "CL" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            }
-            else
-            {
-                return "O" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                case ProductCategory.Food:
+                    return "FO" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                case ProductCategory.Drink:
+                    return "DR" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                case ProductCategory.Appliance:
+                    return "AP" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                case ProductCategory.Clothes:
+                    return "CL" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                default:
+                    return "OT" + DateTime.Now.ToString("yyyyMMddHHmmss");
             }
         }
     }
