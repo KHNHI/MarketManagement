@@ -89,8 +89,8 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                // Đường dẫn tới file JSON
-                string jsonFilePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                // Đường dẫn tuyệt đối đến file JSON
+                string jsonFilePath = Path.Combine(Application.StartupPath, "products.json");
 
                 // Kiểm tra file tồn tại
                 if (!File.Exists(jsonFilePath))
@@ -102,20 +102,36 @@ namespace MarketManagement.UserControls
                 // Đọc toàn bộ nội dung file JSON
                 string jsonData = File.ReadAllText(jsonFilePath);
 
-                // Chuyển JSON thành danh sách sản phẩm
-                var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonData);
-                List<BaseProduct> allProducts = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonObject["products"].ToString());
-
-                // Danh sách chứa các sản phẩm khớp với Id
-                List<BaseProduct> filteredProducts = new List<BaseProduct>();
-
-                // Duyệt thủ công để tìm sản phẩm có Id khớp
-                foreach (BaseProduct product in allProducts)
+                // Deserialize JSON thành danh sách BaseProduct
+                List<BaseProduct> allProducts = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
                 {
-                    if (product.Id == txt_invoiceno.Text)
+                    TypeNameHandling = TypeNameHandling.Auto
+                });
+
+                if (allProducts == null)
+                {
+                    MessageBox.Show("Failed to load product data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Danh sách chứa tất cả sản phẩm hoặc được lọc theo InvoiceNo
+                List<BaseProduct> filteredProducts;
+
+                // Nếu có ID hóa đơn, lọc theo ID
+                if (!string.IsNullOrEmpty(txt_invoiceno.Text))
+                {
+                    filteredProducts = allProducts.Where(p => p.Id == txt_invoiceno.Text).ToList();
+                    
+                    if (filteredProducts.Count == 0)
                     {
-                        filteredProducts.Add(product);
+                        MessageBox.Show("No products found with Invoice ID: " + txt_invoiceno.Text, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        filteredProducts = allProducts; // Hiển thị tất cả nếu không tìm thấy
                     }
+                }
+                else
+                {
+                    // Hiển thị tất cả sản phẩm
+                    filteredProducts = allProducts;
                 }
 
                 // Hiển thị kết quả trong DataGridView
@@ -126,7 +142,6 @@ namespace MarketManagement.UserControls
                 MessageBox.Show("Error loading data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         private void txt_productquantity_TextChanged(object sender, EventArgs e)
         {
@@ -143,90 +158,63 @@ namespace MarketManagement.UserControls
                 }
                 else
                 {
-                    // Đường dẫn file JSON
-                    string filePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                    // Đường dẫn tuyệt đối đến file JSON
+                    string filePath = Path.Combine(Application.StartupPath, "products.json");
 
                     // Kiểm tra xem file có tồn tại không
                     if (!File.Exists(filePath))
                     {
-                        MessageBox.Show("Không tìm thấy file: " + filePath, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("File not found: " + filePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
                     // Đọc dữ liệu JSON
                     string jsonData = File.ReadAllText(filePath);
 
-                    // Sử dụng JsonDocument để phân tích dữ liệu
-                    using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                    // Deserialize JSON thành danh sách BaseProduct
+                    List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
                     {
-                        JsonElement root = doc.RootElement;
-                        if (root.TryGetProperty("Products", out JsonElement productsElement) &&
-                            productsElement.ValueKind == JsonValueKind.Array)
-                        {
-                            bool foundProduct = false;
-                            int requestedQuantity = 0;
+                        TypeNameHandling = TypeNameHandling.Auto
+                    });
 
-                            // Kiểm tra nếu giá trị nhập vào là số hợp lệ
-                            if (!int.TryParse(txt_productquantity.Text, out requestedQuantity))
+                    if (products != null)
+                    {
+                        // Tìm sản phẩm theo tên
+                        BaseProduct product = products.FirstOrDefault(p => 
+                            p.ProductName != null && 
+                            p.ProductName.Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase));
+
+                        if (product != null)
+                        {
+                            // Kiểm tra giá trị nhập vào là số hợp lệ
+                            if (!int.TryParse(txt_productquantity.Text, out int requestedQuantity))
                             {
-                                MessageBox.Show("Vui lòng nhập số lượng hợp lệ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Please enter a valid quantity", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 txt_productquantity.Clear();
                                 return;
                             }
 
-                            // Tìm sản phẩm trong mảng
-                            foreach (JsonElement product in productsElement.EnumerateArray())
+                            // Kiểm tra số lượng sản phẩm
+                            if (requestedQuantity > product.Quantity)
                             {
-                                if (product.TryGetProperty("ProductName", out JsonElement nameElement) &&
-                                    nameElement.GetString().Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    foundProduct = true;
-
-                                    // Kiểm tra số lượng sản phẩm
-                                    if (product.TryGetProperty("Quantity", out JsonElement quantityElement))
-                                    {
-                                        int availableQuantity = quantityElement.GetInt32();
-
-                                        if (requestedQuantity > availableQuantity)
-                                        {
-                                            MessageBox.Show($"Available quantity is only {availableQuantity}", "Quantity Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                            txt_productquantity.Text = availableQuantity.ToString();
-                                            requestedQuantity = availableQuantity;
-                                        }
-
-                                        // Tính tổng giá
-                                        if (product.TryGetProperty("Price", out JsonElement priceElement))
-                                        {
-                                            decimal price = 0;
-
-                                            if (priceElement.ValueKind == JsonValueKind.Number)
-                                            {
-                                                price = priceElement.GetDecimal();
-                                            }
-                                            else if (priceElement.ValueKind == JsonValueKind.String)
-                                            {
-                                                decimal.TryParse(priceElement.GetString(), out price);
-                                            }
-
-                                            decimal tprice = price * requestedQuantity;
-                                            // Hiển thị không có định dạng tiền tệ
-                                            txt_totalprice.Text = tprice.ToString("0.00");
-                                        }
-                                        break;
-                                    }
-                                }
+                                MessageBox.Show($"Available quantity is only {product.Quantity}", "Quantity Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                txt_productquantity.Text = product.Quantity.ToString();
+                                requestedQuantity = product.Quantity;
                             }
 
-                            if (!foundProduct)
-                            {
-                                MessageBox.Show("Product not found in database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                txt_totalprice.Clear();
-                            }
+                            // Tính tổng giá
+                            decimal tprice = product.Price * requestedQuantity;
+                            txt_totalprice.Text = tprice.ToString("0.00");
                         }
                         else
                         {
-                            MessageBox.Show("Invalid JSON format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Product not found in database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            txt_totalprice.Clear();
                         }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid JSON format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -250,8 +238,8 @@ namespace MarketManagement.UserControls
                     return;
                 }
 
-                // Đường dẫn file JSON
-                string filePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                // Đường dẫn file JSON - sửa để tìm ở thư mục gốc
+                string filePath = Path.Combine(Application.StartupPath, "products.json");
 
                 // Kiểm tra xem file có tồn tại không
                 if (!File.Exists(filePath))
@@ -264,40 +252,46 @@ namespace MarketManagement.UserControls
                 string productId = "";
                 decimal productPrice = 0;
 
-                // Lấy ID sản phẩm từ file JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                // Sử dụng Newtonsoft.Json để tìm ID sản phẩm
+                try
                 {
-                    JsonElement root = doc.RootElement;
-                    if (root.TryGetProperty("Products", out JsonElement productsElement) &&
-                        productsElement.ValueKind == JsonValueKind.Array)
+                    // Nếu đã có ID sản phẩm trong txt_productId, sử dụng nó
+                    if (!string.IsNullOrEmpty(txt_productId.Text))
                     {
-                        foreach (JsonElement product in productsElement.EnumerateArray())
+                        productId = txt_productId.Text;
+                        
+                        // Lấy giá sản phẩm từ textbox
+                        if (!string.IsNullOrEmpty(txt_productprice.Text) && decimal.TryParse(txt_productprice.Text, out decimal price))
                         {
-                            if (product.TryGetProperty("ProductName", out JsonElement nameElement) &&
-                                nameElement.GetString().Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase))
-                            {
-                                // Lấy ID sản phẩm
-                                if (product.TryGetProperty("Id", out JsonElement idElement))
-                                {
-                                    productId = idElement.GetString();
-                                }
+                            productPrice = price;
+                        }
+                    }
+                    else
+                    {
+                        // Deserialize JSON thành danh sách BaseProduct
+                        List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.Auto
+                        });
 
-                                // Lấy giá sản phẩm
-                                if (product.TryGetProperty("Price", out JsonElement priceElement))
-                                {
-                                    if (priceElement.ValueKind == JsonValueKind.Number)
-                                    {
-                                        productPrice = priceElement.GetDecimal();
-                                    }
-                                    else if (priceElement.ValueKind == JsonValueKind.String)
-                                    {
-                                        decimal.TryParse(priceElement.GetString(), out productPrice);
-                                    }
-                                }
-                                break;
+                        if (products != null)
+                        {
+                            // Tìm sản phẩm theo tên
+                            BaseProduct product = products.FirstOrDefault(p => 
+                                p.ProductName != null && 
+                                p.ProductName.Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase));
+
+                            if (product != null)
+                            {
+                                productId = product.Id;
+                                productPrice = product.Price;
                             }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error parsing JSON: " + ex.Message);
                 }
 
                 if (string.IsNullOrEmpty(productId))
@@ -330,6 +324,8 @@ namespace MarketManagement.UserControls
                     {
                         cartTable.Columns.Add("ProductID", typeof(string));
                         cartTable.Columns.Add("ProductName", typeof(string));
+                        cartTable.Columns.Add("Category", typeof(string));
+                        cartTable.Columns.Add("Description", typeof(string));
                         cartTable.Columns.Add("Price", typeof(decimal));
                         cartTable.Columns.Add("Quantity", typeof(int));
                         cartTable.Columns.Add("TotalPrice", typeof(decimal));
@@ -390,6 +386,45 @@ namespace MarketManagement.UserControls
                         newRow["ProductID"] = productId;
 
                     newRow["ProductName"] = txt_productname.Text;
+
+                    // Lấy thông tin Category và Description 
+                    string category = "";
+                    string description = "";
+
+                    // Sử dụng Newtonsoft.Json để tìm thông tin Category và Description
+                    try {
+                        // Deserialize JSON thành danh sách BaseProduct
+                        List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.Auto
+                        });
+
+                        if (products != null)
+                        {
+                            // Tìm sản phẩm theo ID
+                            BaseProduct product = products.FirstOrDefault(p => p.Id == productId);
+                            
+                            if (product != null)
+                            {
+                                // Lấy thông tin Category nếu có
+                                category = product.Category != null ? product.Category.ToString() : "";
+                                
+                                // Lấy thông tin Description nếu có
+                                description = product.Description ?? "";
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error retrieving product details: " + ex.Message);
+                    }
+
+                    if (cartTable.Columns.Contains("Category"))
+                        newRow["Category"] = category;
+
+                    if (cartTable.Columns.Contains("Description"))
+                        newRow["Description"] = description;
+
                     newRow["Price"] = productPrice;
                     newRow["Quantity"] = quantity;
                     newRow["TotalPrice"] = totalPrice;
@@ -410,8 +445,6 @@ namespace MarketManagement.UserControls
                 MessageBox.Show("Error adding product to cart: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
 
         // This function now calculates the total without updating txt_totalprice
         private void CalculateCartTotal()
@@ -543,8 +576,6 @@ namespace MarketManagement.UserControls
             txt_totalprice.Clear();
         }
 
-
-
         private void btn_remove_selected_Click(object sender, EventArgs e)
         {
             try
@@ -592,8 +623,6 @@ namespace MarketManagement.UserControls
             }
         }
 
-
-
         private void txt_customerid_TextChanged(object sender, EventArgs e)
         {
             LookupCustomer(txt_customerid.Text);
@@ -610,12 +639,12 @@ namespace MarketManagement.UserControls
                     txt_address.Clear();
                     txt_customerid.Text = "";
                     // Thêm dòng này để xóa tên khách hàng
-                    txt_customername.Clear(); // hoặc tên control hiển thị tên khách hàng của bạn
+                    txt_customername.Clear(); 
                     return;
                 }
 
-                // Đường dẫn tới file JSON
-                string jsonFilePath = Path.Combine(Application.StartupPath, "Data", "customers.json");
+                // Đường dẫn tuyệt đối đến file JSON
+                string jsonFilePath = Path.Combine(Application.StartupPath, "customers.json");
 
                 // Kiểm tra file tồn tại
                 if (!File.Exists(jsonFilePath))
@@ -627,64 +656,33 @@ namespace MarketManagement.UserControls
                 // Đọc nội dung file JSON
                 string jsonData = File.ReadAllText(jsonFilePath);
 
-                // Sử dụng JsonDocument để xử lý JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                // Deserialize JSON thành danh sách BaseCustomer
+                List<BaseCustomer> customers = JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData, new JsonSerializerSettings
                 {
-                    JsonElement root = doc.RootElement;
+                    TypeNameHandling = TypeNameHandling.Auto
+                });
 
-                    // Kiểm tra cấu trúc JSON với thuộc tính "Customers" (chữ C viết hoa)
-                    if (root.TryGetProperty("Customers", out JsonElement customersElement) &&
-                        customersElement.ValueKind == JsonValueKind.Array)
+                if (customers != null)
+                {
+                    // Tìm khách hàng theo ID
+                    BaseCustomer customer = customers.FirstOrDefault(c => c.Id.Equals(customerId, StringComparison.OrdinalIgnoreCase));
+
+                    if (customer != null)
                     {
-                        foreach (JsonElement customer in customersElement.EnumerateArray())
-                        {
-                            // Sử dụng trường "Id" thay vì "cusid"
-                            if (customer.TryGetProperty("Id", out JsonElement idElement) &&
-                                idElement.GetString().Equals(customerId, StringComparison.OrdinalIgnoreCase))
-                            {
-                                // Tìm thấy khách hàng theo ID
-                                string customerName = "";
-                                string phoneNumber = "";
-                                string address = "";
-
-                                // Lấy thông tin tên khách hàng
-                                if (customer.TryGetProperty("CustomerName", out JsonElement nameElement))
-                                    customerName = nameElement.GetString();
-
-                                // Lấy thông tin số điện thoại
-                                if (customer.TryGetProperty("PhoneNumber", out JsonElement phoneElement))
-                                    phoneNumber = phoneElement.GetString();
-
-                                // Lấy thông tin địa chỉ
-                                if (customer.TryGetProperty("Address", out JsonElement addressElement))
-                                    address = addressElement.GetString();
-
-                                // Cập nhật thông tin vào form
-                                txt_customerid.Text = customerId;
-                                txt_contact.Text = phoneNumber;
-                                txt_address.Text = address;
-
-                                // Thêm dòng này để cập nhật tên khách hàng
-                                txt_customername.Text = customerName; // Thay txt_customerName bằng tên control hiển thị tên khách hàng của bạn
-
-                                return;
-                            }
-                        }
-
-                        // Không tìm thấy khách hàng với ID này
-                        MessageBox.Show($"Customer with ID '{customerId}' not found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        txt_contact.Clear();
-                        txt_address.Clear();
-                        txt_customerid.Text = "";
-
-                        // Thêm dòng này để xóa tên khách hàng khi không tìm thấy
-                        txt_customername.Clear(); // hoặc tên control hiển thị tên khách hàng của bạn
-                    }
-                    else
-                    {
-                        MessageBox.Show("JSON structure does not contain 'Customers' array", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Cập nhật thông tin vào form
+                        txt_customerid.Text = customer.Id;
+                        txt_customername.Text = customer.CustomerName;
+                        txt_contact.Text = customer.PhoneNumber;
+                        txt_address.Text = customer.Address;
+                        return;
                     }
                 }
+
+                // Không tìm thấy khách hàng với ID này
+                MessageBox.Show($"Customer with ID '{customerId}' not found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txt_contact.Clear();
+                txt_address.Clear();
+                txt_customername.Clear();
             }
             catch (Exception ex)
             {
@@ -713,8 +711,8 @@ namespace MarketManagement.UserControls
                 // Luôn tìm kiếm sản phẩm khi ID thay đổi
                 if (!string.IsNullOrWhiteSpace(txt_productId.Text))
                 {
-                    // Đường dẫn tới file JSON
-                    string filePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                    // Đường dẫn tuyệt đối đến file JSON
+                    string filePath = Path.Combine(Application.StartupPath, "products.json");
 
                     // Kiểm tra file tồn tại
                     if (!File.Exists(filePath))
@@ -726,76 +724,42 @@ namespace MarketManagement.UserControls
                     // Đọc nội dung file JSON
                     string jsonData = File.ReadAllText(filePath);
 
-                    // Sử dụng JsonDocument để xử lý JSON
-                    using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                    // Deserialize JSON thành danh sách BaseProduct
+                    List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
                     {
-                        JsonElement root = doc.RootElement;
+                        TypeNameHandling = TypeNameHandling.Auto
+                    });
 
-                        // Kiểm tra cấu trúc JSON với thuộc tính "Products"
-                        if (root.TryGetProperty("Products", out JsonElement productsElement) &&
-                            productsElement.ValueKind == JsonValueKind.Array)
+                    if (products != null)
+                    {
+                        // Tìm sản phẩm theo ID
+                        BaseProduct product = products.FirstOrDefault(p => p.Id.Equals(txt_productId.Text, StringComparison.OrdinalIgnoreCase));
+
+                        if (product != null)
                         {
-                            foreach (JsonElement product in productsElement.EnumerateArray())
-                            {
-                                // Sử dụng trường "Id" để tìm sản phẩm
-                                if (product.TryGetProperty("Id", out JsonElement idElement) &&
-                                    idElement.GetString().Equals(txt_productId.Text, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    // Tìm thấy sản phẩm theo ID
-                                    string productName = "";
-                                    string price = "";
-                                    int availableQuantity = 0;
+                            // Cập nhật thông tin vào form
+                            txt_productname.Text = product.ProductName;
+                            txt_productprice.Text = product.Price.ToString();
 
-                                    // Lấy thông tin tên sản phẩm
-                                    if (product.TryGetProperty("ProductName", out JsonElement nameElement))
-                                        productName = nameElement.GetString();
+                            // Thiết lập số lượng mặc định là 1 nếu có sẵn
+                            if (product.Quantity > 0)
+                                txt_productquantity.Text = "1";
+                            else
+                                txt_productquantity.Text = "0";
 
-                                    // Lấy thông tin giá sản phẩm
-                                    if (product.TryGetProperty("Price", out JsonElement priceElement))
-                                    {
-                                        if (priceElement.ValueKind == JsonValueKind.Number)
-                                            price = priceElement.GetDecimal().ToString();
-                                        else
-                                            price = priceElement.GetString();
-                                    }
+                            // Tính giá trị tổng
+                            decimal totalValue = product.Price;
+                            txt_totalprice.Text = totalValue.ToString("0.00");
 
-                                    // Lấy thông tin số lượng tồn kho
-                                    if (product.TryGetProperty("Quantity", out JsonElement quantityElement))
-                                        availableQuantity = quantityElement.GetInt32();
-
-                                    // Cập nhật thông tin vào form (điều quan trọng là phải cập nhật các text box)
-                                    txt_productname.Text = productName;
-                                    txt_productprice.Text = price;
-
-                                    // Thiết lập số lượng mặc định là 1 nếu có sẵn
-                                    if (availableQuantity > 0)
-                                        txt_productquantity.Text = "1";
-                                    else
-                                        txt_productquantity.Text = "0";
-
-                                    // Tính giá trị tổng
-                                    if (!string.IsNullOrEmpty(price) && availableQuantity > 0)
-                                    {
-                                        decimal priceValue;
-                                        if (decimal.TryParse(price, out priceValue))
-                                        {
-                                            decimal totalValue = priceValue * 1;
-                                            txt_totalprice.Text = totalValue.ToString("0.00");
-                                        }
-                                    }
-
-                                    return; // Tìm thấy sản phẩm, thoát khỏi vòng lặp
-                                }
-                            }
-
-                            // Chỉ xóa các trường khi không tìm thấy và đã nhập đủ ký tự để tìm kiếm
-                            if (txt_productId.Text.Length >= 3)
-                            {
-                                txt_productname.Clear();
-                                txt_productprice.Clear();
-                                txt_productquantity.Clear();
-                                txt_totalprice.Clear();
-                            }
+                            return; // Tìm thấy sản phẩm, thoát khỏi vòng lặp
+                        }
+                        else if (txt_productId.Text.Length >= 3)
+                        {
+                            // Xóa thông tin nếu không tìm thấy sản phẩm và đã nhập đủ ký tự
+                            txt_productname.Clear();
+                            txt_productprice.Clear();
+                            txt_productquantity.Clear();
+                            txt_totalprice.Clear();
                         }
                     }
                 }
@@ -825,8 +789,8 @@ namespace MarketManagement.UserControls
                     return; // Không tìm kiếm nếu tên quá ngắn
                 }
 
-                // Đường dẫn tới file JSON
-                string filePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                // Đường dẫn tuyệt đối đến file JSON
+                string filePath = Path.Combine(Application.StartupPath, "products.json");
 
                 // Kiểm tra file tồn tại
                 if (!File.Exists(filePath))
@@ -837,67 +801,35 @@ namespace MarketManagement.UserControls
                 // Đọc nội dung file JSON
                 string jsonData = File.ReadAllText(filePath);
 
-                // Sử dụng JsonDocument để xử lý JSON
-                using (JsonDocument doc = JsonDocument.Parse(jsonData))
+                // Deserialize JSON thành danh sách BaseProduct
+                List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
                 {
-                    JsonElement root = doc.RootElement;
+                    TypeNameHandling = TypeNameHandling.Auto
+                });
 
-                    // Kiểm tra cấu trúc JSON
-                    if (root.TryGetProperty("Products", out JsonElement productsElement) &&
-                        productsElement.ValueKind == JsonValueKind.Array)
+                if (products != null)
+                {
+                    // Tìm sản phẩm đầu tiên có tên chứa chuỗi tìm kiếm
+                    BaseProduct product = products.FirstOrDefault(p => 
+                        p.ProductName != null && 
+                        p.ProductName.IndexOf(productName, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                    if (product != null)
                     {
-                        foreach (JsonElement product in productsElement.EnumerateArray())
-                        {
-                            if (product.TryGetProperty("ProductName", out JsonElement nameElement) &&
-                                nameElement.GetString().IndexOf(productName, StringComparison.OrdinalIgnoreCase) >= 0)
-                            {
-                                // Tìm thấy sản phẩm có tên chứa chuỗi tìm kiếm
-                                string productId = "";
-                                string price = "";
-                                int availableQuantity = 0;
+                        // Cập nhật thông tin vào form
+                        txt_productId.Text = product.Id;
+                        txt_productname.Text = product.ProductName;
+                        txt_productprice.Text = product.Price.ToString();
 
-                                // Lấy ID sản phẩm
-                                if (product.TryGetProperty("Id", out JsonElement idElement))
-                                    productId = idElement.GetString();
+                        // Thiết lập số lượng mặc định
+                        if (product.Quantity > 0)
+                            txt_productquantity.Text = "1";
+                        else
+                            txt_productquantity.Text = "0";
 
-                                // Lấy giá sản phẩm
-                                if (product.TryGetProperty("Price", out JsonElement priceElement))
-                                {
-                                    if (priceElement.ValueKind == JsonValueKind.Number)
-                                        price = priceElement.GetDecimal().ToString();
-                                    else
-                                        price = priceElement.GetString();
-                                }
-
-                                // Lấy số lượng tồn kho
-                                if (product.TryGetProperty("Quantity", out JsonElement quantityElement))
-                                    availableQuantity = quantityElement.GetInt32();
-
-                                // Cập nhật thông tin
-                                txt_productId.Text = productId;
-                                txt_productname.Text = nameElement.GetString(); // Tên đầy đủ của sản phẩm
-                                txt_productprice.Text = price;
-
-                                // Thiết lập số lượng mặc định
-                                if (availableQuantity > 0)
-                                    txt_productquantity.Text = "1";
-                                else
-                                    txt_productquantity.Text = "0";
-
-                                // Tính tổng giá
-                                if (!string.IsNullOrEmpty(price) && availableQuantity > 0)
-                                {
-                                    decimal priceValue;
-                                    if (decimal.TryParse(price, out priceValue))
-                                    {
-                                        decimal totalValue = priceValue * 1;
-                                        txt_totalprice.Text = totalValue.ToString("0.00");
-                                    }
-                                }
-
-                                return; // Tìm thấy sản phẩm đầu tiên phù hợp và thoát
-                            }
-                        }
+                        // Tính tổng giá
+                        decimal totalValue = product.Price;
+                        txt_totalprice.Text = totalValue.ToString("0.00");
                     }
                 }
             }
@@ -1080,12 +1012,8 @@ namespace MarketManagement.UserControls
                 }
 
                 // Đường dẫn đầy đủ đến file orders.json
-                string dataDirectory = Path.Combine(Application.StartupPath, "Data");
-                // Đảm bảo thư mục Data tồn tại
-                if (!Directory.Exists(dataDirectory))
-                {
-                    Directory.CreateDirectory(dataDirectory);
-                }
+                string dataDirectory = Path.Combine(Application.StartupPath);
+                // Không cần đảm bảo thư mục Data tồn tại nữa vì dùng thư mục gốc
 
                 string ordersFilePath = Path.Combine(dataDirectory, "orders.json");
 
@@ -1254,7 +1182,7 @@ namespace MarketManagement.UserControls
             try
             {
                 // Đường dẫn file JSON sản phẩm
-                string productsFilePath = Path.Combine(Application.StartupPath, "Data", "products.json");
+                string productsFilePath = Path.Combine(Application.StartupPath, "products.json");
 
                 // Kiểm tra file tồn tại
                 if (!File.Exists(productsFilePath))
@@ -1348,6 +1276,8 @@ namespace MarketManagement.UserControls
                 // Tạo các cột cần thiết
                 emptyTable.Columns.Add("ProductID", typeof(string));
                 emptyTable.Columns.Add("ProductName", typeof(string));
+                emptyTable.Columns.Add("Category", typeof(string));
+                emptyTable.Columns.Add("Description", typeof(string));
                 emptyTable.Columns.Add("Price", typeof(decimal));
                 emptyTable.Columns.Add("Quantity", typeof(int));
                 emptyTable.Columns.Add("TotalPrice", typeof(decimal));
@@ -1361,8 +1291,6 @@ namespace MarketManagement.UserControls
         }
 
         // Phương thức lấy số hóa đơn tiếp theo
-
-
         private void btn_update_Click(object sender, EventArgs e)
         {
             try
@@ -1478,9 +1406,6 @@ namespace MarketManagement.UserControls
             }
         }
 
-
-
-
         // Phương thức để lưu thông tin hóa đơn tạm thời (có thể lưu vào file JSON tạm thời)
         private void SaveInvoiceDataToCache(InvoiceData invoiceInfo)
         {
@@ -1496,9 +1421,6 @@ namespace MarketManagement.UserControls
                 // Không ném lại ngoại lệ để không gián đoạn quy trình in
             }
         }
-
-
-
 
         private void db_procardsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -1597,11 +1519,13 @@ namespace MarketManagement.UserControls
             // Tạo các cột cần thiết
             emptyTable.Columns.Add("ProductID", typeof(string));
             emptyTable.Columns.Add("ProductName", typeof(string));
+            emptyTable.Columns.Add("Category", typeof(string));
+            emptyTable.Columns.Add("Description", typeof(string));
             emptyTable.Columns.Add("Price", typeof(decimal));
             emptyTable.Columns.Add("Quantity", typeof(int));
             emptyTable.Columns.Add("TotalPrice", typeof(decimal));
 
-            // Gán DataTable mới làm DataSource
+            // Gán DataTable mới làm DataSource cho DataGridView
             db_dataGridView1.DataSource = emptyTable;
 
             // Cập nhật tổng giá
