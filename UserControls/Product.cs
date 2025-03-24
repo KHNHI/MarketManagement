@@ -28,7 +28,12 @@ namespace MarketManagement.UseControl
         public Product()
         {
             InitializeComponent();
-            productManager = new ProductManager();
+            
+            // Sử dụng Singleton Pattern
+            productManager = ProductManager.Instance;
+            
+            // Đăng ký sự kiện ProductChanged
+            productManager.ProductChanged += ProductManager_ProductChanged;
             
             // Khởi tạo danh sách kích thước cho quần áo
             chklst_sizes.Items.Clear();
@@ -38,7 +43,7 @@ namespace MarketManagement.UseControl
             chklst_sizes.Items.Add("L");
             chklst_sizes.Items.Add("XL");
             chklst_sizes.Items.Add("XXL");
-            
+
             // Khởi tạo các tùy chọn lưu trữ cho thực phẩm
             cboStorage.Items.Clear();
             cboStorage.Items.Add("Room Temperature");
@@ -474,9 +479,26 @@ namespace MarketManagement.UseControl
             currentProduct = null;
         }
 
-      
+        // Xử lý sự kiện khi có thay đổi trong ProductManager
+        private void ProductManager_ProductChanged(object sender, EventArgs e)
+        {
+            // Cập nhật dữ liệu khi có thay đổi
+            LoadData();
+        }
 
-       
+        // Hủy đăng ký sự kiện khi UserControl bị disposed
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        // Hủy đăng ký sự kiện để tránh memory leak
+        //        if (productManager != null)
+        //        {
+        //            productManager.ProductChanged -= ProductManager_ProductChanged;
+        //        }
+        //    }
+        //    base.Dispose(disposing);
+        //}
     }
 
 }

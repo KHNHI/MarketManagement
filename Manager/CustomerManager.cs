@@ -15,10 +15,47 @@ namespace MarketManagement.Manager
         private List<BaseCustomer> customers;
         private readonly string filePath;
 
-        public CustomerManager()
+        // Singleton instance
+        private static CustomerManager instance;
+        // Lock object for thread safety
+        private static readonly object lockObject = new object();
+        
+        // Singleton accessor with thread safety
+        public static CustomerManager Instance
+        {
+            get
+            {
+                // First check without locking
+                if (instance == null)
+                {
+                    // Lock for thread safety
+                    lock (lockObject)
+                    {
+                        // Second check inside lock
+                        if (instance == null)
+                        {
+                            instance = new CustomerManager();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
+        // Event đơn giản
+        public event EventHandler CustomerChanged;
+
+        // Đổi constructor thành private
+        private CustomerManager()
         {
             filePath = "customers.json";
             customers = LoadFromFile();
+        }
+
+        // Phương thức để kích hoạt sự kiện
+        protected virtual void OnCustomerChanged()
+        {
+            CustomerChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private List<BaseCustomer> LoadFromFile()
@@ -47,31 +84,65 @@ namespace MarketManagement.Manager
 
         public bool Add(BaseCustomer customer)
         {
-            if (customers.Any(c => c.Id == customer.Id))
-            {
-                throw new Exception("Customer ID already exists!");
-            }
+            if (customer == null || !customer.Validate())
+                return false;
+
             customers.Add(customer);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnCustomerChanged();
             return true;
         }
 
         public bool Update(BaseCustomer customer)
         {
-            int index = customers.FindIndex(c => c.Id == customer.Id);
-            if (index != -1)
+            if (customer == null || !customer.Validate())
+                return false;
+
+            // Tìm index khách hàng cần update
+            int index = -1;
+            for (int i = 0; i < customers.Count; i++)
             {
-                customers[index] = customer;
-                SaveToFile();
-                return true;
+                if (customers[i].Id == customer.Id)
+                {
+                    index = i;
+                    break;
+                }
             }
-            return false;
+
+            if (index == -1)
+                return false;
+
+            customers[index] = customer;
+            SaveToFile();
+            
+            // Thông báo sự kiện
+            OnCustomerChanged();
+            return true;
         }
 
-        public bool Remove(string customerId)
+        public bool Remove(string id)
         {
-            customers.RemoveAll(c => c.Id == customerId);
+            // Tìm index khách hàng cần xóa
+            int index = -1;
+            for (int i = 0; i < customers.Count; i++)
+            {
+                if (customers[i].Id == id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                return false;
+
+            customers.RemoveAt(index);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnCustomerChanged();
             return true;
         }
 

@@ -15,10 +15,47 @@ namespace MarketManagement.Manager
         private List<Seller> sellers;
         private readonly string filePath;
 
-        public SellerManager()
+        // Singleton instance
+        private static SellerManager instance;
+        // Lock object for thread safety
+        private static readonly object lockObject = new object();
+        
+        // Singleton accessor with thread safety
+        public static SellerManager Instance
+        {
+            get
+            {
+                // First check without locking
+                if (instance == null)
+                {
+                    // Lock for thread safety
+                    lock (lockObject)
+                    {
+                        // Second check inside lock
+                        if (instance == null)
+                        {
+                            instance = new SellerManager();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
+        // Event đơn giản
+        public event EventHandler SellerChanged;
+
+        // Đổi constructor thành private
+        private SellerManager()
         {
             filePath = "sellers.json";
             sellers = LoadFromFile();
+        }
+
+        // Phương thức để kích hoạt sự kiện
+        protected virtual void OnSellerChanged()
+        {
+            SellerChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private List<Seller> LoadFromFile()
@@ -53,6 +90,9 @@ namespace MarketManagement.Manager
             }
             sellers.Add(seller);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnSellerChanged();
             return true;
         }
 
@@ -63,6 +103,9 @@ namespace MarketManagement.Manager
             {
                 sellers[index] = seller;
                 SaveToFile();
+                
+                // Thông báo sự kiện
+                OnSellerChanged();
                 return true;
             }
             return false;
@@ -72,6 +115,9 @@ namespace MarketManagement.Manager
         {
             sellers.RemoveAll(s => s.Id == sellerId);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnSellerChanged();
             return true;
         }
 

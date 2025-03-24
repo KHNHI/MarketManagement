@@ -10,16 +10,52 @@ using System.Threading.Tasks;
 
 namespace MarketManagement
 {
-
     public class ProductManager : IManager<BaseProduct>
     {
         private List<BaseProduct> products;
         private readonly string filePath;
 
-        public ProductManager()
+        // Singleton instance
+        private static ProductManager instance;
+        // Lock object for thread safety
+        private static readonly object lockObject = new object();
+        
+        // Singleton accessor with thread safety
+        public static ProductManager Instance
+        {
+            get
+            {
+                // First check without locking
+                if (instance == null)
+                {
+                    // Lock for thread safety
+                    lock (lockObject)
+                    {
+                        // Second check inside lock
+                        if (instance == null)
+                        {
+                            instance = new ProductManager();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
+        // Event đơn giản
+        public event EventHandler ProductChanged;
+
+        // Constructor là private để đảm bảo Singleton
+        private ProductManager()
         {
             filePath = "products.json";
             products = LoadFromFile();
+        }
+
+        // Phương thức để kích hoạt sự kiện
+        protected virtual void OnProductChanged()
+        {
+            ProductChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private List<BaseProduct> LoadFromFile()
@@ -69,6 +105,9 @@ namespace MarketManagement
 
             products.Add(product);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnProductChanged();
             return true;
         }
 
@@ -93,6 +132,9 @@ namespace MarketManagement
 
             products[index] = product;
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnProductChanged();
             return true;
         }
 
@@ -114,6 +156,9 @@ namespace MarketManagement
 
             products.RemoveAt(index);
             SaveToFile();
+            
+            // Thông báo sự kiện
+            OnProductChanged();
             return true;
         }
 

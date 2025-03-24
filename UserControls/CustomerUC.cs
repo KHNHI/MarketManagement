@@ -21,7 +21,13 @@ namespace MarketManagement.UseControl
         public CustomerUC()
         {
             InitializeComponent();
-            customerManager = new CustomerManager();
+            
+            // Sử dụng Singleton Pattern
+            customerManager = CustomerManager.Instance;
+            
+            // Đăng ký sự kiện CustomerChanged
+            customerManager.CustomerChanged += CustomerManager_CustomerChanged;
+            
             LoadData();
             SetupDataGridView();
         }
@@ -30,11 +36,11 @@ namespace MarketManagement.UseControl
         {
             // Đăng ký sự kiện khi người dùng chọn 1 hàng trong DataGridView
             dvgProduct.SelectionChanged += DvgCustomer_SelectionChanged;
-            btnRemoveProduct.Click += btnDeleteCustomer_Click;
-            btnAddProduct.Click += btnAddCustomer_Click;
-            btnUpdateProduct.Click += btnUpdateCustomer_Click;
-            btnUpdateProduct.Enabled = false;
-            btnRemoveProduct.Enabled = false;
+            btnDeleteCustomer.Click += btnDeleteCustomer_Click;
+            btnAddCustomer.Click += btnAddCustomer_Click;
+            btnUpdateCustomer.Click += btnUpdateCustomer_Click;
+            btnUpdateCustomer.Enabled = false;
+            btnDeleteCustomer.Enabled = false;
         }
 
         public void LoadData()
@@ -60,15 +66,15 @@ namespace MarketManagement.UseControl
                 // Hiển thị thông tin lên các textbox
                 DisplayCustomerInfo(currentCustomer);
                 // Enable nút Edit và Delete
-                btnUpdateProduct.Enabled = true;
-                btnRemoveProduct.Enabled = true;
+                btnUpdateCustomer.Enabled = true;
+                btnDeleteCustomer.Enabled = true;
             }
             else
             {
                 currentCustomer = null;
                 ClearInputs();
-                btnUpdateProduct.Enabled = false;
-                btnRemoveProduct.Enabled = false;
+                btnUpdateCustomer.Enabled = false;
+                btnDeleteCustomer.Enabled = false;
             }
         }
 
@@ -76,12 +82,12 @@ namespace MarketManagement.UseControl
         {
             if (customer != null)
             {
-                txtProductID.Text = customer.Id;
-                txtProductName.Text = customer.CustomerName;
-                txtProductQuantity.Text = customer.Address;
-                txtProductDiscription.Text = customer.PhoneNumber;
-                txtProductPrice.Text = customer.Email;
-                txtProductCategory.Text = customer.IsVIP ? "Yes" : "No";
+                txtCustomerID.Text = customer.Id;
+                txtCustomerName.Text = customer.CustomerName;
+                txtCustomerAddress.Text = customer.Address;
+                txtCustomerPhone.Text = customer.PhoneNumber;
+                txtCustomerEmail.Text = customer.Email;
+                txtCustomerVIP.Text = customer.IsVIP ? "Yes" : "No";
             }
         }
 
@@ -103,12 +109,12 @@ namespace MarketManagement.UseControl
         private void btnUpdateCustomer_Click(object sender, EventArgs e)
         {
             // Enable các controls để sửa
-            txtProductName.Enabled = true;
-            txtProductQuantity.Enabled = true;
-            txtProductPrice.Enabled = true;
-            txtProductDiscription.Enabled = true;
-            txtProductCategory.Enabled = true;
-            btnAddProduct.Enabled = true;
+            txtCustomerName.Enabled = true;
+            txtCustomerAddress.Enabled = true;
+            txtCustomerEmail.Enabled = true;
+            txtCustomerPhone.Enabled = true;
+            txtCustomerVIP.Enabled = true;
+            btnAddCustomer.Enabled = true;
         }
 
         private void btnDeleteCustomer_Click(object sender, EventArgs e)
@@ -134,11 +140,11 @@ namespace MarketManagement.UseControl
                 if (currentCustomer != null)
                     customer.Id = currentCustomer.Id;
 
-                customer.CustomerName = txtProductName.Text;
-                customer.Address = txtProductQuantity.Text;
-                customer.PhoneNumber = txtProductDiscription.Text;
-                customer.Email = txtProductPrice.Text;
-                customer.IsVIP = txtProductCategory.Text.ToLower() == "yes";
+                customer.CustomerName = txtCustomerName.Text;
+                customer.Address = txtCustomerAddress.Text;
+                customer.PhoneNumber = txtCustomerPhone.Text;
+                customer.Email = txtCustomerEmail.Text;
+                customer.IsVIP = txtCustomerVIP.Text.ToLower() == "yes";
 
                 return customer;
             }
@@ -150,12 +156,12 @@ namespace MarketManagement.UseControl
 
         private void ClearInputs()
         {
-            txtProductID.Clear();
-            txtProductName.Clear();
-            txtProductPrice.Clear();
-            txtProductQuantity.Clear();
-            txtProductDiscription.Clear();
-            txtProductCategory.Clear();
+            txtCustomerID.Clear();
+            txtCustomerName.Clear();
+            txtCustomerEmail.Clear();
+            txtCustomerAddress.Clear();
+            txtCustomerPhone.Clear();
+            txtCustomerVIP.Clear();
             currentCustomer = null;
         }
 
@@ -163,5 +169,26 @@ namespace MarketManagement.UseControl
         {
             // Xử lý sự kiện click vào label1 nếu cần
         }
+
+        // Xử lý sự kiện khi có thay đổi trong CustomerManager
+        private void CustomerManager_CustomerChanged(object sender, EventArgs e)
+        {
+            // Cập nhật dữ liệu khi có thay đổi
+            LoadData();
+        }
+
+        // Hủy đăng ký sự kiện khi UserControl bị disposed
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        // Hủy đăng ký sự kiện để tránh memory leak
+        //        if (customerManager != null)
+        //        {
+        //            customerManager.CustomerChanged -= CustomerManager_CustomerChanged;
+        //        }
+        //    }
+        //    base.Dispose(disposing);
+        //}
     }
 }

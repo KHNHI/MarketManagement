@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MarketManagement.Manager;
 
 namespace MarketManagement
 {
@@ -19,8 +20,6 @@ namespace MarketManagement
         UserControls.Dashboard dashboard = new UserControls.Dashboard();
         UserControls.Billing billing = new UserControls.Billing();
         UserControls.Seller seller = new UserControls.Seller();
-        UserControls.Category category = new UserControls.Category();
-
 
         public panelMain()
         {
@@ -137,12 +136,12 @@ namespace MarketManagement
             billing.Dock = DockStyle.Fill;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            panel1.Controls.Clear();
-            panel1.Controls.Add(category);
-            category.Dock = DockStyle.Fill;
-        }
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    panel1.Controls.Clear();
+        //    panel1.Controls.Add(category);
+        //    category.Dock = DockStyle.Fill;
+        //}
 
         private void button1_Click_1(object sender, EventArgs e)
         {

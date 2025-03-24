@@ -81,7 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Manager\CategoryManager.cs" />
     <Compile Include="Manager\CustomerManager.cs" />
     <Compile Include="Manager\SellerManager.cs" />
     <Compile Include="Model\ApplianceProduct.cs" />
@@ -97,7 +96,6 @@
     </Compile>
     <Compile Include="Manager\IManager.cs" />
     <Compile Include="Manager\ProductManager.cs" />
-    <Compile Include="Model\Category.cs" />
     <Compile Include="Model\BaseCustomer.cs" />
     <Compile Include="Model\ClothesProduct.cs" />
     <Compile Include="Model\DrinkProduct.cs" />
@@ -113,12 +111,6 @@
     </Compile>
     <Compile Include="UserControls\Billing.Designer.cs">
       <DependentUpon>Billing.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Category.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControls\Category.Designer.cs">
-      <DependentUpon>Category.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\CustomerUC.cs">
       <SubType>UserControl</SubType>
@@ -171,9 +163,6 @@
     <EmbeddedResource Include="UserControls\Billing.resx">
       <DependentUpon>Billing.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControls\Category.resx">
-      <DependentUpon>Category.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\CustomerUC.resx">
       <DependentUpon>CustomerUC.cs</DependentUpon>
