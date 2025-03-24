@@ -147,31 +147,31 @@ namespace MarketManagement
             return result;
         }
 
-        //    // Factory method để tạo sản phẩm mới theo danh mục
-        //    public static BaseProduct CreateProduct(ProductCategory category)
-        //    {
-        //        BaseProduct product = null;
+        // Factory method để tạo sản phẩm mới theo danh mục
+        public static BaseProduct CreateProduct(ProductCategory category)
+        {
+            BaseProduct product = null;
 
-        //        switch (category)
-        //        {
-        //            case ProductCategory.Food:
-        //                product = new FoodProduct();
-        //                break;
-        //            case ProductCategory.Drink:
-        //                product = new DrinkProduct();
-        //                break;
-        //            case ProductCategory.Appliance:
-        //                product = new ApplianceProduct();
-        //                break;
-        //            case ProductCategory.Clothes:
-        //                product = new ClothesProduct();
-        //                break;
-        //            case ProductCategory.Other:
-        //                product = new OtherProduct();
-        //                break;
-        //        }
+            switch (category)
+            {
+                case ProductCategory.Food:
+                    product = new FoodProduct();
+                    break;
+                case ProductCategory.Drink:
+                    product = new DrinkProduct();
+                    break;
+                case ProductCategory.Appliance:
+                    product = new ApplianceProduct();
+                    break;
+                case ProductCategory.Clothes:
+                    product = new ClothesProduct();
+                    break;
+                case ProductCategory.Other:
+                    product = new OtherProduct();
+                    break;
+            }
 
-        //        return product;
-        //    }
+            return product;
+        }
     }
 }

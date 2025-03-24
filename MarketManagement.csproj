@@ -84,6 +84,7 @@
     <Compile Include="Manager\CategoryManager.cs" />
     <Compile Include="Manager\CustomerManager.cs" />
     <Compile Include="Manager\SellerManager.cs" />
+    <Compile Include="Model\ApplianceProduct.cs" />
     <Compile Include="Model\BaseEntity.cs" />
     <Compile Include="BaseManager.cs" />
     <Compile Include="Model\BaseProduct.cs" />
@@ -98,7 +99,11 @@
     <Compile Include="Manager\ProductManager.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\BaseCustomer.cs" />
+    <Compile Include="Model\ClothesProduct.cs" />
+    <Compile Include="Model\DrinkProduct.cs" />
+    <Compile Include="Model\FoodProduct.cs" />
     <Compile Include="Model\Order.cs" />
+    <Compile Include="Model\OtherProduct.cs" />
     <Compile Include="Model\ProductCategory.cs" />
     <Compile Include="Model\Seller.cs" />
     <Compile Include="Program.cs" />

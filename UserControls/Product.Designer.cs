@@ -47,8 +47,26 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.dvgProduct = new System.Windows.Forms.DataGridView();
             this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.cboStorage = new System.Windows.Forms.ComboBox();
+            this.lbl_storageCondition = new System.Windows.Forms.Label();
+            this.chklst_sizes = new System.Windows.Forms.CheckedListBox();
+            this.txt_volume = new System.Windows.Forms.TextBox();
+            this.lbl_volume = new System.Windows.Forms.Label();
+            this.chk_isAlcoholic = new System.Windows.Forms.CheckBox();
+            this.lbl_isAlcoholic = new System.Windows.Forms.Label();
+            this.txt_material = new System.Windows.Forms.TextBox();
+            this.lbl_material = new System.Windows.Forms.Label();
+            this.lbl_sizes = new System.Windows.Forms.Label();
+            this.txt_brand = new System.Windows.Forms.TextBox();
+            this.lbl_brand = new System.Windows.Forms.Label();
+            this.txt_warranty = new System.Windows.Forms.TextBox();
+            this.lbl_warranty = new System.Windows.Forms.Label();
+            this.dtp_expiryDate = new System.Windows.Forms.DateTimePicker();
+            this.lbl_expiryDate = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -57,7 +75,7 @@
             this.label1.Cursor = System.Windows.Forms.Cursors.Default;
             this.label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label1.Location = new System.Drawing.Point(52, 31);
+            this.label1.Location = new System.Drawing.Point(52, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(126, 27);
             this.label1.TabIndex = 0;
@@ -66,9 +84,9 @@
             // txtProductID
             // 
             this.txtProductID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductID.Location = new System.Drawing.Point(55, 57);
+            this.txtProductID.Location = new System.Drawing.Point(55, 42);
             this.txtProductID.Name = "txtProductID";
-            this.txtProductID.Size = new System.Drawing.Size(356, 35);
+            this.txtProductID.Size = new System.Drawing.Size(250, 35);
             this.txtProductID.TabIndex = 1;
             // 
             // contextMenuStrip1
@@ -80,9 +98,9 @@
             // txtProductName
             // 
             this.txtProductName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductName.Location = new System.Drawing.Point(55, 145);
+            this.txtProductName.Location = new System.Drawing.Point(55, 117);
             this.txtProductName.Name = "txtProductName";
-            this.txtProductName.Size = new System.Drawing.Size(356, 35);
+            this.txtProductName.Size = new System.Drawing.Size(250, 35);
             this.txtProductName.TabIndex = 4;
             // 
             // label2
@@ -90,7 +108,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
-            this.label2.Location = new System.Drawing.Point(52, 120);
+            this.label2.Location = new System.Drawing.Point(52, 88);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(173, 27);
             this.label2.TabIndex = 3;
@@ -99,9 +117,9 @@
             // txtProductPrice
             // 
             this.txtProductPrice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductPrice.Location = new System.Drawing.Point(55, 237);
+            this.txtProductPrice.Location = new System.Drawing.Point(57, 192);
             this.txtProductPrice.Name = "txtProductPrice";
-            this.txtProductPrice.Size = new System.Drawing.Size(356, 35);
+            this.txtProductPrice.Size = new System.Drawing.Size(250, 35);
             this.txtProductPrice.TabIndex = 6;
             // 
             // label3
@@ -109,7 +127,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
-            this.label3.Location = new System.Drawing.Point(52, 212);
+            this.label3.Location = new System.Drawing.Point(52, 162);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(160, 27);
             this.label3.TabIndex = 5;
@@ -121,7 +139,7 @@
             this.label4.Cursor = System.Windows.Forms.Cursors.Default;
             this.label4.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label4.Location = new System.Drawing.Point(473, 212);
+            this.label4.Location = new System.Drawing.Point(476, 167);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(192, 27);
             this.label4.TabIndex = 11;
@@ -130,9 +148,9 @@
             // txtProductDiscription
             // 
             this.txtProductDiscription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductDiscription.Location = new System.Drawing.Point(476, 145);
+            this.txtProductDiscription.Location = new System.Drawing.Point(476, 118);
             this.txtProductDiscription.Name = "txtProductDiscription";
-            this.txtProductDiscription.Size = new System.Drawing.Size(356, 35);
+            this.txtProductDiscription.Size = new System.Drawing.Size(250, 35);
             this.txtProductDiscription.TabIndex = 10;
             // 
             // label5
@@ -140,18 +158,18 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
-            this.label5.Location = new System.Drawing.Point(473, 120);
+            this.label5.Location = new System.Drawing.Point(476, 88);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(129, 27);
+            this.label5.Size = new System.Drawing.Size(138, 27);
             this.label5.TabIndex = 9;
-            this.label5.Text = "Discription";
+            this.label5.Text = "Description";
             // 
             // txtProductQuantity
             // 
             this.txtProductQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductQuantity.Location = new System.Drawing.Point(476, 57);
+            this.txtProductQuantity.Location = new System.Drawing.Point(476, 42);
             this.txtProductQuantity.Name = "txtProductQuantity";
-            this.txtProductQuantity.Size = new System.Drawing.Size(356, 35);
+            this.txtProductQuantity.Size = new System.Drawing.Size(250, 35);
             this.txtProductQuantity.TabIndex = 8;
             // 
             // label6
@@ -159,7 +177,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
-            this.label6.Location = new System.Drawing.Point(473, 31);
+            this.label6.Location = new System.Drawing.Point(473, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(199, 27);
             this.label6.TabIndex = 7;
@@ -225,9 +243,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.panel1.Controls.Add(this.dvgProduct);
-            this.panel1.Location = new System.Drawing.Point(0, 318);
+            this.panel1.Location = new System.Drawing.Point(0, 412);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1117, 341);
+            this.panel1.Size = new System.Drawing.Size(1117, 247);
             this.panel1.TabIndex = 16;
             // 
             // dvgProduct
@@ -247,15 +265,196 @@
             // cboCategory
             // 
             this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(481, 237);
+            this.cboCategory.Location = new System.Drawing.Point(481, 195);
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(351, 35);
             this.cboCategory.TabIndex = 17;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.cboStorage);
+            this.panel2.Controls.Add(this.lbl_storageCondition);
+            this.panel2.Controls.Add(this.chklst_sizes);
+            this.panel2.Controls.Add(this.txt_volume);
+            this.panel2.Controls.Add(this.lbl_volume);
+            this.panel2.Controls.Add(this.chk_isAlcoholic);
+            this.panel2.Controls.Add(this.lbl_isAlcoholic);
+            this.panel2.Controls.Add(this.txt_material);
+            this.panel2.Controls.Add(this.lbl_material);
+            this.panel2.Controls.Add(this.lbl_sizes);
+            this.panel2.Controls.Add(this.txt_brand);
+            this.panel2.Controls.Add(this.lbl_brand);
+            this.panel2.Controls.Add(this.txt_warranty);
+            this.panel2.Controls.Add(this.lbl_warranty);
+            this.panel2.Controls.Add(this.dtp_expiryDate);
+            this.panel2.Controls.Add(this.lbl_expiryDate);
+            this.panel2.Location = new System.Drawing.Point(57, 234);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(775, 172);
+            this.panel2.TabIndex = 18;
+            // 
+            // cboStorage
+            // 
+            this.cboStorage.FormattingEnabled = true;
+            this.cboStorage.Location = new System.Drawing.Point(421, 40);
+            this.cboStorage.Name = "cboStorage";
+            this.cboStorage.Size = new System.Drawing.Size(121, 35);
+            this.cboStorage.TabIndex = 16;
+            // 
+            // lbl_storageCondition
+            // 
+            this.lbl_storageCondition.AutoSize = true;
+            this.lbl_storageCondition.Location = new System.Drawing.Point(416, 11);
+            this.lbl_storageCondition.Name = "lbl_storageCondition";
+            this.lbl_storageCondition.Size = new System.Drawing.Size(218, 27);
+            this.lbl_storageCondition.TabIndex = 15;
+            this.lbl_storageCondition.Text = "Storage Condition";
+            this.lbl_storageCondition.Visible = false;
+            // 
+            // chklst_sizes
+            // 
+            this.chklst_sizes.CheckOnClick = true;
+            this.chklst_sizes.FormattingEnabled = true;
+            this.chklst_sizes.Items.AddRange(new object[] {
+            "XS",
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"});
+            this.chklst_sizes.Location = new System.Drawing.Point(8, 40);
+            this.chklst_sizes.MultiColumn = true;
+            this.chklst_sizes.Name = "chklst_sizes";
+            this.chklst_sizes.Size = new System.Drawing.Size(216, 132);
+            this.chklst_sizes.TabIndex = 14;
+            this.chklst_sizes.Visible = false;
+            // 
+            // txt_volume
+            // 
+            this.txt_volume.Location = new System.Drawing.Point(419, 40);
+            this.txt_volume.Name = "txt_volume";
+            this.txt_volume.Size = new System.Drawing.Size(100, 35);
+            this.txt_volume.TabIndex = 13;
+            this.txt_volume.Visible = false;
+            // 
+            // lbl_volume
+            // 
+            this.lbl_volume.AutoSize = true;
+            this.lbl_volume.Location = new System.Drawing.Point(419, 11);
+            this.lbl_volume.Name = "lbl_volume";
+            this.lbl_volume.Size = new System.Drawing.Size(152, 27);
+            this.lbl_volume.TabIndex = 12;
+            this.lbl_volume.Text = "Volume (ml)";
+            this.lbl_volume.Visible = false;
+            // 
+            // chk_isAlcoholic
+            // 
+            this.chk_isAlcoholic.AutoSize = true;
+            this.chk_isAlcoholic.Location = new System.Drawing.Point(8, 46);
+            this.chk_isAlcoholic.Name = "chk_isAlcoholic";
+            this.chk_isAlcoholic.Size = new System.Drawing.Size(161, 31);
+            this.chk_isAlcoholic.TabIndex = 11;
+            this.chk_isAlcoholic.Text = "checkBox1";
+            this.chk_isAlcoholic.UseVisualStyleBackColor = true;
+            this.chk_isAlcoholic.Visible = false;
+            // 
+            // lbl_isAlcoholic
+            // 
+            this.lbl_isAlcoholic.AutoSize = true;
+            this.lbl_isAlcoholic.Location = new System.Drawing.Point(3, 11);
+            this.lbl_isAlcoholic.Name = "lbl_isAlcoholic";
+            this.lbl_isAlcoholic.Size = new System.Drawing.Size(121, 27);
+            this.lbl_isAlcoholic.TabIndex = 10;
+            this.lbl_isAlcoholic.Text = "Alcoholic";
+            this.lbl_isAlcoholic.Visible = false;
+            // 
+            // txt_material
+            // 
+            this.txt_material.Location = new System.Drawing.Point(419, 41);
+            this.txt_material.Name = "txt_material";
+            this.txt_material.Size = new System.Drawing.Size(100, 35);
+            this.txt_material.TabIndex = 9;
+            this.txt_material.Visible = false;
+            // 
+            // lbl_material
+            // 
+            this.lbl_material.AutoSize = true;
+            this.lbl_material.Location = new System.Drawing.Point(416, 10);
+            this.lbl_material.Name = "lbl_material";
+            this.lbl_material.Size = new System.Drawing.Size(109, 27);
+            this.lbl_material.TabIndex = 8;
+            this.lbl_material.Text = "Material";
+            this.lbl_material.Visible = false;
+            // 
+            // lbl_sizes
+            // 
+            this.lbl_sizes.AutoSize = true;
+            this.lbl_sizes.Location = new System.Drawing.Point(3, 10);
+            this.lbl_sizes.Name = "lbl_sizes";
+            this.lbl_sizes.Size = new System.Drawing.Size(182, 27);
+            this.lbl_sizes.TabIndex = 6;
+            this.lbl_sizes.Text = "Available Sizes";
+            this.lbl_sizes.Visible = false;
+            // 
+            // txt_brand
+            // 
+            this.txt_brand.Location = new System.Drawing.Point(421, 41);
+            this.txt_brand.Name = "txt_brand";
+            this.txt_brand.Size = new System.Drawing.Size(138, 35);
+            this.txt_brand.TabIndex = 5;
+            this.txt_brand.Visible = false;
+            // 
+            // lbl_brand
+            // 
+            this.lbl_brand.AutoSize = true;
+            this.lbl_brand.Location = new System.Drawing.Point(419, 10);
+            this.lbl_brand.Name = "lbl_brand";
+            this.lbl_brand.Size = new System.Drawing.Size(78, 27);
+            this.lbl_brand.TabIndex = 4;
+            this.lbl_brand.Text = "Brand";
+            this.lbl_brand.Visible = false;
+            // 
+            // txt_warranty
+            // 
+            this.txt_warranty.Location = new System.Drawing.Point(8, 41);
+            this.txt_warranty.Name = "txt_warranty";
+            this.txt_warranty.Size = new System.Drawing.Size(105, 35);
+            this.txt_warranty.TabIndex = 3;
+            this.txt_warranty.Visible = false;
+            // 
+            // lbl_warranty
+            // 
+            this.lbl_warranty.AutoSize = true;
+            this.lbl_warranty.Location = new System.Drawing.Point(3, 10);
+            this.lbl_warranty.Name = "lbl_warranty";
+            this.lbl_warranty.Size = new System.Drawing.Size(221, 27);
+            this.lbl_warranty.TabIndex = 2;
+            this.lbl_warranty.Text = "Warranty (months)";
+            this.lbl_warranty.Visible = false;
+            // 
+            // dtp_expiryDate
+            // 
+            this.dtp_expiryDate.Location = new System.Drawing.Point(8, 41);
+            this.dtp_expiryDate.Name = "dtp_expiryDate";
+            this.dtp_expiryDate.Size = new System.Drawing.Size(200, 35);
+            this.dtp_expiryDate.TabIndex = 1;
+            this.dtp_expiryDate.Visible = false;
+            // 
+            // lbl_expiryDate
+            // 
+            this.lbl_expiryDate.AutoSize = true;
+            this.lbl_expiryDate.Location = new System.Drawing.Point(3, 11);
+            this.lbl_expiryDate.Name = "lbl_expiryDate";
+            this.lbl_expiryDate.Size = new System.Drawing.Size(139, 27);
+            this.lbl_expiryDate.TabIndex = 0;
+            this.lbl_expiryDate.Text = "Expiry Date";
+            this.lbl_expiryDate.Visible = false;
             // 
             // Product
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.cboCategory);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnRemoveProduct);
@@ -278,6 +477,8 @@
             this.Size = new System.Drawing.Size(1117, 696);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,5 +504,22 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dvgProduct;
         private System.Windows.Forms.ComboBox cboCategory;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label lbl_expiryDate;
+        private System.Windows.Forms.DateTimePicker dtp_expiryDate;
+        private System.Windows.Forms.Label lbl_warranty;
+        private System.Windows.Forms.TextBox txt_warranty;
+        private System.Windows.Forms.Label lbl_brand;
+        private System.Windows.Forms.TextBox txt_brand;
+        private System.Windows.Forms.TextBox txt_material;
+        private System.Windows.Forms.Label lbl_material;
+        private System.Windows.Forms.Label lbl_sizes;
+        private System.Windows.Forms.TextBox txt_volume;
+        private System.Windows.Forms.Label lbl_volume;
+        private System.Windows.Forms.CheckBox chk_isAlcoholic;
+        private System.Windows.Forms.Label lbl_isAlcoholic;
+        private System.Windows.Forms.CheckedListBox chklst_sizes;
+        private System.Windows.Forms.ComboBox cboStorage;
+        private System.Windows.Forms.Label lbl_storageCondition;
     }
 }
