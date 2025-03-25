@@ -15,15 +15,24 @@ using Newtonsoft.Json.Linq;
 using MarketManagement.Model;
 using System.Text.Json;
 using Microsoft.VisualBasic;
+using MarketManagement.Manager;
 
 namespace MarketManagement.UserControls
 {
     public partial class Billing : UserControl
     {
         public static string invoiceid;
+        private readonly BillManager _billManager;
+        private readonly CustomerManager _customerManager;
+        private Bill _currentBill;
+
         public Billing()
         {
             InitializeComponent();
+            _billManager = new BillManager();
+            _customerManager =CustomerManager.Instance;
+
+            _currentBill = _billManager.CreateNewBill();
 
             // Đăng ký các sự kiện để cập nhật tổng giá
             db_dataGridView1.CellValueChanged += db_dataGridView1_CellValueChanged;
@@ -54,9 +63,9 @@ namespace MarketManagement.UserControls
         private void UC_Billing_Load(object sender, EventArgs e)
         {
             auto();
+            _currentBill = _billManager.CreateNewBill();
 
-            // Không cần đăng ký lại sự kiện nếu đã đăng ký trong constructor
-            // Chỉ đăng ký các sự kiện TextChanged nếu cần thiết
+            // Đăng ký các sự kiện TextChanged
             if (!EventExists(txt_productId, "TextChanged", "txt_productId_TextChanged"))
                 txt_productId.TextChanged += txt_productId_TextChanged;
 
@@ -66,10 +75,324 @@ namespace MarketManagement.UserControls
             if (!EventExists(txt_productquantity, "TextChanged", "txt_productquantity_TextChanged"))
                 txt_productquantity.TextChanged += txt_productquantity_TextChanged;
 
-            // Các sự kiện DataGridView đã được đăng ký trong constructor, không cần đăng ký lại
+            if (!EventExists(txt_customerid, "TextChanged", "txt_customerid_TextChanged"))
+                txt_customerid.TextChanged += txt_customerid_TextChanged;
+
+         
         }
 
-        // Thêm phương thức này để kiểm tra sự kiện đã tồn tại chưa
+      
+
+        private void txt_customerid_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txt_customerid.Text))
+            {
+                var customer = _customerManager.GetById(txt_customerid.Text);
+                if (customer != null)
+                {
+                    txt_customername.Text = customer.CustomerName;
+                    txt_contact.Text = customer.PhoneNumber;
+                    txt_address.Text = customer.Address;
+                }
+                else
+                {
+                    ClearCustomerFields();
+                }
+            }
+            else
+            {
+                ClearCustomerFields();
+            }
+        }
+
+        private void ClearCustomerFields()
+        {
+            txt_customername.Clear();
+            txt_contact.Clear();
+            txt_address.Text = "";
+        }
+
+        private void LoadCustomerById(string customerId)
+        {
+            try
+            {
+                // Nếu không có ID khách hàng, xóa thông tin liên quan
+                if (string.IsNullOrWhiteSpace(customerId))
+                {
+                    ClearCustomerFields();
+                    return;
+                }
+
+                // Đường dẫn tuyệt đối đến file JSON
+                string jsonFilePath = Path.Combine(Application.StartupPath, "customers.json");
+
+                // Kiểm tra file tồn tại
+                if (!File.Exists(jsonFilePath))
+                {
+                    MessageBox.Show($"Customer data file not found at: {jsonFilePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Đọc nội dung file JSON
+                string jsonData = File.ReadAllText(jsonFilePath);
+
+                // Deserialize JSON thành danh sách BaseCustomer
+                List<BaseCustomer> customers = JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto
+                });
+
+                if (customers != null)
+                {
+                    BaseCustomer customer = null;
+                    for (int i = 0; i < customers.Count; i++)
+                    {
+                        if (customers[i].Id.Equals(customerId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            customer = customers[i];
+                            break;
+                        }
+                    }
+
+                    if (customer != null)
+                    {
+                        // Cập nhật thông tin vào form
+                        txt_customername.Text = customer.CustomerName;
+                        txt_contact.Text = customer.PhoneNumber;
+                        txt_address.Text = customer.Address;
+                        return;
+                    }
+                }
+
+                // Không tìm thấy khách hàng với ID này
+                MessageBox.Show($"Customer with ID '{customerId}' not found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClearCustomerFields();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading customer: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ClearCustomerFields();
+            }
+        }
+
+        private void CalculateCartTotal()
+        {
+            decimal total = 0;
+            foreach (DataGridViewRow row in db_dataGridView1.Rows)
+            {
+                if (!row.IsNewRow && row.Cells["TotalPrice"].Value != null)
+                {
+                    if (decimal.TryParse(row.Cells["TotalPrice"].Value.ToString(), out decimal rowTotal))
+                    {
+                        total += rowTotal;
+                    }
+                }
+            }
+            txt_totalprice.Text = total.ToString("N0");
+        }
+
+        private void ClearProductFields()
+        {
+            txt_productId.Clear();
+            txt_productname.Clear();
+            txt_productprice.Clear();
+            txt_productquantity.Clear();
+            txt_totalprice.Clear();
+        }
+
+        private void txt_productquantity_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(txt_productquantity.Text))
+                {
+                    txt_totalprice.Clear();
+                }
+                else if (string.IsNullOrEmpty(txt_productname.Text))
+                {
+                    MessageBox.Show("Vui lòng nhập tên sản phẩm", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txt_productname.Focus();
+                }
+                else
+                {
+                    if (!int.TryParse(txt_productquantity.Text, out int quantity))
+                    {
+                        MessageBox.Show("Vui lòng nhập số lượng hợp lệ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txt_productquantity.Clear();
+                        return;
+                    }
+
+                    var product = _billManager.GetProductByName(txt_productname.Text);
+                        if (product != null)
+                        {
+                        if (!_billManager.ValidateQuantity(txt_productname.Text, quantity))
+                        {
+                            MessageBox.Show($"Số lượng sản phẩm trong kho chỉ còn {product.Quantity}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                txt_productquantity.Text = product.Quantity.ToString();
+                            quantity = product.Quantity;
+                            }
+
+                        decimal totalPrice = _billManager.CalculateTotalPrice(txt_productname.Text, quantity);
+                        txt_totalprice.Text = totalPrice.ToString("N0");
+                        }
+                        else
+                        {
+                        MessageBox.Show("Không tìm thấy sản phẩm trong cơ sở dữ liệu", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            txt_totalprice.Clear();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tính toán giá: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btn_addtocard_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(txt_productname.Text) ||
+                    string.IsNullOrEmpty(txt_productquantity.Text) ||
+                    string.IsNullOrEmpty(txt_totalprice.Text))
+                {
+                    MessageBox.Show("Vui lòng điền đầy đủ thông tin sản phẩm", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var product = _billManager.GetProductByName(txt_productname.Text);
+                if (product != null)
+                {
+                    if (int.TryParse(txt_productquantity.Text, out int quantity))
+                    {
+                        _billManager.AddItemToBill(_currentBill, product.Id, product.ProductName, quantity, product.Price);
+                        UpdateDataGridView();
+                        ClearInputFields();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                MessageBox.Show("Lỗi thêm sản phẩm vào giỏ hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateDataGridView()
+        {
+            try
+            {
+                // Tạo DataTable mới với đầy đủ các cột
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ProductName", typeof(string));
+                dt.Columns.Add("Quantity", typeof(int));
+                dt.Columns.Add("Price", typeof(decimal));
+                dt.Columns.Add("Description", typeof(string));
+                dt.Columns.Add("Category", typeof(string));
+                dt.Columns.Add("Id", typeof(string));
+
+                // Thêm dữ liệu từ _currentBill vào DataTable
+                foreach (var item in _currentBill.Items)
+                {
+                    var product = _billManager.GetProductById(item.ProductId);
+                    if (product != null)
+                    {
+                        dt.Rows.Add(
+                            product.ProductName,
+                            item.Quantity,
+                            product.Price,
+                            product.Description,
+                            product.Category,
+                            product.Id
+                        );
+                    }
+                }
+
+                // Gán DataTable làm DataSource cho DataGridView
+                db_dataGridView1.DataSource = null;
+                db_dataGridView1.DataSource = dt;
+
+                // Đặt tên hiển thị cho các cột
+                if (db_dataGridView1.Columns["ProductName"] != null)
+                    db_dataGridView1.Columns["ProductName"].HeaderText = "Tên sản phẩm";
+                if (db_dataGridView1.Columns["Quantity"] != null)
+                    db_dataGridView1.Columns["Quantity"].HeaderText = "Số lượng";
+                if (db_dataGridView1.Columns["Price"] != null)
+                    db_dataGridView1.Columns["Price"].HeaderText = "Đơn giá";
+                if (db_dataGridView1.Columns["Description"] != null)
+                    db_dataGridView1.Columns["Description"].HeaderText = "Mô tả";
+                if (db_dataGridView1.Columns["Category"] != null)
+                    db_dataGridView1.Columns["Category"].HeaderText = "Danh mục";
+                if (db_dataGridView1.Columns["Id"] != null)
+                    db_dataGridView1.Columns["Id"].HeaderText = "Mã SP";
+
+                // Định dạng số tiền
+                if (db_dataGridView1.Columns["Price"] != null)
+                    db_dataGridView1.Columns["Price"].DefaultCellStyle.Format = "N0";
+
+                // Tính tổng tiền
+                decimal total = _currentBill.Items.Sum(item => item.TotalPrice);
+                txt_totalprice.Text = total.ToString("N0");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating grid: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ClearInputFields()
+        {
+            txt_productId.Clear();
+            txt_productname.Clear();
+            txt_productquantity.Clear();
+            txt_totalprice.Clear();
+        }
+
+        private void btn_save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_currentBill.Items.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng thêm sản phẩm vào hóa đơn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Cập nhật thông tin khách hàng vào hóa đơn
+                _currentBill.CustomerName = txt_customername.Text;
+                _currentBill.CustomerId = txt_customerid.Text;
+                _currentBill.Contact = txt_contact.Text;
+                _currentBill.Address = txt_address.Text;
+
+                foreach (var item in _currentBill.Items)
+                {
+                    _billManager.UpdateProductQuantity(item.ProductId, item.Quantity);
+                }
+
+                _billManager.SaveBill(_currentBill);
+                MessageBox.Show("Lưu hóa đơn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Tạo hóa đơn mới
+                _currentBill = _billManager.CreateNewBill();
+                txt_invoiceno.Text = _currentBill.BillId;
+                UpdateDataGridView();
+                ClearInputFields();
+                ClearCustomerFields();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi lưu hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void db_dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            if (e.Row.DataBoundItem is BillItem item)
+            {
+                _currentBill.RemoveItem(item);
+                UpdateDataGridView();
+            }
+        }
+
         private bool EventExists(Control control, string eventName, string handlerName)
         {
             var eventField = typeof(Control).GetField(eventName,
@@ -85,495 +408,59 @@ namespace MarketManagement.UserControls
             return false;
         }
 
-        private void showdata()
+        private void txt_productId_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                // Đường dẫn tuyệt đối đến file JSON
-                string jsonFilePath = Path.Combine(Application.StartupPath, "products.json");
-
-                // Kiểm tra file tồn tại
-                if (!File.Exists(jsonFilePath))
+                if (!string.IsNullOrWhiteSpace(txt_productId.Text))
                 {
-                    MessageBox.Show("JSON data file not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Đọc toàn bộ nội dung file JSON
-                string jsonData = File.ReadAllText(jsonFilePath);
-
-                // Deserialize JSON thành danh sách BaseProduct
-                List<BaseProduct> allProducts = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                });
-
-                if (allProducts == null)
-                {
-                    MessageBox.Show("Failed to load product data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Danh sách chứa tất cả sản phẩm hoặc được lọc theo InvoiceNo
-                List<BaseProduct> filteredProducts;
-
-                // Nếu có ID hóa đơn, lọc theo ID
-                if (!string.IsNullOrEmpty(txt_invoiceno.Text))
-                {
-                    filteredProducts = allProducts.Where(p => p.Id == txt_invoiceno.Text).ToList();
-                    
-                    if (filteredProducts.Count == 0)
-                    {
-                        MessageBox.Show("No products found with Invoice ID: " + txt_invoiceno.Text, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        filteredProducts = allProducts; // Hiển thị tất cả nếu không tìm thấy
-                    }
-                }
-                else
-                {
-                    // Hiển thị tất cả sản phẩm
-                    filteredProducts = allProducts;
-                }
-
-                // Hiển thị kết quả trong DataGridView
-                db_dataGridView1.DataSource = filteredProducts;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void txt_productquantity_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(txt_productquantity.Text))
-                {
-                    txt_totalprice.Clear();
-                }
-                else if (string.IsNullOrEmpty(txt_productname.Text))
-                {
-                    MessageBox.Show("Please, Enter Product Name", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_productname.Focus();
-                }
-                else
-                {
-                    // Đường dẫn tuyệt đối đến file JSON
-                    string filePath = Path.Combine(Application.StartupPath, "products.json");
-
-                    // Kiểm tra xem file có tồn tại không
-                    if (!File.Exists(filePath))
-                    {
-                        MessageBox.Show("File not found: " + filePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    // Đọc dữ liệu JSON
-                    string jsonData = File.ReadAllText(filePath);
-
-                    // Deserialize JSON thành danh sách BaseProduct
-                    List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.Auto
-                    });
-
-                    if (products != null)
-                    {
-                        // Tìm sản phẩm theo tên
-                        BaseProduct product = products.FirstOrDefault(p => 
-                            p.ProductName != null && 
-                            p.ProductName.Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase));
-
+                    var product = _billManager.GetProductById(txt_productId.Text);
                         if (product != null)
                         {
-                            // Kiểm tra giá trị nhập vào là số hợp lệ
-                            if (!int.TryParse(txt_productquantity.Text, out int requestedQuantity))
-                            {
-                                MessageBox.Show("Please enter a valid quantity", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                txt_productquantity.Clear();
-                                return;
-                            }
+                            txt_productname.Text = product.ProductName;
+                            txt_productprice.Text = product.Price.ToString();
 
-                            // Kiểm tra số lượng sản phẩm
-                            if (requestedQuantity > product.Quantity)
-                            {
-                                MessageBox.Show($"Available quantity is only {product.Quantity}", "Quantity Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                txt_productquantity.Text = product.Quantity.ToString();
-                                requestedQuantity = product.Quantity;
-                            }
+                            if (product.Quantity > 0)
+                                txt_productquantity.Text = "1";
+                            else
+                                txt_productquantity.Text = "0";
 
-                            // Tính tổng giá
-                            decimal tprice = product.Price * requestedQuantity;
-                            txt_totalprice.Text = tprice.ToString("0.00");
+                            decimal totalValue = product.Price;
+                            txt_totalprice.Text = totalValue.ToString("0.00");
                         }
+                        else if (txt_productId.Text.Length >= 3)
+                        {
+                        ClearProductFields();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in txt_productId_TextChanged: " + ex.Message);
+            }
+        }
+
+        private void txt_productname_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txt_productId.Text) && txt_productname.Text.Length >= 3)
+            {
+                var products = _billManager.SearchProductsByName(txt_productname.Text);
+                if (products.Count > 0)
+                {
+                    var product = products[0]; // Lấy sản phẩm đầu tiên tìm thấy
+                        txt_productId.Text = product.Id;
+                        txt_productname.Text = product.ProductName;
+                        txt_productprice.Text = product.Price.ToString();
+
+                        if (product.Quantity > 0)
+                            txt_productquantity.Text = "1";
                         else
-                        {
-                            MessageBox.Show("Product not found in database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            txt_totalprice.Clear();
-                        }
+                            txt_productquantity.Text = "0";
+
+                        decimal totalValue = product.Price;
+                        txt_totalprice.Text = totalValue.ToString("0.00");
                     }
-                    else
-                    {
-                        MessageBox.Show("Invalid JSON format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error calculating price: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Phương thức thêm sản phẩm vào giỏ hàng
-        private void btn_addtocard_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Kiểm tra các thông tin cần thiết
-                if (string.IsNullOrEmpty(txt_productname.Text) ||
-                    string.IsNullOrEmpty(txt_productquantity.Text) ||
-                    string.IsNullOrEmpty(txt_totalprice.Text))
-                {
-                    MessageBox.Show("Please fill all product details", "Incomplete Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Đường dẫn file JSON - sửa để tìm ở thư mục gốc
-                string filePath = Path.Combine(Application.StartupPath, "products.json");
-
-                // Kiểm tra xem file có tồn tại không
-                if (!File.Exists(filePath))
-                {
-                    MessageBox.Show("Không tìm thấy file: " + filePath, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                string jsonData = File.ReadAllText(filePath);
-                string productId = "";
-                decimal productPrice = 0;
-
-                // Sử dụng Newtonsoft.Json để tìm ID sản phẩm
-                try
-                {
-                    // Nếu đã có ID sản phẩm trong txt_productId, sử dụng nó
-                    if (!string.IsNullOrEmpty(txt_productId.Text))
-                    {
-                        productId = txt_productId.Text;
-                        
-                        // Lấy giá sản phẩm từ textbox
-                        if (!string.IsNullOrEmpty(txt_productprice.Text) && decimal.TryParse(txt_productprice.Text, out decimal price))
-                        {
-                            productPrice = price;
-                        }
-                    }
-                    else
-                    {
-                        // Deserialize JSON thành danh sách BaseProduct
-                        List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                        {
-                            TypeNameHandling = TypeNameHandling.Auto
-                        });
-
-                        if (products != null)
-                        {
-                            // Tìm sản phẩm theo tên
-                            BaseProduct product = products.FirstOrDefault(p => 
-                                p.ProductName != null && 
-                                p.ProductName.Equals(txt_productname.Text, StringComparison.OrdinalIgnoreCase));
-
-                            if (product != null)
-                            {
-                                productId = product.Id;
-                                productPrice = product.Price;
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error parsing JSON: " + ex.Message);
-                }
-
-                if (string.IsNullOrEmpty(productId))
-                {
-                    MessageBox.Show("Could not find product ID", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Thêm sản phẩm vào DataTable thay vì trực tiếp vào DataGridView
-                int quantity = int.Parse(txt_productquantity.Text);
-                decimal totalPrice = decimal.Parse(txt_totalprice.Text);
-
-                // Lấy DataTable từ DataSource của DataGridView
-                DataTable cartTable;
-                if (db_dataGridView1.DataSource is DataTable)
-                {
-                    cartTable = (DataTable)db_dataGridView1.DataSource;
-                }
-                else if (db_dataGridView1.DataSource is BindingSource && ((BindingSource)db_dataGridView1.DataSource).DataSource is DataTable)
-                {
-                    cartTable = (DataTable)((BindingSource)db_dataGridView1.DataSource).DataSource;
-                }
-                else
-                {
-                    // Nếu chưa có DataSource, tạo mới DataTable và thiết lập làm DataSource
-                    cartTable = new DataTable();
-
-                    // Tạo các cột cần thiết nếu DataTable mới
-                    if (cartTable.Columns.Count == 0)
-                    {
-                        cartTable.Columns.Add("ProductID", typeof(string));
-                        cartTable.Columns.Add("ProductName", typeof(string));
-                        cartTable.Columns.Add("Category", typeof(string));
-                        cartTable.Columns.Add("Description", typeof(string));
-                        cartTable.Columns.Add("Price", typeof(decimal));
-                        cartTable.Columns.Add("Quantity", typeof(int));
-                        cartTable.Columns.Add("TotalPrice", typeof(decimal));
-                    }
-
-                    // Gán DataTable làm DataSource cho DataGridView
-                    db_dataGridView1.DataSource = cartTable;
-                }
-
-                // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
-                bool productExists = false;
-                DataRow existingRow = null;
-
-                // Tìm theo ProductID
-                if (cartTable.Columns.Contains("ProductID"))
-                {
-                    foreach (DataRow row in cartTable.Rows)
-                    {
-                        if (row["ProductID"].ToString() == productId)
-                        {
-                            productExists = true;
-                            existingRow = row;
-                            break;
-                        }
-                    }
-                }
-                // Nếu không có cột ProductID, tìm theo ProductName
-                else if (cartTable.Columns.Contains("ProductName"))
-                {
-                    foreach (DataRow row in cartTable.Rows)
-                    {
-                        if (row["ProductName"].ToString() == txt_productname.Text)
-                        {
-                            productExists = true;
-                            existingRow = row;
-                            break;
-                        }
-                    }
-                }
-
-                if (productExists && existingRow != null)
-                {
-                    // Cập nhật số lượng và tổng giá nếu sản phẩm đã tồn tại
-                    int currentQuantity = Convert.ToInt32(existingRow["Quantity"]);
-                    decimal currentTotalPrice = Convert.ToDecimal(existingRow["TotalPrice"]);
-
-                    existingRow["Quantity"] = currentQuantity + quantity;
-                    existingRow["TotalPrice"] = currentTotalPrice + totalPrice;
-
-                    MessageBox.Show("Product quantity updated in cart", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    // Thêm sản phẩm mới vào DataTable
-                    DataRow newRow = cartTable.NewRow();
-
-                    if (cartTable.Columns.Contains("ProductID"))
-                        newRow["ProductID"] = productId;
-
-                    newRow["ProductName"] = txt_productname.Text;
-
-                    // Lấy thông tin Category và Description 
-                    string category = "";
-                    string description = "";
-
-                    // Sử dụng Newtonsoft.Json để tìm thông tin Category và Description
-                    try {
-                        // Deserialize JSON thành danh sách BaseProduct
-                        List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                        {
-                            TypeNameHandling = TypeNameHandling.Auto
-                        });
-
-                        if (products != null)
-                        {
-                            // Tìm sản phẩm theo ID
-                            BaseProduct product = products.FirstOrDefault(p => p.Id == productId);
-                            
-                            if (product != null)
-                            {
-                                // Lấy thông tin Category nếu có
-                                category = product.Category != null ? product.Category.ToString() : "";
-                                
-                                // Lấy thông tin Description nếu có
-                                description = product.Description ?? "";
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error retrieving product details: " + ex.Message);
-                    }
-
-                    if (cartTable.Columns.Contains("Category"))
-                        newRow["Category"] = category;
-
-                    if (cartTable.Columns.Contains("Description"))
-                        newRow["Description"] = description;
-
-                    newRow["Price"] = productPrice;
-                    newRow["Quantity"] = quantity;
-                    newRow["TotalPrice"] = totalPrice;
-
-                    cartTable.Rows.Add(newRow);
-
-                    MessageBox.Show("Product added to cart", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                // Tính lại tổng giá trị giỏ hàng
-                CalculateCartTotal();
-
-                // Xóa các ô nhập liệu để người dùng có thể thêm sản phẩm mới
-                ClearProductFields();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding product to cart: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // This function now calculates the total without updating txt_totalprice
-        private void CalculateCartTotal()
-        {
-            try
-            {
-                decimal grandTotal = 0;
-
-                // Kiểm tra nếu DataGridView có dữ liệu
-                if (db_dataGridView1.DataSource != null)
-                {
-                    DataTable cartTable;
-
-                    // Lấy DataTable từ DataSource
-                    if (db_dataGridView1.DataSource is DataTable)
-                    {
-                        cartTable = (DataTable)db_dataGridView1.DataSource;
-                    }
-                    else if (db_dataGridView1.DataSource is BindingSource && ((BindingSource)db_dataGridView1.DataSource).DataSource is DataTable)
-                    {
-                        cartTable = (DataTable)((BindingSource)db_dataGridView1.DataSource).DataSource;
-                    }
-                    else
-                    {
-                        // Nếu không lấy được DataTable, duyệt qua các hàng trực tiếp
-                        foreach (DataGridViewRow row in db_dataGridView1.Rows)
-                        {
-                            if (!row.IsNewRow)
-                            {
-                                // Kiểm tra cột TotalPrice trước
-                                if (db_dataGridView1.Columns.Contains("TotalPrice") && row.Cells["TotalPrice"].Value != null)
-                                {
-                                    decimal rowTotal;
-                                    if (decimal.TryParse(row.Cells["TotalPrice"].Value.ToString(), out rowTotal))
-                                    {
-                                        grandTotal += rowTotal;
-                                    }
-                                }
-                                // Nếu không có cột TotalPrice, tính từ Price và Quantity
-                                else if (db_dataGridView1.Columns.Contains("Price") && db_dataGridView1.Columns.Contains("Quantity") &&
-                                        row.Cells["Price"].Value != null && row.Cells["Quantity"].Value != null)
-                                {
-                                    decimal price;
-                                    int quantity;
-                                    if (decimal.TryParse(row.Cells["Price"].Value.ToString(), out price) &&
-                                        int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity))
-                                    {
-                                        grandTotal += price * quantity;
-                                    }
-                                }
-                            }
-                        }
-
-                        // Cập nhật tổng giá
-                        txt_totalprice.Text = grandTotal.ToString("0.00");
-                        return;
-                    }
-
-                    // Tính tổng từ DataTable
-                    if (cartTable.Columns.Contains("TotalPrice"))
-                    {
-                        foreach (DataRow row in cartTable.Rows)
-                        {
-                            if (row["TotalPrice"] != DBNull.Value)
-                            {
-                                grandTotal += Convert.ToDecimal(row["TotalPrice"]);
-                            }
-                        }
-                    }
-                    else if (cartTable.Columns.Contains("Price") && cartTable.Columns.Contains("Quantity"))
-                    {
-                        foreach (DataRow row in cartTable.Rows)
-                        {
-                            if (row["Price"] != DBNull.Value && row["Quantity"] != DBNull.Value)
-                            {
-                                decimal price = Convert.ToDecimal(row["Price"]);
-                                int quantity = Convert.ToInt32(row["Quantity"]);
-                                grandTotal += price * quantity;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Nếu không có DataSource, duyệt qua các hàng trong DataGridView
-                    foreach (DataGridViewRow row in db_dataGridView1.Rows)
-                    {
-                        if (!row.IsNewRow)
-                        {
-                            if (db_dataGridView1.Columns.Contains("TotalPrice") && row.Cells["TotalPrice"].Value != null)
-                            {
-                                decimal rowTotal;
-                                if (decimal.TryParse(row.Cells["TotalPrice"].Value.ToString(), out rowTotal))
-                                {
-                                    grandTotal += rowTotal;
-                                }
-                            }
-                            else if (db_dataGridView1.Columns.Contains("Price") && db_dataGridView1.Columns.Contains("Quantity") &&
-                                    row.Cells["Price"].Value != null && row.Cells["Quantity"].Value != null)
-                            {
-                                decimal price;
-                                int quantity;
-                                if (decimal.TryParse(row.Cells["Price"].Value.ToString(), out price) &&
-                                    int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity))
-                                {
-                                    grandTotal += price * quantity;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Cập nhật tổng giá
-                txt_totalprice.Text = grandTotal.ToString("0.00");
-            }
-            catch (Exception ex)
-            {
-                // Xử lý ngoại lệ nếu có
-                MessageBox.Show("Error calculating total: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Phương thức xóa các ô nhập liệu
-        private void ClearProductFields()
-        {
-            txt_productname.Clear();
-            txt_productprice.Clear();
-            txt_productquantity.Clear();
-            txt_totalprice.Clear();
         }
 
         private void btn_remove_selected_Click(object sender, EventArgs e)
@@ -616,237 +503,18 @@ namespace MarketManagement.UserControls
                 ClearProductFields();
 
                 MessageBox.Show("Product removed from cart successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
+                    }
+                    catch (Exception ex)
+                    {
                 MessageBox.Show("Error removing product: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void txt_customerid_TextChanged(object sender, EventArgs e)
-        {
-            LookupCustomer(txt_customerid.Text);
-        }
-
-        private void LookupCustomer(string customerId)
+        private void btn_print_Click(object sender, EventArgs e)
         {
             try
             {
-                // Nếu không có ID khách hàng, xóa thông tin liên quan
-                if (string.IsNullOrWhiteSpace(customerId))
-                {
-                    txt_contact.Clear();
-                    txt_address.Clear();
-                    txt_customerid.Text = "";
-                    // Thêm dòng này để xóa tên khách hàng
-                    txt_customername.Clear(); 
-                    return;
-                }
-
-                // Đường dẫn tuyệt đối đến file JSON
-                string jsonFilePath = Path.Combine(Application.StartupPath, "customers.json");
-
-                // Kiểm tra file tồn tại
-                if (!File.Exists(jsonFilePath))
-                {
-                    MessageBox.Show($"Customer data file not found at: {jsonFilePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Đọc nội dung file JSON
-                string jsonData = File.ReadAllText(jsonFilePath);
-
-                // Deserialize JSON thành danh sách BaseCustomer
-                List<BaseCustomer> customers = JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                });
-
-                if (customers != null)
-                {
-                    // Tìm khách hàng theo ID
-                    BaseCustomer customer = customers.FirstOrDefault(c => c.Id.Equals(customerId, StringComparison.OrdinalIgnoreCase));
-
-                    if (customer != null)
-                    {
-                        // Cập nhật thông tin vào form
-                        txt_customerid.Text = customer.Id;
-                        txt_customername.Text = customer.CustomerName;
-                        txt_contact.Text = customer.PhoneNumber;
-                        txt_address.Text = customer.Address;
-                        return;
-                    }
-                }
-
-                // Không tìm thấy khách hàng với ID này
-                MessageBox.Show($"Customer with ID '{customerId}' not found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txt_contact.Clear();
-                txt_address.Clear();
-                txt_customername.Clear();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btn_check_product_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(txt_productId.Text))
-            {
-                // Chỉ cần gọi txt_productId_TextChanged vì nó đã chứa logic tra cứu sản phẩm
-                txt_productId_TextChanged(sender, e);
-            }
-            else
-            {
-                MessageBox.Show("Please enter a product ID first", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txt_productId.Focus();
-            }
-        }
-
-        private void txt_productId_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                // Luôn tìm kiếm sản phẩm khi ID thay đổi
-                if (!string.IsNullOrWhiteSpace(txt_productId.Text))
-                {
-                    // Đường dẫn tuyệt đối đến file JSON
-                    string filePath = Path.Combine(Application.StartupPath, "products.json");
-
-                    // Kiểm tra file tồn tại
-                    if (!File.Exists(filePath))
-                    {
-                        MessageBox.Show($"Product data file not found at: {filePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    // Đọc nội dung file JSON
-                    string jsonData = File.ReadAllText(filePath);
-
-                    // Deserialize JSON thành danh sách BaseProduct
-                    List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.Auto
-                    });
-
-                    if (products != null)
-                    {
-                        // Tìm sản phẩm theo ID
-                        BaseProduct product = products.FirstOrDefault(p => p.Id.Equals(txt_productId.Text, StringComparison.OrdinalIgnoreCase));
-
-                        if (product != null)
-                        {
-                            // Cập nhật thông tin vào form
-                            txt_productname.Text = product.ProductName;
-                            txt_productprice.Text = product.Price.ToString();
-
-                            // Thiết lập số lượng mặc định là 1 nếu có sẵn
-                            if (product.Quantity > 0)
-                                txt_productquantity.Text = "1";
-                            else
-                                txt_productquantity.Text = "0";
-
-                            // Tính giá trị tổng
-                            decimal totalValue = product.Price;
-                            txt_totalprice.Text = totalValue.ToString("0.00");
-
-                            return; // Tìm thấy sản phẩm, thoát khỏi vòng lặp
-                        }
-                        else if (txt_productId.Text.Length >= 3)
-                        {
-                            // Xóa thông tin nếu không tìm thấy sản phẩm và đã nhập đủ ký tự
-                            txt_productname.Clear();
-                            txt_productprice.Clear();
-                            txt_productquantity.Clear();
-                            txt_totalprice.Clear();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Ghi lại lỗi nhưng không hiển thị cho người dùng (để tránh gián đoạn khi nhập liệu)
-                Console.WriteLine("Error in txt_productId_TextChanged: " + ex.Message);
-            }
-        }
-
-        private void txt_productname_TextChanged(object sender, EventArgs e)
-        {
-            // Chỉ tìm kiếm nếu txt_productId trống và ít nhất đã nhập 3 ký tự tên
-            if (string.IsNullOrWhiteSpace(txt_productId.Text) && txt_productname.Text.Length >= 3)
-            {
-                LookupProductByName(txt_productname.Text);
-            }
-        }
-
-        private void LookupProductByName(string productName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(productName) || productName.Length < 3)
-                {
-                    return; // Không tìm kiếm nếu tên quá ngắn
-                }
-
-                // Đường dẫn tuyệt đối đến file JSON
-                string filePath = Path.Combine(Application.StartupPath, "products.json");
-
-                // Kiểm tra file tồn tại
-                if (!File.Exists(filePath))
-                {
-                    return; // Không hiển thị lỗi vì người dùng có thể đang nhập liệu
-                }
-
-                // Đọc nội dung file JSON
-                string jsonData = File.ReadAllText(filePath);
-
-                // Deserialize JSON thành danh sách BaseProduct
-                List<BaseProduct> products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                });
-
-                if (products != null)
-                {
-                    // Tìm sản phẩm đầu tiên có tên chứa chuỗi tìm kiếm
-                    BaseProduct product = products.FirstOrDefault(p => 
-                        p.ProductName != null && 
-                        p.ProductName.IndexOf(productName, StringComparison.OrdinalIgnoreCase) >= 0);
-
-                    if (product != null)
-                    {
-                        // Cập nhật thông tin vào form
-                        txt_productId.Text = product.Id;
-                        txt_productname.Text = product.ProductName;
-                        txt_productprice.Text = product.Price.ToString();
-
-                        // Thiết lập số lượng mặc định
-                        if (product.Quantity > 0)
-                            txt_productquantity.Text = "1";
-                        else
-                            txt_productquantity.Text = "0";
-
-                        // Tính tổng giá
-                        decimal totalValue = product.Price;
-                        txt_totalprice.Text = totalValue.ToString("0.00");
-                    }
-                }
-            }
-            catch
-            {
-                // Không hiển thị lỗi khi người dùng đang nhập liệu
-            }
-        }
-
-        private void btn_save_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Tính lại tổng giá trị giỏ hàng trước khi lưu để đảm bảo dữ liệu chính xác
-                CalculateCartTotal();
-
-                // Kiểm tra thông tin đầu vào
+                // Kiểm tra dữ liệu đầu vào
                 if (string.IsNullOrEmpty(txt_invoiceno.Text))
                 {
                     MessageBox.Show("Please, Enter Invoice No.", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -869,544 +537,94 @@ namespace MarketManagement.UserControls
                 {
                     MessageBox.Show("Please, Enter Customer Address", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txt_address.Focus();
-                    return;
-                }
-                if (string.IsNullOrEmpty(txt_totalprice.Text))
-                {
-                    MessageBox.Show("Please, Enter Product Grand Total", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_totalprice.Focus();
-                    return;
-                }
-
-                // Và thay thế bằng đoạn code sau:
-                decimal grandTotal;
-                if (!decimal.TryParse(txt_totalprice.Text, out grandTotal))
-                {
-                    // Nếu parsing thất bại, thử loại bỏ các ký tự định dạng tiền tệ
-                    string totalPriceText = txt_totalprice.Text.Replace("$", "").Replace(",", "").Replace("C", "");
-                    if (!decimal.TryParse(totalPriceText, out grandTotal))
-                    {
-                        MessageBox.Show("Invalid total price format. Please check the total price.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        txt_totalprice.Focus();
-                        return;
-                    }
-                }
-
-                // Tạo đối tượng đơn hàng mới
-                var newOrder = new Model.Order
-                {
-                    InvoiceDate = dtp_invoicedate.Text,
-                    InvoiceNo = txt_invoiceno.Text,
-                    CustomerId = string.IsNullOrEmpty(txt_customerid.Text) ? txt_customerid.Text : txt_customerid.Text,
-                    CustomerName = txt_customername.Text,
-                    Contact = txt_contact.Text,
-                    Address = txt_address.Text,
-                    GrandTotal = grandTotal,
-                    OrderDetails = new List<Model.OrderDetail>()
-                };
-
-                // Thêm chi tiết sản phẩm vào đơn hàng từ DataGridView
-                if (db_dataGridView1 != null && db_dataGridView1.Rows.Count > 0)
-                {
-                    // Lấy DataTable từ DataSource nếu có
-                    DataTable cartTable = null;
-                    if (db_dataGridView1.DataSource is DataTable)
-                        cartTable = (DataTable)db_dataGridView1.DataSource;
-                    else if (db_dataGridView1.DataSource is BindingSource &&
-                            ((BindingSource)db_dataGridView1.DataSource).DataSource is DataTable)
-                        cartTable = (DataTable)((BindingSource)db_dataGridView1.DataSource).DataSource;
-
-                    // Nếu có DataTable, lấy dữ liệu từ đó
-                    if (cartTable != null)
-                    {
-                        foreach (DataRow row in cartTable.Rows)
-                        {
-                            // Biến để lưu trữ dữ liệu
-                            decimal unitPrice = 0;
-                            int quantity = 0;
-                            string productId = "";
-                            string productName = "";
-                            decimal total = 0;
-
-                            // Lấy dữ liệu từ các cột của DataTable
-                            if (cartTable.Columns.Contains("ProductID") && row["ProductID"] != DBNull.Value)
-                                productId = row["ProductID"].ToString();
-
-                            if (cartTable.Columns.Contains("ProductName") && row["ProductName"] != DBNull.Value)
-                                productName = row["ProductName"].ToString();
-
-                            if (cartTable.Columns.Contains("Price") && row["Price"] != DBNull.Value)
-                                unitPrice = Convert.ToDecimal(row["Price"]);
-
-                            if (cartTable.Columns.Contains("Quantity") && row["Quantity"] != DBNull.Value)
-                                quantity = Convert.ToInt32(row["Quantity"]);
-
-                            if (cartTable.Columns.Contains("TotalPrice") && row["TotalPrice"] != DBNull.Value)
-                                total = Convert.ToDecimal(row["TotalPrice"]);
-                            else
-                                total = unitPrice * quantity;
-
-                            // Đảm bảo số lượng là ít nhất 1
-                            if (quantity <= 0) quantity = 1;
-
-                            // Thêm chi tiết đơn hàng
-                            var detail = new Model.OrderDetail
-                            {
-                                ProductId = productId,
-                                ProductName = productName,
-                                Quantity = quantity,
-                                Price = unitPrice,
-                                Total = total
-                            };
-                            newOrder.OrderDetails.Add(detail);
-                        }
-                    }
-                    else
-                    {
-                        // Nếu không có DataTable, lấy trực tiếp từ DataGridView
-                        foreach (DataGridViewRow row in db_dataGridView1.Rows)
-                        {
-                            if (!row.IsNewRow)
-                            {
-                                // Biến để lưu trữ dữ liệu
-                                decimal unitPrice = 0;
-                                int quantity = 0;
-                                string productId = "";
-                                string productName = "";
-                                decimal total = 0;
-
-                                // Lấy dữ liệu từ các cột của DataGridView
-                                if (db_dataGridView1.Columns.Contains("ProductID") && row.Cells["ProductID"].Value != null)
-                                    productId = row.Cells["ProductID"].Value.ToString();
-
-                                if (db_dataGridView1.Columns.Contains("ProductName") && row.Cells["ProductName"].Value != null)
-                                    productName = row.Cells["ProductName"].Value.ToString();
-
-                                if (db_dataGridView1.Columns.Contains("Price") && row.Cells["Price"].Value != null)
-                                    decimal.TryParse(row.Cells["Price"].Value.ToString(), out unitPrice);
-
-                                if (db_dataGridView1.Columns.Contains("Quantity") && row.Cells["Quantity"].Value != null)
-                                    int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity);
-
-                                if (db_dataGridView1.Columns.Contains("TotalPrice") && row.Cells["TotalPrice"].Value != null)
-                                    decimal.TryParse(row.Cells["TotalPrice"].Value.ToString(), out total);
-                                else
-                                    total = unitPrice * quantity;
-
-                                // Đảm bảo số lượng là ít nhất 1
-                                if (quantity <= 0) quantity = 1;
-
-                                // Thêm chi tiết đơn hàng
-                                var detail = new Model.OrderDetail
-                                {
-                                    ProductId = productId,
-                                    ProductName = productName,
-                                    Quantity = quantity,
-                                    Price = unitPrice,
-                                    Total = total
-                                };
-                                newOrder.OrderDetails.Add(detail);
-                            }
-                        }
-                    }
-                }
-
-                // Đường dẫn đầy đủ đến file orders.json
-                string dataDirectory = Path.Combine(Application.StartupPath);
-                // Không cần đảm bảo thư mục Data tồn tại nữa vì dùng thư mục gốc
-
-                string ordersFilePath = Path.Combine(dataDirectory, "orders.json");
-
-                // Khởi tạo đối tượng OrdersData
-                Model.OrdersData ordersData;
-
-                // Kiểm tra xem file có tồn tại không
-                if (File.Exists(ordersFilePath))
-                {
-                    try
-                    {
-                        string jsonData = File.ReadAllText(ordersFilePath);
-
-                        // Kiểm tra nội dung file
-                        if (string.IsNullOrWhiteSpace(jsonData))
-                        {
-                            // Nếu file rỗng, tạo mới cấu trúc
-                            ordersData = new Model.OrdersData
-                            {
-                                Orders = new List<Model.Order>()
-                            };
-                        }
-                        else
-                        {
-                            try
-                            {
-                                // Cố gắng đọc file với cấu trúc đúng
-                                ordersData = JsonConvert.DeserializeObject<Model.OrdersData>(jsonData);
-
-                                // Nếu null hoặc không có danh sách Orders, tạo mới
-                                if (ordersData == null)
-                                {
-                                    ordersData = new Model.OrdersData
-                                    {
-                                        Orders = new List<Model.Order>()
-                                    };
-                                }
-                                else if (ordersData.Orders == null)
-                                {
-                                    ordersData.Orders = new List<Model.Order>();
-                                }
-                            }
-                            catch
-                            {
-                                // Nếu không thể deserialize trực tiếp, tạo mới cấu trúc
-                                ordersData = new Model.OrdersData
-                                {
-                                    Orders = new List<Model.Order>()
-                                };
-
-                                // Thử đọc JSON dưới dạng JObject
-                                try
-                                {
-                                    JObject jObject = JObject.Parse(jsonData);
-
-                                    // Kiểm tra và chuyển đổi dữ liệu đơn hàng nếu có
-                                    if (jObject["Orders"] != null && jObject["Orders"].Type == JTokenType.Array)
-                                    {
-                                        foreach (var orderToken in jObject["Orders"])
-                                        {
-                                            var order = new Model.Order
-                                            {
-                                                InvoiceDate = orderToken["InvoiceDate"]?.ToString(),
-                                                InvoiceNo = orderToken["InvoiceNo"]?.ToString(),
-                                                CustomerId = orderToken["CustomerId"]?.ToString(),
-                                                CustomerName = orderToken["CustomerName"]?.ToString(),
-                                                Contact = orderToken["Contact"]?.ToString(),
-                                                Address = orderToken["Address"]?.ToString(),
-                                                GrandTotal = orderToken["GrandTotal"]?.ToObject<decimal>() ?? 0,
-                                                OrderDetails = new List<Model.OrderDetail>()
-                                            };
-
-                                            // Chuyển đổi chi tiết đơn hàng
-                                            if (orderToken["OrderDetails"] != null && orderToken["OrderDetails"].Type == JTokenType.Array)
-                                            {
-                                                foreach (var detailToken in orderToken["OrderDetails"])
-                                                {
-                                                    var detail = new Model.OrderDetail
-                                                    {
-                                                        ProductId = detailToken["ProductId"]?.ToString(),
-                                                        ProductName = detailToken["ProductName"]?.ToString(),
-                                                        Quantity = detailToken["Quantity"]?.ToObject<int>() ?? 0,
-                                                        Price = detailToken["Price"]?.ToObject<decimal>() ?? 0,
-                                                        Total = detailToken["Total"]?.ToObject<decimal>() ?? 0
-                                                    };
-                                                    order.OrderDetails.Add(detail);
-                                                }
-                                            }
-
-                                            ordersData.Orders.Add(order);
-                                        }
-                                    }
-                                }
-                                catch
-                                {
-                                    // Nếu vẫn không đọc được, giữ nguyên cấu trúc mới tạo
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Nếu có lỗi khi đọc file, tạo mới cấu trúc
-                        MessageBox.Show("Error reading orders file: " + ex.Message + ". Creating new file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        ordersData = new Model.OrdersData
-                        {
-                            Orders = new List<Model.Order>()
-                        };
-                    }
-                }
-                else
-                {
-                    // Nếu file không tồn tại, tạo mới cấu trúc
-                    ordersData = new Model.OrdersData
-                    {
-                        Orders = new List<Model.Order>()
-                    };
-                }
-
-                // Kiểm tra xem đơn hàng đã tồn tại hay chưa (dựa trên mã hóa đơn)
-                var existingOrderIndex = -1;
-                for (int i = 0; i < ordersData.Orders.Count; i++)
-                {
-                    if (ordersData.Orders[i].InvoiceNo == newOrder.InvoiceNo)
-                    {
-                        existingOrderIndex = i;
-                        break;
-                    }
-                }
-
-                if (existingOrderIndex >= 0)
-                {
-                    // Đơn hàng đã tồn tại, cập nhật nó
-                    ordersData.Orders[existingOrderIndex] = newOrder;
-                    MessageBox.Show("Invoice Updated Successfully...", "Thank You", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    // Đơn hàng mới, thêm vào danh sách
-                    ordersData.Orders.Add(newOrder);
-                    MessageBox.Show("Invoice Saved Successfully...", "Thank You", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                // Lưu file JSON
-                string updatedJsonData = JsonConvert.SerializeObject(ordersData, Formatting.Indented);
-                File.WriteAllText(ordersFilePath, updatedJsonData);
-
-                // Cập nhật số lượng sản phẩm (giảm số lượng trong kho)
-                UpdateProductQuantities(newOrder.OrderDetails);
-
-                // Reset form sau khi lưu
-                ResetForm();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saving invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Phương thức cập nhật số lượng sản phẩm
-        private void UpdateProductQuantities(List<Model.OrderDetail> orderDetails)
-        {
-            if (orderDetails == null || orderDetails.Count == 0)
                 return;
-
-            try
-            {
-                // Đường dẫn file JSON sản phẩm
-                string productsFilePath = Path.Combine(Application.StartupPath, "products.json");
-
-                // Kiểm tra file tồn tại
-                if (!File.Exists(productsFilePath))
-                {
-                    MessageBox.Show("Products file not found. Quantities will not be updated.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Đọc nội dung file JSON
-                string jsonData = File.ReadAllText(productsFilePath);
-                JObject productData = JObject.Parse(jsonData);
-
-                // Lấy danh sách sản phẩm
-                if (productData["Products"] != null && productData["Products"].Type == JTokenType.Array)
-                {
-                    JArray productsArray = (JArray)productData["Products"];
-                    bool isUpdated = false;
-
-                    // Cập nhật số lượng sản phẩm
-                    foreach (var detail in orderDetails)
-                    {
-                        for (int i = 0; i < productsArray.Count; i++)
-                        {
-                            var product = productsArray[i];
-                            if (product["Id"] != null && product["Id"].ToString() == detail.ProductId)
-                            {
-                                // Lấy số lượng hiện tại
-                                int currentQuantity = product["Quantity"]?.Value<int>() ?? 0;
-
-                                // Giảm số lượng theo đơn hàng
-                                int newQuantity = currentQuantity - detail.Quantity;
-                                if (newQuantity < 0) newQuantity = 0;
-
-                                // Cập nhật số lượng mới
-                                product["Quantity"] = newQuantity;
-                                isUpdated = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Lưu lại file nếu có cập nhật
-                    if (isUpdated)
-                    {
-                        string updatedJsonData = productData.ToString(Formatting.Indented);
-                        File.WriteAllText(productsFilePath, updatedJsonData);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating product quantities: " + ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        // Phương thức để reset form sau khi lưu
-        private void ResetForm()
-        {
-            // Làm mới tất cả các controls
-            auto(); // Tạo mã hóa đơn mới
-
-            // Clear tất cả các textbox
-            txt_customername.Clear();
-            txt_customerid.Clear();
-            txt_contact.Clear();
-            txt_address.Clear();
-            txt_customerid.Text = "";
-
-            // Clear tất cả các trường sản phẩm
-            txt_productId.Clear();
-            txt_productname.Clear();
-            txt_productprice.Clear();
-            txt_productquantity.Clear();
-            txt_totalprice.Clear();
-
-            // Reset ngày về ngày hiện tại
-            dtp_invoicedate.Text = DateTime.Now.ToString("dd/MM/yyyy");
-
-            // Làm mới DataGridView - Cách tốt nhất để đảm bảo xóa hoàn toàn dữ liệu
-            if (db_dataGridView1 != null)
-            {
-                // Xóa DataSource trước
-                db_dataGridView1.DataSource = null;
-
-                // Xóa tất cả các hàng dữ liệu
-                db_dataGridView1.Rows.Clear();
-
-                // Tạo DataTable mới
-                DataTable emptyTable = new DataTable();
-
-                // Tạo các cột cần thiết
-                emptyTable.Columns.Add("ProductID", typeof(string));
-                emptyTable.Columns.Add("ProductName", typeof(string));
-                emptyTable.Columns.Add("Category", typeof(string));
-                emptyTable.Columns.Add("Description", typeof(string));
-                emptyTable.Columns.Add("Price", typeof(decimal));
-                emptyTable.Columns.Add("Quantity", typeof(int));
-                emptyTable.Columns.Add("TotalPrice", typeof(decimal));
-
-                // Gán DataTable mới làm DataSource
-                db_dataGridView1.DataSource = emptyTable;
-            }
-
-            // Focus vào trường đầu tiên để sẵn sàng cho nhập liệu mới
-            txt_customerid.Focus();
-        }
-
-        // Phương thức lấy số hóa đơn tiếp theo
-        private void btn_update_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Kiểm tra các thông tin cần thiết
-                if (string.IsNullOrWhiteSpace(txt_productname.Text))
-                {
-                    MessageBox.Show("Please select a product first", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(txt_productquantity.Text))
-                {
-                    MessageBox.Show("Please enter quantity", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    txt_productquantity.Focus();
-                    return;
-                }
-
-                // Kiểm tra số lượng hợp lệ
-                if (!int.TryParse(txt_productquantity.Text, out int quantity) || quantity <= 0)
-                {
-                    MessageBox.Show("Please enter a valid quantity (greater than 0)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_productquantity.Focus();
-                    return;
                 }
 
                 // Kiểm tra DataGridView có dữ liệu không
-                if (db_dataGridView1.DataSource == null || db_dataGridView1.Rows.Count == 0)
+                if (db_dataGridView1.Rows.Count <= 1 || db_dataGridView1.DataSource == null) // 1 row mới không có dữ liệu
                 {
-                    MessageBox.Show("No products in cart to update", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cart is empty. Please add products first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                bool productUpdated = false;
-                DataTable cartTable = null;
+                // Hiện hộp thoại xác nhận
+                DialogResult result = MessageBox.Show("Do you want to print the invoice?", "Confirmation",
+                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                // Lấy DataTable từ DataSource
-                if (db_dataGridView1.DataSource is DataTable)
+                if (result == DialogResult.Yes)
                 {
-                    cartTable = (DataTable)db_dataGridView1.DataSource;
-                }
-                else if (db_dataGridView1.DataSource is BindingSource &&
-                        ((BindingSource)db_dataGridView1.DataSource).DataSource is DataTable)
-                {
-                    cartTable = (DataTable)((BindingSource)db_dataGridView1.DataSource).DataSource;
-                }
-
-                if (cartTable != null)
-                {
-                    // Tìm sản phẩm trong DataTable theo tên sản phẩm
-                    foreach (DataRow row in cartTable.Rows)
-                    {
-                        if (row["ProductName"].ToString() == txt_productname.Text)
-                        {
-                            // Lấy giá sản phẩm
-                            decimal price = Convert.ToDecimal(row["Price"]);
-
-                            // Cập nhật số lượng
-                            row["Quantity"] = quantity;
-
-                            // Cập nhật tổng giá
-                            row["TotalPrice"] = price * quantity;
-
-                            productUpdated = true;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    // Nếu không thể lấy DataTable, tìm trực tiếp trong DataGridView
-                    foreach (DataGridViewRow row in db_dataGridView1.Rows)
-                    {
-                        if (!row.IsNewRow && row.Cells["ProductName"].Value != null &&
-                            row.Cells["ProductName"].Value.ToString() == txt_productname.Text)
-                        {
-                            // Lấy giá sản phẩm
-                            decimal price = 0;
-                            if (row.Cells["Price"].Value != null &&
-                                decimal.TryParse(row.Cells["Price"].Value.ToString(), out price))
-                            {
-                                // Cập nhật số lượng
-                                row.Cells["Quantity"].Value = quantity;
-
-                                // Cập nhật tổng giá
-                                row.Cells["TotalPrice"].Value = price * quantity;
-
-                                productUpdated = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (productUpdated)
-                {
-                    // Cập nhật tổng giá giỏ hàng
-                    CalculateCartTotal();
-
-                    MessageBox.Show($"Product quantity updated to {quantity}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Xóa các trường để nhập sản phẩm mới
-                    ClearProductFields();
-                }
-                else
-                {
-                    MessageBox.Show("Product not found in cart. Add it first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Tải và hiển thị hóa đơn
+                    loadinvoice();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error updating product: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error printing invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Phương thức để lưu thông tin hóa đơn tạm thời (có thể lưu vào file JSON tạm thời)
+        private void loadinvoice()
+        {
+            try
+            {
+                // Kiểm tra xem có sản phẩm nào trong giỏ hàng không
+                if (_currentBill.Items.Count == 0)
+                {
+                    MessageBox.Show("No products in the cart to print invoice.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Tạo đối tượng chứa thông tin hóa đơn
+                InvoiceData invoiceInfo = new InvoiceData()
+                {
+                    InvoiceNo = txt_invoiceno.Text,
+                    InvoiceDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                    CustomerName = txt_customername.Text,
+                    CustomerContact = txt_contact.Text,
+                    CustomerAddress = txt_address.Text,
+                    GrandTotal = _currentBill.Items.Sum(item => item.TotalPrice),
+                    Products = ConvertBillItemsToDataTable(_currentBill.Items)
+                };
+
+                // Lưu thông tin hóa đơn vào cache
+                SaveInvoiceDataToCache(invoiceInfo);
+
+                // Tạo và hiển thị form hóa đơn
+                frm_invoice invoiceForm = new frm_invoice();
+                invoiceForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error preparing invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private DataTable ConvertBillItemsToDataTable(List<BillItem> items)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("STT", typeof(int));
+            dt.Columns.Add("ProductID", typeof(string));
+            dt.Columns.Add("ProductName", typeof(string));
+            dt.Columns.Add("ProductQuantity", typeof(int));
+            dt.Columns.Add("ProductPrice", typeof(decimal));
+            dt.Columns.Add("TotalAmount", typeof(decimal));
+
+            int stt = 1;
+            foreach (var item in items)
+            {
+                dt.Rows.Add(
+                    stt++,
+                    item.ProductId,
+                    item.ProductName,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.TotalPrice
+                );
+            }
+
+            return dt;
+        }
+
         private void SaveInvoiceDataToCache(InvoiceData invoiceInfo)
         {
             try
@@ -1452,7 +670,6 @@ namespace MarketManagement.UserControls
             }
         }
 
-        // Thêm phương thức này để xử lý sự kiện thay đổi trong DataGridView
         private void db_dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             // Kiểm tra nếu thay đổi trong cột "Quantity" hoặc "Price"
@@ -1488,13 +705,6 @@ namespace MarketManagement.UserControls
             }
         }
 
-        // Thêm phương thức này để xử lý khi người dùng xóa một hàng
-        private void db_dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            // Cập nhật tổng giá sau khi xóa hàng
-            CalculateCartTotal();
-        }
-
         private void ClearCart()
         {
             // Xóa DataSource trước
@@ -1516,20 +726,19 @@ namespace MarketManagement.UserControls
             // Tạo DataTable mới
             DataTable emptyTable = new DataTable();
 
-            // Tạo các cột cần thiết
-            emptyTable.Columns.Add("ProductID", typeof(string));
+            // Tạo các cột cần thiết cho giỏ hàng
             emptyTable.Columns.Add("ProductName", typeof(string));
-            emptyTable.Columns.Add("Category", typeof(string));
-            emptyTable.Columns.Add("Description", typeof(string));
-            emptyTable.Columns.Add("Price", typeof(decimal));
             emptyTable.Columns.Add("Quantity", typeof(int));
-            emptyTable.Columns.Add("TotalPrice", typeof(decimal));
+            emptyTable.Columns.Add("Price", typeof(decimal));
+            emptyTable.Columns.Add("Description", typeof(string));
+            emptyTable.Columns.Add("Category", typeof(string));
+            emptyTable.Columns.Add("Id", typeof(string));
 
             // Gán DataTable mới làm DataSource cho DataGridView
             db_dataGridView1.DataSource = emptyTable;
 
             // Cập nhật tổng giá
-            txt_totalprice.Text = "0.00";
+            txt_totalprice.Text = "0";
         }
 
         private void btn_removecart_Click(object sender, EventArgs e)
@@ -1545,343 +754,14 @@ namespace MarketManagement.UserControls
             }
         }
 
-        private void btn_print_Click(object sender, EventArgs e)
+        private void UpdateTotalAmount()
         {
-            try
+            decimal total = 0;
+            for (int i = 0; i < _currentBill.Items.Count; i++)
             {
-                // Kiểm tra dữ liệu đầu vào
-                if (string.IsNullOrEmpty(txt_invoiceno.Text))
-                {
-                    MessageBox.Show("Please, Enter Invoice No.", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_invoiceno.Focus();
-                    return;
-                }
-                if (string.IsNullOrEmpty(txt_customername.Text))
-                {
-                    MessageBox.Show("Please, Enter Customer Name", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_customername.Focus();
-                    return;
-                }
-                if (string.IsNullOrEmpty(txt_contact.Text))
-                {
-                    MessageBox.Show("Please, Enter Customer Contact", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_contact.Focus();
-                    return;
-                }
-                if (string.IsNullOrEmpty(txt_address.Text))
-                {
-                    MessageBox.Show("Please, Enter Customer Address", "Try Again", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txt_address.Focus();
-                    return;
-                }
-
-                // Kiểm tra DataGridView có dữ liệu không
-                if (db_dataGridView1.Rows.Count <= 1 || db_dataGridView1.DataSource == null) // 1 row mới không có dữ liệu
-                {
-                    MessageBox.Show("Cart is empty. Please add products first.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Hiện hộp thoại xác nhận
-                DialogResult result = MessageBox.Show("Do you want to print the invoice?", "Confirmation",
-                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    // Tải và hiển thị hóa đơn
-                    loadinvoice();
-                }
+                total += _currentBill.Items[i].TotalPrice;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error printing invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void loadinvoice()
-        {
-            try
-            {
-                // Lưu ID hóa đơn hiện tại vào biến tĩnh để form hóa đơn có thể truy cập
-                invoiceid = txt_invoiceno.Text;
-
-                // Kiểm tra xem có sản phẩm nào trong giỏ hàng không
-                if (db_dataGridView1.Rows.Count <= 1 || db_dataGridView1.DataSource == null)
-                {
-                    MessageBox.Show("No products in the cart to print invoice.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Tạo DataTable chứa thông tin của hóa đơn hiện tại
-                DataTable invoiceData = new DataTable();
-                invoiceData.Columns.Add("ProductID", typeof(string));
-                invoiceData.Columns.Add("ProductName", typeof(string));
-                invoiceData.Columns.Add("ProductQuantity", typeof(int));
-                invoiceData.Columns.Add("ProductPrice", typeof(decimal));
-                invoiceData.Columns.Add("TotalAmount", typeof(decimal));
-
-                // Thêm dữ liệu từ giỏ hàng vào DataTable hóa đơn
-                decimal grandTotal = 0;
-
-                // Xác định vị trí của các cột trong DataGridView hoặc DataTable
-                int idColumnIndex = -1;
-                int nameColumnIndex = -1;
-                int quantityColumnIndex = -1;
-                int priceColumnIndex = -1;
-                int totalPriceColumnIndex = -1;
-
-                // Kiểm tra nguồn dữ liệu
-                if (db_dataGridView1.DataSource is DataTable dataTable)
-                {
-                    // Nếu nguồn dữ liệu là DataTable, tìm kiếm các cột trong DataTable
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        string columnName = dataTable.Columns[i].ColumnName;
-
-                        if (columnName.Equals("Id", StringComparison.OrdinalIgnoreCase) ||
-                            columnName.Equals("ProductID", StringComparison.OrdinalIgnoreCase))
-                        {
-                            idColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Name", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("ProductName", StringComparison.OrdinalIgnoreCase))
-                        {
-                            nameColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Quantity", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("Qty", StringComparison.OrdinalIgnoreCase))
-                        {
-                            quantityColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Price", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("UnitPrice", StringComparison.OrdinalIgnoreCase))
-                        {
-                            priceColumnIndex = i;
-                        }
-                        else if (columnName.Equals("TotalPrice", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("Total", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("TotalAmount", StringComparison.OrdinalIgnoreCase))
-                        {
-                            totalPriceColumnIndex = i;
-                        }
-                    }
-
-                    // Kiểm tra xem tìm thấy cột tên sản phẩm không
-                    if (nameColumnIndex == -1)
-                    {
-                        // Nếu không tìm thấy cột tên sản phẩm, sử dụng cột đầu tiên hoặc tạo dữ liệu mẫu
-                        foreach (DataRow row in dataTable.Rows)
-                        {
-                            // Lấy dữ liệu từ DataTable
-                            string productId = (idColumnIndex >= 0 && row[idColumnIndex] != DBNull.Value)
-                                ? row[idColumnIndex].ToString() : "N/A";
-
-                            string productName = "Unknown Product"; // Vì không tìm thấy cột tên sản phẩm
-
-                            int quantity = 1;
-                            if (quantityColumnIndex >= 0 && row[quantityColumnIndex] != DBNull.Value)
-                            {
-                                int.TryParse(row[quantityColumnIndex].ToString(), out quantity);
-                            }
-
-                            decimal price = 0;
-                            if (priceColumnIndex >= 0 && row[priceColumnIndex] != DBNull.Value)
-                            {
-                                decimal.TryParse(row[priceColumnIndex].ToString(), out price);
-                            }
-
-                            decimal totalPrice = 0;
-                            if (totalPriceColumnIndex >= 0 && row[totalPriceColumnIndex] != DBNull.Value)
-                            {
-                                decimal.TryParse(row[totalPriceColumnIndex].ToString(), out totalPrice);
-                            }
-                            else
-                            {
-                                totalPrice = price * quantity;
-                            }
-
-                            // Thêm dữ liệu vào bảng hóa đơn
-                            DataRow newRow = invoiceData.NewRow();
-                            newRow["ProductID"] = productId;
-                            newRow["ProductName"] = productName;
-                            newRow["ProductQuantity"] = quantity;
-                            newRow["ProductPrice"] = price;
-                            newRow["TotalAmount"] = totalPrice;
-
-                            invoiceData.Rows.Add(newRow);
-                            grandTotal += totalPrice;
-                        }
-                    }
-                    else
-                    {
-                        // Nếu tìm thấy cột tên sản phẩm, xử lý bình thường
-                        foreach (DataRow row in dataTable.Rows)
-                        {
-                            string productId = (idColumnIndex >= 0 && row[idColumnIndex] != DBNull.Value)
-                                ? row[idColumnIndex].ToString() : "N/A";
-
-                            string productName = (nameColumnIndex >= 0 && row[nameColumnIndex] != DBNull.Value)
-                                ? row[nameColumnIndex].ToString() : "Unknown Product";
-
-                            int quantity = 1;
-                            if (quantityColumnIndex >= 0 && row[quantityColumnIndex] != DBNull.Value)
-                            {
-                                int.TryParse(row[quantityColumnIndex].ToString(), out quantity);
-                            }
-
-                            decimal price = 0;
-                            if (priceColumnIndex >= 0 && row[priceColumnIndex] != DBNull.Value)
-                            {
-                                decimal.TryParse(row[priceColumnIndex].ToString(), out price);
-                            }
-
-                            decimal totalPrice = 0;
-                            if (totalPriceColumnIndex >= 0 && row[totalPriceColumnIndex] != DBNull.Value)
-                            {
-                                decimal.TryParse(row[totalPriceColumnIndex].ToString(), out totalPrice);
-                            }
-                            else
-                            {
-                                totalPrice = price * quantity;
-                            }
-
-                            // Thêm dữ liệu vào bảng hóa đơn
-                            DataRow newRow = invoiceData.NewRow();
-                            newRow["ProductID"] = productId;
-                            newRow["ProductName"] = productName;
-                            newRow["ProductQuantity"] = quantity;
-                            newRow["ProductPrice"] = price;
-                            newRow["TotalAmount"] = totalPrice;
-
-                            invoiceData.Rows.Add(newRow);
-                            grandTotal += totalPrice;
-                        }
-                    }
-                }
-                else
-                {
-                    // Nếu nguồn dữ liệu không phải DataTable, tìm kiếm trực tiếp trong DataGridView
-                    for (int i = 0; i < db_dataGridView1.Columns.Count; i++)
-                    {
-                        string columnName = db_dataGridView1.Columns[i].Name;
-
-                        if (columnName.Equals("Id", StringComparison.OrdinalIgnoreCase) ||
-                            columnName.Equals("ProductID", StringComparison.OrdinalIgnoreCase))
-                        {
-                            idColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Name", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("ProductName", StringComparison.OrdinalIgnoreCase))
-                        {
-                            nameColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Quantity", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("Qty", StringComparison.OrdinalIgnoreCase))
-                        {
-                            quantityColumnIndex = i;
-                        }
-                        else if (columnName.Equals("Price", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("UnitPrice", StringComparison.OrdinalIgnoreCase))
-                        {
-                            priceColumnIndex = i;
-                        }
-                        else if (columnName.Equals("TotalPrice", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("Total", StringComparison.OrdinalIgnoreCase) ||
-                                columnName.Equals("TotalAmount", StringComparison.OrdinalIgnoreCase))
-                        {
-                            totalPriceColumnIndex = i;
-                        }
-                    }
-
-                    // Xử lý trường hợp không tìm thấy cột tên sản phẩm
-                    if (nameColumnIndex == -1 && db_dataGridView1.Columns.Count > 0)
-                    {
-                        // Sử dụng cột đầu tiên có dữ liệu làm cột tên sản phẩm
-                        for (int i = 0; i < db_dataGridView1.Columns.Count; i++)
-                        {
-                            if (db_dataGridView1.Rows.Count > 0 &&
-                                db_dataGridView1.Rows[0].Cells[i].Value != null &&
-                                !string.IsNullOrEmpty(db_dataGridView1.Rows[0].Cells[i].Value.ToString()))
-                            {
-                                nameColumnIndex = i;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Duyệt qua các hàng trong DataGridView
-                    foreach (DataGridViewRow row in db_dataGridView1.Rows)
-                    {
-                        if (!row.IsNewRow)
-                        {
-                            string productId = (idColumnIndex >= 0 && row.Cells[idColumnIndex].Value != null)
-                                ? row.Cells[idColumnIndex].Value.ToString() : "N/A";
-
-                            string productName = "Unknown Product";
-                            if (nameColumnIndex >= 0 && row.Cells[nameColumnIndex].Value != null)
-                            {
-                                productName = row.Cells[nameColumnIndex].Value.ToString();
-                            }
-
-                            int quantity = 1;
-                            if (quantityColumnIndex >= 0 && row.Cells[quantityColumnIndex].Value != null)
-                            {
-                                int.TryParse(row.Cells[quantityColumnIndex].Value.ToString(), out quantity);
-                            }
-
-                            decimal price = 0;
-                            if (priceColumnIndex >= 0 && row.Cells[priceColumnIndex].Value != null)
-                            {
-                                decimal.TryParse(row.Cells[priceColumnIndex].Value.ToString(), out price);
-                            }
-
-                            decimal totalPrice = 0;
-                            if (totalPriceColumnIndex >= 0 && row.Cells[totalPriceColumnIndex].Value != null)
-                            {
-                                decimal.TryParse(row.Cells[totalPriceColumnIndex].Value.ToString(), out totalPrice);
-                            }
-                            else
-                            {
-                                totalPrice = price * quantity;
-                            }
-
-                            // Thêm dữ liệu vào bảng hóa đơn
-                            DataRow newRow = invoiceData.NewRow();
-                            newRow["ProductID"] = productId;
-                            newRow["ProductName"] = productName;
-                            newRow["ProductQuantity"] = quantity;
-                            newRow["ProductPrice"] = price;
-                            newRow["TotalAmount"] = totalPrice;
-
-                            invoiceData.Rows.Add(newRow);
-                            grandTotal += totalPrice;
-                        }
-                    }
-                }
-
-                // Tạo đối tượng chứa thông tin hóa đơn để truyền sang form hóa đơn
-                InvoiceData invoiceInfo = new InvoiceData()
-                {
-                    InvoiceNo = txt_invoiceno.Text,
-                    InvoiceDate = dtp_invoicedate.Text,
-                    CustomerName = txt_customername.Text,
-                    CustomerContact = txt_contact.Text,
-                    CustomerAddress = txt_address.Text,
-                    GrandTotal = grandTotal,
-                    Products = invoiceData
-                };
-
-                // Lưu thông tin hóa đơn vào cache để form hóa đơn có thể truy cập
-                SaveInvoiceDataToCache(invoiceInfo);
-
-                // Tạo và hiển thị form hóa đơn
-                frm_invoice invoiceForm = new frm_invoice();
-                invoiceForm.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error preparing invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            txt_totalprice.Text = total.ToString("N0");
         }
     }
 
@@ -1897,3 +777,4 @@ namespace MarketManagement.UserControls
         public DataTable Products { get; set; }
     }
 }
+

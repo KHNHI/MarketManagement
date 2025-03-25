@@ -28,14 +28,40 @@ namespace MarketManagement.UseControl
             // Đăng ký sự kiện CustomerChanged
             customerManager.CustomerChanged += CustomerManager_CustomerChanged;
             
-            LoadData();
+            // Đăng ký sự kiện Load của UserControl
+            this.Load += CustomerUC_Load;
+            
             SetupDataGridView();
+            ClearInputs();
+        }
+
+        private void CustomerUC_Load(object sender, EventArgs e)
+        {
+            LoadData();
+            if (dvgProduct.Rows.Count > 0)
+            {
+                dvgProduct.ClearSelection();
+                dvgProduct.CurrentCell = null;
+            }
         }
 
         private void SetupDataGridView()
         {
+            // Prevent auto selection of first row
+            dvgProduct.MultiSelect = false;
+            dvgProduct.AllowUserToAddRows = false;
+            dvgProduct.EnableHeadersVisualStyles = false;
+            dvgProduct.ReadOnly = true;
+            dvgProduct.AutoGenerateColumns = true;
+            dvgProduct.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            
+            // Thêm thuộc tính này để ngăn tự động chọn
+            dvgProduct.TabStop = false;
+            
             // Đăng ký sự kiện khi người dùng chọn 1 hàng trong DataGridView
             dvgProduct.SelectionChanged += DvgCustomer_SelectionChanged;
+            dvgProduct.DataBindingComplete += DvgProduct_DataBindingComplete;
+            
             btnDeleteCustomer.Click += btnDeleteCustomer_Click;
             btnAddCustomer.Click += btnAddCustomer_Click;
             btnUpdateCustomer.Click += btnUpdateCustomer_Click;
@@ -43,10 +69,20 @@ namespace MarketManagement.UseControl
             btnDeleteCustomer.Enabled = false;
         }
 
+        private void DvgProduct_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dvgProduct.ClearSelection();
+            dvgProduct.CurrentCell = null;
+        }
+
         public void LoadData()
         {
+            // Tạm thời gỡ event handler để tránh trigger trong quá trình load
+            dvgProduct.SelectionChanged -= DvgCustomer_SelectionChanged;
+            
             dvgProduct.DataSource = null;
             dvgProduct.DataSource = customerManager.GetAll();
+            
             foreach (DataGridViewColumn col in dvgProduct.Columns)
             {
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -55,6 +91,13 @@ namespace MarketManagement.UseControl
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
+            
+            // Clear selection after loading data
+            dvgProduct.ClearSelection();
+            dvgProduct.CurrentCell = null;
+            
+            // Gắn lại event handler
+            dvgProduct.SelectionChanged += DvgCustomer_SelectionChanged;
         }
 
         private void DvgCustomer_SelectionChanged(object sender, EventArgs e)
@@ -68,6 +111,8 @@ namespace MarketManagement.UseControl
                 // Enable nút Edit và Delete
                 btnUpdateCustomer.Enabled = true;
                 btnDeleteCustomer.Enabled = true;
+                // Disable nút Add khi đang ở chế độ Update
+                btnAddCustomer.Enabled = false;
             }
             else
             {
@@ -75,6 +120,7 @@ namespace MarketManagement.UseControl
                 ClearInputs();
                 btnUpdateCustomer.Enabled = false;
                 btnDeleteCustomer.Enabled = false;
+                btnAddCustomer.Enabled = true;
             }
         }
 
@@ -82,39 +128,60 @@ namespace MarketManagement.UseControl
         {
             if (customer != null)
             {
-                txtCustomerID.Text = customer.Id;
+                //txtCustomerID.Text = customer.Id;
                 txtCustomerName.Text = customer.CustomerName;
                 txtCustomerAddress.Text = customer.Address;
                 txtCustomerPhone.Text = customer.PhoneNumber;
                 txtCustomerEmail.Text = customer.Email;
-                txtCustomerVIP.Text = customer.IsVIP ? "Yes" : "No";
+                chkbIsVip.Checked = customer.IsVIP;
             }
         }
 
         private void btnAddCustomer_Click(object sender, EventArgs e)
         {
+            // Nếu đang trong chế độ update thì không cho phép Add
+            if (currentCustomer != null)
+            {
+                MessageBox.Show("Please clear the form before adding a new customer!");
+                return;
+            }
+
             BaseCustomer customer = GetCustomerFromInputs();
             if (customer != null)
             {
-                if (currentCustomer == null)
-                    customerManager.Add(customer);
-                else
-                    customerManager.Update(customer);
-
+                customerManager.Add(customer);
                 LoadData();
                 ClearInputs();
+                // Select empty row
+                if (dvgProduct.Rows.Count > 0)
+                {
+                    dvgProduct.ClearSelection();
+                    dvgProduct.CurrentCell = null;
+                }
             }
         }
 
         private void btnUpdateCustomer_Click(object sender, EventArgs e)
         {
-            // Enable các controls để sửa
-            txtCustomerName.Enabled = true;
-            txtCustomerAddress.Enabled = true;
-            txtCustomerEmail.Enabled = true;
-            txtCustomerPhone.Enabled = true;
-            txtCustomerVIP.Enabled = true;
-            btnAddCustomer.Enabled = true;
+            if (currentCustomer == null)
+            {
+                MessageBox.Show("Please select a customer to update!");
+                return;
+            }
+
+            BaseCustomer customer = GetCustomerFromInputs();
+            if (customer != null)
+            {
+                customerManager.Update(customer);
+                LoadData();
+                ClearInputs();
+                // Select empty row
+                if (dvgProduct.Rows.Count > 0)
+                {
+                    dvgProduct.ClearSelection();
+                    dvgProduct.CurrentCell = null;
+                }
+            }
         }
 
         private void btnDeleteCustomer_Click(object sender, EventArgs e)
@@ -144,7 +211,7 @@ namespace MarketManagement.UseControl
                 customer.Address = txtCustomerAddress.Text;
                 customer.PhoneNumber = txtCustomerPhone.Text;
                 customer.Email = txtCustomerEmail.Text;
-                customer.IsVIP = txtCustomerVIP.Text.ToLower() == "yes";
+                customer.IsVIP = chkbIsVip.Checked;
 
                 return customer;
             }
@@ -156,13 +223,25 @@ namespace MarketManagement.UseControl
 
         private void ClearInputs()
         {
-            txtCustomerID.Clear();
+            //txtCustomerID.Clear();
             txtCustomerName.Clear();
             txtCustomerEmail.Clear();
             txtCustomerAddress.Clear();
             txtCustomerPhone.Clear();
-            txtCustomerVIP.Clear();
+            chkbIsVip.Checked = false;
             currentCustomer = null;
+            
+            // Reset button states
+            btnAddCustomer.Enabled = true;
+            btnUpdateCustomer.Enabled = false;
+            btnDeleteCustomer.Enabled = false;
+            
+            // Enable all input controls
+            txtCustomerName.Enabled = true;
+            txtCustomerAddress.Enabled = true;
+            txtCustomerEmail.Enabled = true;
+            txtCustomerPhone.Enabled = true;
+            chkbIsVip.Enabled = true;
         }
 
         private void label1_Click(object sender, EventArgs e)

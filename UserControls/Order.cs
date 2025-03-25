@@ -131,24 +131,24 @@ namespace MarketManagement.UserControls
             try
             {
                 // Thử cả hai đường dẫn có thể
-                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
-                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
+                //string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
+                //string filePath1 = Path.Combine(dataFolderPath, "orders.json");
                 string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
 
                 string jsonFilePath = "";
 
                 // Kiểm tra file tồn tại ở đường dẫn nào
-                if (File.Exists(filePath1))
-                {
-                    jsonFilePath = filePath1;
-                }
-                else if (File.Exists(filePath2))
+                //if (File.Exists(filePath1))
+                //{
+                //    jsonFilePath = filePath1;
+                //}
+                 if (File.Exists(filePath2))
                 {
                     jsonFilePath = filePath2;
                 }
                 else
                 {
-                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                    MessageBox.Show("Orders file not found. Checked paths:\n" +/* filePath1 */ "\n" + filePath2,
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     db_ordersDataGridView.DataSource = null;
                     return;

@@ -1,0 +1,165 @@
+@startuml MarketManagement
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Interfaces and Abstract classes
+interface "IManager<T>" as IManager {
+    +Add(T item): bool
+    +Update(T item): bool
+    +Remove(string id): bool
+    +GetById(string id): T
+    +GetAll(): List<T>
+}
+
+abstract BaseEntity {
+    #id: string
+    +Id: string
+    +{abstract} GenerateId(): string
+    +{abstract} Validate(): bool
+}
+
+' Product Classes
+abstract BaseProduct {
+    +ProductName: string
+    +Quantity: int
+    +Price: decimal
+    +Description: string
+    +Category: ProductCategory
+    +GetId(): string
+    +Validate(): bool
+    +GenerateId(): string
+}
+
+class FoodProduct {
+    +ExpiryDate: DateTime
+    +StorageCondition: string
+    +Validate(): bool
+}
+
+class DrinkProduct {
+    +Volume: double
+    +IsAlcoholic: bool
+}
+
+class ApplianceProduct {
+    +Brand: string
+    +Model: string
+    +WarrantyMonths: int
+}
+
+class ClothesProduct {
+    +AvailableSizes: List<string>
+    +Material: string
+    +Color: string
+    +GetSizesAsString(): string
+}
+
+class OtherProduct {
+}
+
+' Customer Class
+class BaseCustomer {
+    +CustomerName: string
+    +Address: string
+    +PhoneNumber: string
+    +Email: string
+    +IsVIP: bool
+    +GetId(): string
+    +Validate(): bool
+}
+
+' Manager Classes
+class ProductManager {
+    -instance: ProductManager
+    -products: List<BaseProduct>
+    -filePath: string
+    +{static} Instance: ProductManager
+    +ProductChanged: EventHandler
+    -LoadFromFile(): List<BaseProduct>
+    -SaveToFile(): void
+    +{static} CreateProduct(category): BaseProduct
+}
+
+class BillManager {
+    -_productsFilePath: string
+    -_billsFilePath: string
+    -_ordersFilePath: string
+    -_products: List<BaseProduct>
+    -_bills: List<Bill>
+    +GenerateBillId(): string
+    +CreateNewBill(): Bill
+    +SaveBill(Bill): void
+}
+
+' Billing Classes
+class Bill {
+    +BillId: string
+    +Date: DateTime
+    +CustomerId: string
+    +CustomerName: string
+    +Items: List<BillItem>
+    +TotalAmount: decimal
+    +AddItem(BillItem): void
+    +RemoveItem(BillItem): void
+    -CalculateTotalAmount(): void
+}
+
+class BillItem {
+    +ProductId: string
+    +ProductName: string
+    +Quantity: int
+    +UnitPrice: decimal
+    +TotalPrice: decimal
+}
+
+class Order {
+    +InvoiceNo: string
+    +InvoiceDate: string
+    +CustomerId: string
+    +CustomerName: string
+    +GrandTotal: decimal
+    +OrderDetails: List<OrderDetail>
+}
+
+class OrderDetail {
+    +ProductId: string
+    +ProductName: string
+    +Quantity: int
+    +Price: decimal
+    +Total: decimal
+}
+
+enum ProductCategory {
+    Food
+    Drink
+    Appliance
+    Clothes
+    Other
+}
+
+' Relationships
+BaseEntity <|-- BaseProduct
+BaseProduct <|-- FoodProduct
+BaseProduct <|-- DrinkProduct
+BaseProduct <|-- ApplianceProduct
+BaseProduct <|-- ClothesProduct
+BaseProduct <|-- OtherProduct
+BaseEntity <|-- BaseCustomer
+IManager <|.. ProductManager
+
+Bill "1" *-- "*" BillItem : contains
+Order "1" *-- "*" OrderDetail : contains
+ProductManager -- BaseProduct : manages
+BillManager -- Bill : manages
+BillManager -- BaseProduct : uses
+
+' Layout hints
+ProductManager -[hidden]right- BillManager
+Bill -[hidden]right- Order
+BillItem -[hidden]right- OrderDetail
+
+@enduml 

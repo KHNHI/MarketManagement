@@ -35,6 +35,11 @@ namespace MarketManagement.UseControl
             // Đăng ký sự kiện ProductChanged
             productManager.ProductChanged += ProductManager_ProductChanged;
             
+            // Đăng ký sự kiện Load của UserControl
+            this.Load += Product_Load;
+            
+            SetupDataGridView();
+            
             // Khởi tạo danh sách kích thước cho quần áo
             chklst_sizes.Items.Clear();
             chklst_sizes.Items.Add("XS");
@@ -50,149 +55,270 @@ namespace MarketManagement.UseControl
             cboStorage.Items.Add("Refrigerated");
             cboStorage.Items.Add("Frozen");
             
-            LoadData();
-            SetupDataGridView();
             LoadCategories(); // Load danh mục vào ComboBox
             
             // Ẩn tất cả các trường đặc biệt ban đầu
             HideAllSpecificFields();
             
             cboCategory.SelectedIndexChanged += cboCategory_SelectedIndexChanged;
+            
+            // Clear all inputs initially
+            ClearInputs();
         }
+
+        private void Product_Load(object sender, EventArgs e)
+        {
+            LoadData();
+            if (dvgProduct.Rows.Count > 0)
+            {
+                dvgProduct.ClearSelection();
+                dvgProduct.CurrentCell = null;
+            }
+        }
+
         private void SetupDataGridView()
         {
+            // Prevent auto selection of first row
+            dvgProduct.MultiSelect = false;
+            dvgProduct.AllowUserToAddRows = false;
+            dvgProduct.EnableHeadersVisualStyles = false;
+            dvgProduct.ReadOnly = true;
+            dvgProduct.AutoGenerateColumns = false;  // Set to false to manually define columns
+            dvgProduct.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            
+            // Thêm thuộc tính này để ngăn tự động chọn
+            dvgProduct.TabStop = false;
+
+            // Clear existing columns
+            dvgProduct.Columns.Clear();
+
+            // Add basic columns that all products have
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Id",
+                Name = "Id",
+                HeaderText = "ID",
+                Width = 80
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ProductName",
+                Name = "ProductName",
+                HeaderText = "Product Name",
+                Width = 150
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Price",
+                Name = "Price",
+                HeaderText = "Price",
+                Width = 100,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Quantity",
+                Name = "Quantity",
+                HeaderText = "Quantity",
+                Width = 80
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Category",
+                Name = "Category",
+                HeaderText = "Category",
+                Width = 100
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "AdditionalInfo",
+                HeaderText = "Additional Information",
+                Width = 250
+            });
+
+            dvgProduct.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Description",
+                Name = "Description",
+                HeaderText = "Description",
+                Width = 200
+            });
+            
             // Đăng ký sự kiện khi người dùng chọn 1 hàng trong DataGridView
             dvgProduct.SelectionChanged += DvgProducts_SelectionChanged;
+            dvgProduct.DataBindingComplete += DvgProduct_DataBindingComplete;
+            
             btnRemoveProduct.Click += btnDeleteProduct_Click;
             btnAddProduct.Click += btnAddProduct_Click;
             btnUpdateProduct.Click += btnUpdateProduct_Click;
             btnUpdateProduct.Enabled = false;
             btnRemoveProduct.Enabled = false;
+
+            // Add CellFormatting event handler
+            dvgProduct.CellFormatting += DvgProduct_CellFormatting;
         }
-        public void LoadData()
+
+        private void DvgProduct_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
             try
             {
-                List<BaseProduct> products = productManager.GetAll();
-                dvgProduct.DataSource = null;
-                dvgProduct.DataSource = products;
+                // Cập nhật cột Additional Information cho mỗi hàng
+                foreach (DataGridViewRow row in dvgProduct.Rows)
+                {
+                    BaseProduct product = row.DataBoundItem as BaseProduct;
+                    if (product != null)
+                    {
+                        string additionalInfo = "";
+                        switch (product.Category)
+                        {
+                            case ProductCategory.Food:
+                                if (product is FoodProduct food)
+                                {
+                                    additionalInfo = $"Expiry: {food.ExpiryDate:dd/MM/yyyy}, Storage: {food.StorageCondition}";
+                                }
+                                break;
+                            case ProductCategory.Drink:
+                                if (product is DrinkProduct drink)
+                                {
+                                    additionalInfo = $"Alcoholic: {(drink.IsAlcoholic ? "Yes" : "No")}, Volume: {drink.Volume}ml";
+                                }
+                                break;
+                            case ProductCategory.Appliance:
+                                if (product is ApplianceProduct appliance)
+                                {
+                                    additionalInfo = $"Brand: {appliance.Brand}, Warranty: {appliance.WarrantyMonths} months";
+                                }
+                                break;
+                            case ProductCategory.Clothes:
+                                if (product is ClothesProduct clothes)
+                                {
+                                    additionalInfo = $"Material: {clothes.Material}, Sizes: {string.Join(", ", clothes.AvailableSizes)}";
+                                }
+                                break;
+                        }
+                        row.Cells["AdditionalInfo"].Value = additionalInfo;
+                    }
+                }
 
-                // Định dạng các cột
+                // Clear selection
+                dvgProduct.ClearSelection();
+                dvgProduct.CurrentCell = null;
+            }
+            catch (Exception ex)
+            {
+                // Log error if needed
+            }
+        }
+
+        private void DvgProduct_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            try
+            {
+                // Format Additional Information
+                if (dvgProduct.Columns[e.ColumnIndex].Name == "AdditionalInfo")
+                {
+                    if (e.RowIndex >= 0 && e.RowIndex < dvgProduct.Rows.Count)  // Check valid row index
+                    {
+                        DataGridViewRow row = dvgProduct.Rows[e.RowIndex];
+                        BaseProduct product = row.DataBoundItem as BaseProduct;
+                        if (product != null)
+                        {
+                            string additionalInfo = "";
+                            switch (product.Category)
+                            {
+                                case ProductCategory.Food:
+                                    if (product is FoodProduct food)
+                                    {
+                                        additionalInfo = $"Expiry: {food.ExpiryDate:dd/MM/yyyy}, Storage: {food.StorageCondition}";
+                                    }
+                                    break;
+                                case ProductCategory.Drink:
+                                    if (product is DrinkProduct drink)
+                                    {
+                                        additionalInfo = $"Alcoholic: {(drink.IsAlcoholic ? "Yes" : "No")}, Volume: {drink.Volume}ml";
+                                    }
+                                    break;
+                                case ProductCategory.Appliance:
+                                    if (product is ApplianceProduct appliance)
+                                    {
+                                        additionalInfo = $"Brand: {appliance.Brand}, Warranty: {appliance.WarrantyMonths} months";
+                                    }
+                                    break;
+                                case ProductCategory.Clothes:
+                                    if (product is ClothesProduct clothes)
+                                    {
+                                        additionalInfo = $"Material: {clothes.Material}, Sizes: {string.Join(", ", clothes.AvailableSizes)}";
+                                    }
+                                    break;
+                            }
+                            e.Value = additionalInfo;
+                            e.FormattingApplied = true;
+                        }
+                    }
+                }
+                // Format Price to show thousand separator
+                else if (dvgProduct.Columns[e.ColumnIndex].Name == "Price" && e.Value != null)
+                {
+                    if (decimal.TryParse(e.Value.ToString(), out decimal price))
+                    {
+                        e.Value = price.ToString("N0");
+                        e.FormattingApplied = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error if needed
+                e.Value = "";
+                e.FormattingApplied = true;
+            }
+        }
+
+        public void LoadData()
+        {
+            // Tạm thời gỡ event handler để tránh trigger trong quá trình load
+            dvgProduct.SelectionChanged -= DvgProducts_SelectionChanged;
+            dvgProduct.CellFormatting -= DvgProduct_CellFormatting;
+            
+            try
+            {
+                List<BaseProduct> products = productManager.GetAll();
+                dvgProduct.DataSource = null;  // Clear the current data source
+                dvgProduct.DataSource = products;  // Set new data source
+                
+                // Force refresh the grid
+                dvgProduct.Refresh();
+                
                 foreach (DataGridViewColumn col in dvgProduct.Columns)
                 {
                     col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    
-                    // Đổi tên cột cho dễ đọc
-                    switch (col.Name)
-                    {
-                        case "Id":
-                            col.HeaderText = "Product ID";
-                            break;
-                        case "ProductName":
-                            col.HeaderText = "Product Name";
-                            break;
-                        case "Price":
-                            col.HeaderText = "Price";
-                            break;
-                        case "Quantity":
-                            col.HeaderText = "Quantity";
-                            break;
-                        case "Category":
-                            col.HeaderText = "Category";
-                            break;
-                        case "Description":
-                            col.HeaderText = "Description";
-                            break;
-                    }
-                    
-                    // Căn giữa nội dung cho các cột số liệu
-                    if (col.Name != "Description" && col.Name != "ProductName")
+                    if (col.Name != "Description" && col.Name != "AdditionalInfo")
                     {
                         col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     }
                 }
-
-                // Thêm cột thông tin đặc biệt
-                if (!dvgProduct.Columns.Contains("SpecificInfo"))
-                {
-                    DataGridViewTextBoxColumn specificInfoColumn = new DataGridViewTextBoxColumn();
-                    specificInfoColumn.Name = "SpecificInfo";
-                    specificInfoColumn.HeaderText = "Additional Info";
-                    specificInfoColumn.ReadOnly = true;
-                    dvgProduct.Columns.Add(specificInfoColumn);
-                }
-
-                // Điền thông tin đặc biệt vào cột mới
-                foreach (DataGridViewRow row in dvgProduct.Rows)
-                {
-                    if (row.DataBoundItem is BaseProduct product)
-                    {
-                        row.Cells["SpecificInfo"].Value = GetSpecificInfo(product);
-                    }
-                }
+                
+                // Clear selection after loading data
+                dvgProduct.ClearSelection();
+                dvgProduct.CurrentCell = null;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading products: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading data: " + ex.Message);
+            }
+            finally
+            {
+                // Gắn lại event handler
+                dvgProduct.SelectionChanged += DvgProducts_SelectionChanged;
+                dvgProduct.CellFormatting += DvgProduct_CellFormatting;
             }
         }
-        private string GetSpecificInfo(BaseProduct product)
-        {
-            try
-            {
-                switch (product.Category)
-                {
-                    case ProductCategory.Food:
-                        if (product is FoodProduct foodProduct)
-                        {
-                            return "Expiry: " + foodProduct.ExpiryDate.ToShortDateString() + 
-                                   ", Storage: " + foodProduct.StorageCondition;
-                        }
-                        break;
 
-                    case ProductCategory.Drink:
-                        if (product is DrinkProduct drinkProduct)
-                        {
-                            return "Volume: " + drinkProduct.Volume + "ml, Alcoholic: " + 
-                                   (drinkProduct.IsAlcoholic ? "Yes" : "No");
-                        }
-                        break;
-
-                    case ProductCategory.Appliance:
-                        if (product is ApplianceProduct applianceProduct)
-                        {
-                            return "Brand: " + applianceProduct.Brand + 
-                                   ", Warranty: " + applianceProduct.WarrantyMonths + " months";
-                        }
-                        break;
-
-                    case ProductCategory.Clothes:
-                        if (product is ClothesProduct clothesProduct)
-                        {
-                            string sizes = "";
-                            if (clothesProduct.AvailableSizes != null)
-                            {
-                                for (int i = 0; i < clothesProduct.AvailableSizes.Count; i++)
-                                {
-                                    sizes += clothesProduct.AvailableSizes[i];
-                                    if (i < clothesProduct.AvailableSizes.Count - 1)
-                                    {
-                                        sizes += ", ";
-                                    }
-                                }
-                            }
-                            return "Sizes: " + sizes + ", Material: " + clothesProduct.Material;
-                        }
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                return "Error getting specific info";
-            }
-            
-            return string.Empty;
-        }
         private void DvgProducts_SelectionChanged(object sender, EventArgs e)
         {
             if (dvgProduct.SelectedRows.Count > 0)
@@ -206,6 +332,8 @@ namespace MarketManagement.UseControl
                     // Enable nút Edit và Delete
                     btnUpdateProduct.Enabled = true;
                     btnRemoveProduct.Enabled = true;
+                    // Disable nút Add khi đang ở chế độ Update
+                    btnAddProduct.Enabled = false;
                 }
             }
             else
@@ -214,8 +342,10 @@ namespace MarketManagement.UseControl
                 ClearInputs();
                 btnUpdateProduct.Enabled = false;
                 btnRemoveProduct.Enabled = false;
+                btnAddProduct.Enabled = true;
             }
         }
+
         private void DisplayProductInfo(BaseProduct product)
         {
             if (product != null)
@@ -236,28 +366,25 @@ namespace MarketManagement.UseControl
         {
             try
             {
-            //    if (string.IsNullOrWhiteSpace(txtProductName.Text))
-            //    {
-            //        MessageBox.Show("Please enter a product name", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        return;
-            //    }
-
-                BaseProduct product = GetProductFromInputs();
-                if (product != null)
+                if (currentProduct != null)
                 {
-                    if (currentProduct == null)
-                    {
-                        productManager.Add(product);
-                        MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        productManager.Update(product);
-                        MessageBox.Show("Product updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    // Nếu đang có sản phẩm được chọn, không cho phép thêm mới
+                    return;
+                }
 
+                BaseProduct newProduct = GetProductFromInputs();
+                if (newProduct != null)
+                {
+                    productManager.Add(newProduct);
+                    MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                     ClearInputs();
+                    // Select empty row
+                    if (dvgProduct.Rows.Count > 0)
+                    {
+                        dvgProduct.ClearSelection();
+                        dvgProduct.CurrentCell = null;
+                    }
                 }
             }
             catch (Exception ex)
@@ -265,20 +392,105 @@ namespace MarketManagement.UseControl
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void btnUpdateProduct_Click(object sender, EventArgs e)
         {
+            if (currentProduct == null)
+            {
+                MessageBox.Show("Please select a product to update!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            try
+            {
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(txtProductName.Text) ||
+                    string.IsNullOrWhiteSpace(txtProductPrice.Text) ||
+                    string.IsNullOrWhiteSpace(txtProductQuantity.Text) ||
+                    cboCategory.SelectedItem == null)
+                {
+                    MessageBox.Show("Please fill in all required fields!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-            // Enable các controls để sửa
-            txtProductName.Enabled = true;
-            txtProductQuantity.Enabled = true;
-            txtProductPrice.Enabled = true;
-            txtProductDiscription.Enabled = true;
-            cboCategory.Enabled = true;
-            btnAddProduct.Enabled = true;
+                // Parse and validate price
+                if (!decimal.TryParse(txtProductPrice.Text, out decimal price) || price < 0)
+                {
+                    MessageBox.Show("Please enter a valid price!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                // Parse and validate quantity
+                if (!int.TryParse(txtProductQuantity.Text, out int quantity) || quantity < 0)
+                {
+                    MessageBox.Show("Please enter a valid quantity!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                // Update basic properties
+                currentProduct.ProductName = txtProductName.Text;
+                currentProduct.Price = price;
+                currentProduct.Quantity = quantity;
+                currentProduct.Description = txtProductDiscription.Text;
+
+                // Update specific properties based on product type
+                switch (currentProduct.Category)
+                {
+                    case ProductCategory.Food:
+                        if (currentProduct is FoodProduct foodProduct)
+                        {
+                            foodProduct.ExpiryDate = dtp_expiryDate.Value;
+                            foodProduct.StorageCondition = cboStorage.SelectedItem?.ToString() ?? string.Empty;
+                        }
+                        break;
+
+                    case ProductCategory.Drink:
+                        if (currentProduct is DrinkProduct drinkProduct)
+                        {
+                            drinkProduct.IsAlcoholic = chk_isAlcoholic.Checked;
+                            drinkProduct.Volume = string.IsNullOrEmpty(txt_volume.Text) ? 0 : double.Parse(txt_volume.Text);
+                        }
+                        break;
+
+                    case ProductCategory.Appliance:
+                        if (currentProduct is ApplianceProduct applianceProduct)
+                        {
+                            applianceProduct.Brand = txt_brand.Text;
+                            applianceProduct.WarrantyMonths = string.IsNullOrEmpty(txt_warranty.Text) ? 0 : int.Parse(txt_warranty.Text);
+                        }
+                        break;
+
+                    case ProductCategory.Clothes:
+                        if (currentProduct is ClothesProduct clothesProduct)
+                        {
+                            clothesProduct.Material = txt_material.Text;
+                            clothesProduct.AvailableSizes = new List<string>();
+                            foreach (var item in chklst_sizes.CheckedItems)
+                            {
+                                clothesProduct.AvailableSizes.Add(item.ToString());
+                            }
+                        }
+                        break;
+                }
+
+                productManager.Update(currentProduct);
+                MessageBox.Show("Product updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadData();
+                ClearInputs();
+                
+                // Select empty row
+                if (dvgProduct.Rows.Count > 0)
+                {
+                    dvgProduct.ClearSelection();
+                    dvgProduct.CurrentCell = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
         private void btnDeleteProduct_Click(object sender, EventArgs e)
         {
             if (currentProduct == null)
@@ -292,83 +504,8 @@ namespace MarketManagement.UseControl
                 LoadData();
                 ClearInputs();
             }
-
-
         }
-        private BaseProduct GetProductFromInputs()
-        {
-            try
-            {
-                // Lấy danh mục sản phẩm được chọn
-                if (cboCategory.SelectedItem == null)
-                {
-                    MessageBox.Show("Please select a product category", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return null;
-                }
 
-                ProductCategory selectedCategory = (ProductCategory)cboCategory.SelectedItem;
-                BaseProduct product;
-                
-                // Tạo đối tượng sản phẩm phù hợp dựa trên danh mục
-                switch (selectedCategory)
-                {
-                    case ProductCategory.Food:
-                        FoodProduct foodProduct = new FoodProduct();
-                        foodProduct.ExpiryDate = dtp_expiryDate.Value;
-                        foodProduct.StorageCondition = cboStorage.SelectedItem?.ToString() ?? string.Empty;
-                        product = foodProduct;
-                        break;
-                        
-                    case ProductCategory.Drink:
-                        DrinkProduct drinkProduct = new DrinkProduct();
-                        drinkProduct.IsAlcoholic = chk_isAlcoholic.Checked;
-                        drinkProduct.Volume = string.IsNullOrEmpty(txt_volume.Text) ? 0 : double.Parse(txt_volume.Text);
-                        product = drinkProduct;
-                        break;
-                        
-                    case ProductCategory.Appliance:
-                        ApplianceProduct applianceProduct = new ApplianceProduct();
-                        applianceProduct.Brand = txt_brand.Text;
-                        applianceProduct.WarrantyMonths = string.IsNullOrEmpty(txt_warranty.Text) ? 0 : int.Parse(txt_warranty.Text);
-                        product = applianceProduct;
-                        break;
-                        
-                    case ProductCategory.Clothes:
-                        ClothesProduct clothesProduct = new ClothesProduct();
-                        clothesProduct.Material = txt_material.Text;
-                        clothesProduct.AvailableSizes = new List<string>();
-                        foreach (var item in chklst_sizes.CheckedItems)
-                        {
-                            clothesProduct.AvailableSizes.Add(item.ToString());
-                        }
-                        product = clothesProduct;
-                        break;
-                        
-                    default:
-                        product = new BaseProduct();
-                        break;
-                }
-                
-                // Thiết lập các thuộc tính cơ bản cho sản phẩm
-                if (currentProduct != null)
-                    product.Id = currentProduct.Id;
-                else
-                    product.Id = product.GenerateId();
-
-                product.ProductName = txtProductName.Text;
-                product.Quantity = int.Parse(txtProductQuantity.Text);
-                product.Price = decimal.Parse(txtProductPrice.Text);
-                product.Description = txtProductDiscription.Text;
-                product.Category = selectedCategory;
-                
-                return product;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error creating product: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-        }
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Ẩn tất cả các trường đặc biệt
@@ -384,6 +521,7 @@ namespace MarketManagement.UseControl
                 }
             }
         }
+
         private void HideAllSpecificFields()
         {
             // Ẩn tất cả các trường đặc biệt của FoodProduct
@@ -411,6 +549,7 @@ namespace MarketManagement.UseControl
             txt_material.Visible = false;
             lbl_material.Visible = false;
         }
+
         private void ShowSpecificFieldsForCategory(ProductCategory category)
         {
             switch (category)
@@ -444,6 +583,7 @@ namespace MarketManagement.UseControl
                     break;
             }
         }
+
         private void ClearInputs()
         {
             txtProductID.Clear();
@@ -451,7 +591,9 @@ namespace MarketManagement.UseControl
             txtProductPrice.Clear();
             txtProductQuantity.Clear();
             txtProductDiscription.Clear();
-            cboCategory.SelectedIndex = -1; // Reset ComboBox về trạng thái mặc định
+            
+            // Không reset Category để tránh trigger validation
+            //cboCategory.SelectedIndex = -1;
             
             // Xóa dữ liệu trong các trường đặc biệt
             // Food
@@ -476,7 +618,103 @@ namespace MarketManagement.UseControl
             // Ẩn tất cả các trường đặc biệt
             HideAllSpecificFields();
             
+            // Reset currentProduct và cập nhật trạng thái nút
             currentProduct = null;
+            btnAddProduct.Enabled = true;
+            btnUpdateProduct.Enabled = false;
+            btnRemoveProduct.Enabled = false;
+            
+            // Hiển thị các trường đặc biệt dựa trên category đã chọn
+            if (cboCategory.SelectedItem != null)
+            {
+                ShowSpecificFieldsForCategory((ProductCategory)cboCategory.SelectedItem);
+            }
+        }
+
+        private BaseProduct GetProductFromInputs()
+        {
+            try
+            {
+                // Validate required fields
+                if (cboCategory.SelectedItem == null || 
+                    string.IsNullOrWhiteSpace(txtProductName.Text) ||
+                    string.IsNullOrWhiteSpace(txtProductPrice.Text) ||
+                    string.IsNullOrWhiteSpace(txtProductQuantity.Text))
+                {
+                    return null;
+                }
+
+                if (!decimal.TryParse(txtProductPrice.Text, out decimal price) || price < 0)
+                {
+                    return null;
+                }
+
+                if (!int.TryParse(txtProductQuantity.Text, out int quantity) || quantity < 0)
+                {
+                    return null;
+                }
+
+                ProductCategory selectedCategory = (ProductCategory)cboCategory.SelectedItem;
+                
+                // Sử dụng Factory Method để tạo sản phẩm
+                BaseProduct product = ProductManager.CreateProduct(selectedCategory);
+                
+                // Thiết lập Category trước khi generate ID
+                product.Category = selectedCategory;
+                product.Id = product.GenerateId();  // Generate ID sau khi đã set Category
+                
+                // Thiết lập các thuộc tính cơ bản
+                product.ProductName = txtProductName.Text;
+                product.Quantity = quantity;
+                product.Price = price;
+                product.Description = txtProductDiscription.Text;
+
+                // Thiết lập các thuộc tính đặc biệt dựa trên loại sản phẩm
+                switch (selectedCategory)
+                {
+                    case ProductCategory.Food:
+                        if (product is FoodProduct foodProduct)
+                        {
+                            foodProduct.ExpiryDate = dtp_expiryDate.Value;
+                            foodProduct.StorageCondition = cboStorage.SelectedItem?.ToString() ?? string.Empty;
+                        }
+                        break;
+                        
+                    case ProductCategory.Drink:
+                        if (product is DrinkProduct drinkProduct)
+                        {
+                            drinkProduct.IsAlcoholic = chk_isAlcoholic.Checked;
+                            drinkProduct.Volume = string.IsNullOrEmpty(txt_volume.Text) ? 0 : double.Parse(txt_volume.Text);
+                        }
+                        break;
+                        
+                    case ProductCategory.Appliance:
+                        if (product is ApplianceProduct applianceProduct)
+                        {
+                            applianceProduct.Brand = txt_brand.Text;
+                            applianceProduct.WarrantyMonths = string.IsNullOrEmpty(txt_warranty.Text) ? 0 : int.Parse(txt_warranty.Text);
+                        }
+                        break;
+                        
+                    case ProductCategory.Clothes:
+                        if (product is ClothesProduct clothesProduct)
+                        {
+                            clothesProduct.Material = txt_material.Text;
+                            clothesProduct.AvailableSizes = new List<string>();
+                            foreach (var item in chklst_sizes.CheckedItems)
+                            {
+                                clothesProduct.AvailableSizes.Add(item.ToString());
+                            }
+                        }
+                        break;
+                }
+                
+                return product;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // Xử lý sự kiện khi có thay đổi trong ProductManager
@@ -502,4 +740,5 @@ namespace MarketManagement.UseControl
     }
 
 }
+
 

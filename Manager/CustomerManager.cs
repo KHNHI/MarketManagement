@@ -48,8 +48,8 @@ namespace MarketManagement.Manager
         // Đổi constructor thành private
         private CustomerManager()
         {
-            filePath = "customers.json";
-            customers = LoadFromFile();
+            filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "customers.json");
+            LoadCustomers();
         }
 
         // Phương thức để kích hoạt sự kiện
@@ -58,18 +58,20 @@ namespace MarketManagement.Manager
             CustomerChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private List<BaseCustomer> LoadFromFile()
+        private void LoadCustomers()
         {
-            try
+            if (File.Exists(filePath))
             {
-                if (File.Exists(filePath))
+                string jsonData = File.ReadAllText(filePath);
+                customers = JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData, new JsonSerializerSettings
                 {
-                    string jsonData = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData) ?? new List<BaseCustomer>();
-                }
+                    TypeNameHandling = TypeNameHandling.Auto
+                }) ?? new List<BaseCustomer>();
             }
-            catch { }
-            return new List<BaseCustomer>();
+            else
+            {
+                customers = new List<BaseCustomer>();
+            }
         }
 
         private void SaveToFile()
@@ -148,7 +150,17 @@ namespace MarketManagement.Manager
 
         public BaseCustomer GetById(string customerId)
         {
-            return customers.FirstOrDefault(c => c.Id == customerId);
+            if (string.IsNullOrWhiteSpace(customerId))
+                return null;
+
+            for (int i = 0; i < customers.Count; i++)
+            {
+                if (customers[i].Id.Equals(customerId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return customers[i];
+                }
+            }
+            return null;
         }
 
         public List<BaseCustomer> GetAll()

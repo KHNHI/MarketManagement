@@ -84,9 +84,12 @@ namespace MarketManagement.Manager
 
         public bool Add(Seller seller)
         {
-            if (sellers.Any(s => s.Id == seller.Id))
+            for (int i = 0; i < sellers.Count; i++)
             {
-                throw new Exception("Seller ID already exists!");
+                if (sellers[i].Id == seller.Id)
+                {
+                    throw new Exception("Seller ID already exists!");
+                }
             }
             sellers.Add(seller);
             SaveToFile();
@@ -123,7 +126,14 @@ namespace MarketManagement.Manager
 
         public Seller GetById(string sellerId)
         {
-            return sellers.FirstOrDefault(s => s.Id == sellerId);
+            for (int i = 0; i < sellers.Count; i++)
+            {
+                if (sellers[i].Id == sellerId)
+                {
+                    return sellers[i];
+                }
+            }
+            return null;
         }
 
         public List<Seller> GetAll()
