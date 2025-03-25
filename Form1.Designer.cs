@@ -45,6 +45,7 @@
             this.lblTitleName = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             this.panelSlide.SuspendLayout();
             this.panelLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -255,8 +256,9 @@
             // 
             // panelTitle
             // 
-            this.panelTitle.BackColor = System.Drawing.Color.White;
+            this.panelTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(222)))), ((int)(((byte)(236)))));
             this.panelTitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelTitle.Controls.Add(this.button2);
             this.panelTitle.Controls.Add(this.lblTitleName);
             this.panelTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitle.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -271,7 +273,7 @@
             // 
             this.lblTitleName.AutoSize = true;
             this.lblTitleName.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitleName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.lblTitleName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(80)))), ((int)(((byte)(122)))));
             this.lblTitleName.Location = new System.Drawing.Point(417, 16);
             this.lblTitleName.Name = "lblTitleName";
             this.lblTitleName.Size = new System.Drawing.Size(298, 23);
@@ -293,13 +295,22 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(246)))));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(0, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1105, 657);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint_1);
+            // 
+            // button2
+            // 
+            this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
+            this.button2.Location = new System.Drawing.Point(1053, 11);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(30, 33);
+            this.button2.TabIndex = 3;
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // panelMain
             // 
@@ -311,7 +322,7 @@
             this.Controls.Add(this.panelTitle);
             this.Controls.Add(this.panelSlide);
             this.Font = new System.Drawing.Font("Microsoft JhengHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "panelMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -348,6 +359,7 @@
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 
