@@ -78,7 +78,7 @@
             this.txtProductName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductName.Location = new System.Drawing.Point(55, 117);
             this.txtProductName.Name = "txtProductName";
-            this.txtProductName.Size = new System.Drawing.Size(250, 35);
+            this.txtProductName.Size = new System.Drawing.Size(250, 26);
             this.txtProductName.TabIndex = 4;
             // 
             // label2
@@ -88,7 +88,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label2.Location = new System.Drawing.Point(52, 88);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(173, 27);
+            this.label2.Size = new System.Drawing.Size(113, 18);
             this.label2.TabIndex = 3;
             this.label2.Text = "Product Name";
             // 
@@ -97,7 +97,7 @@
             this.txtProductPrice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductPrice.Location = new System.Drawing.Point(57, 192);
             this.txtProductPrice.Name = "txtProductPrice";
-            this.txtProductPrice.Size = new System.Drawing.Size(250, 35);
+            this.txtProductPrice.Size = new System.Drawing.Size(250, 26);
             this.txtProductPrice.TabIndex = 6;
             // 
             // label3
@@ -107,7 +107,7 @@
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label3.Location = new System.Drawing.Point(52, 162);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(160, 27);
+            this.label3.Size = new System.Drawing.Size(105, 18);
             this.label3.TabIndex = 5;
             this.label3.Text = "Product Price";
             // 
@@ -119,7 +119,7 @@
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label4.Location = new System.Drawing.Point(476, 167);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(192, 27);
+            this.label4.Size = new System.Drawing.Size(127, 18);
             this.label4.TabIndex = 11;
             this.label4.Text = "Category Name";
             // 
@@ -128,7 +128,7 @@
             this.txtProductDiscription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductDiscription.Location = new System.Drawing.Point(476, 118);
             this.txtProductDiscription.Name = "txtProductDiscription";
-            this.txtProductDiscription.Size = new System.Drawing.Size(250, 35);
+            this.txtProductDiscription.Size = new System.Drawing.Size(250, 26);
             this.txtProductDiscription.TabIndex = 10;
             // 
             // label5
@@ -138,7 +138,7 @@
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label5.Location = new System.Drawing.Point(476, 88);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(138, 27);
+            this.label5.Size = new System.Drawing.Size(91, 18);
             this.label5.TabIndex = 9;
             this.label5.Text = "Description";
             // 
@@ -147,7 +147,7 @@
             this.txtProductQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtProductQuantity.Location = new System.Drawing.Point(57, 40);
             this.txtProductQuantity.Name = "txtProductQuantity";
-            this.txtProductQuantity.Size = new System.Drawing.Size(250, 35);
+            this.txtProductQuantity.Size = new System.Drawing.Size(250, 26);
             this.txtProductQuantity.TabIndex = 8;
             // 
             // label6
@@ -157,7 +157,7 @@
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label6.Location = new System.Drawing.Point(52, 10);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(199, 27);
+            this.label6.Size = new System.Drawing.Size(130, 18);
             this.label6.TabIndex = 7;
             this.label6.Text = "Product Quantity";
             // 
@@ -245,7 +245,7 @@
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(481, 195);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(351, 35);
+            this.cboCategory.Size = new System.Drawing.Size(351, 28);
             this.cboCategory.TabIndex = 17;
             // 
             // panel2
@@ -276,7 +276,7 @@
             this.cboStorage.FormattingEnabled = true;
             this.cboStorage.Location = new System.Drawing.Point(421, 40);
             this.cboStorage.Name = "cboStorage";
-            this.cboStorage.Size = new System.Drawing.Size(121, 35);
+            this.cboStorage.Size = new System.Drawing.Size(121, 28);
             this.cboStorage.TabIndex = 16;
             // 
             // lbl_storageCondition
@@ -284,7 +284,7 @@
             this.lbl_storageCondition.AutoSize = true;
             this.lbl_storageCondition.Location = new System.Drawing.Point(416, 11);
             this.lbl_storageCondition.Name = "lbl_storageCondition";
-            this.lbl_storageCondition.Size = new System.Drawing.Size(218, 27);
+            this.lbl_storageCondition.Size = new System.Drawing.Size(141, 20);
             this.lbl_storageCondition.TabIndex = 15;
             this.lbl_storageCondition.Text = "Storage Condition";
             this.lbl_storageCondition.Visible = false;
@@ -303,7 +303,7 @@
             this.chklst_sizes.Location = new System.Drawing.Point(8, 40);
             this.chklst_sizes.MultiColumn = true;
             this.chklst_sizes.Name = "chklst_sizes";
-            this.chklst_sizes.Size = new System.Drawing.Size(216, 132);
+            this.chklst_sizes.Size = new System.Drawing.Size(216, 130);
             this.chklst_sizes.TabIndex = 14;
             this.chklst_sizes.Visible = false;
             // 
@@ -311,7 +311,7 @@
             // 
             this.txt_volume.Location = new System.Drawing.Point(419, 40);
             this.txt_volume.Name = "txt_volume";
-            this.txt_volume.Size = new System.Drawing.Size(100, 35);
+            this.txt_volume.Size = new System.Drawing.Size(100, 26);
             this.txt_volume.TabIndex = 13;
             this.txt_volume.Visible = false;
             // 
@@ -320,7 +320,7 @@
             this.lbl_volume.AutoSize = true;
             this.lbl_volume.Location = new System.Drawing.Point(419, 11);
             this.lbl_volume.Name = "lbl_volume";
-            this.lbl_volume.Size = new System.Drawing.Size(152, 27);
+            this.lbl_volume.Size = new System.Drawing.Size(95, 20);
             this.lbl_volume.TabIndex = 12;
             this.lbl_volume.Text = "Volume (ml)";
             this.lbl_volume.Visible = false;
@@ -330,7 +330,7 @@
             this.chk_isAlcoholic.AutoSize = true;
             this.chk_isAlcoholic.Location = new System.Drawing.Point(8, 46);
             this.chk_isAlcoholic.Name = "chk_isAlcoholic";
-            this.chk_isAlcoholic.Size = new System.Drawing.Size(161, 31);
+            this.chk_isAlcoholic.Size = new System.Drawing.Size(109, 24);
             this.chk_isAlcoholic.TabIndex = 11;
             this.chk_isAlcoholic.Text = "checkBox1";
             this.chk_isAlcoholic.UseVisualStyleBackColor = true;
@@ -341,7 +341,7 @@
             this.lbl_isAlcoholic.AutoSize = true;
             this.lbl_isAlcoholic.Location = new System.Drawing.Point(3, 11);
             this.lbl_isAlcoholic.Name = "lbl_isAlcoholic";
-            this.lbl_isAlcoholic.Size = new System.Drawing.Size(121, 27);
+            this.lbl_isAlcoholic.Size = new System.Drawing.Size(78, 20);
             this.lbl_isAlcoholic.TabIndex = 10;
             this.lbl_isAlcoholic.Text = "Alcoholic";
             this.lbl_isAlcoholic.Visible = false;
@@ -350,7 +350,7 @@
             // 
             this.txt_material.Location = new System.Drawing.Point(419, 41);
             this.txt_material.Name = "txt_material";
-            this.txt_material.Size = new System.Drawing.Size(100, 35);
+            this.txt_material.Size = new System.Drawing.Size(100, 26);
             this.txt_material.TabIndex = 9;
             this.txt_material.Visible = false;
             // 
@@ -359,7 +359,7 @@
             this.lbl_material.AutoSize = true;
             this.lbl_material.Location = new System.Drawing.Point(416, 10);
             this.lbl_material.Name = "lbl_material";
-            this.lbl_material.Size = new System.Drawing.Size(109, 27);
+            this.lbl_material.Size = new System.Drawing.Size(70, 20);
             this.lbl_material.TabIndex = 8;
             this.lbl_material.Text = "Material";
             this.lbl_material.Visible = false;
@@ -369,7 +369,7 @@
             this.lbl_sizes.AutoSize = true;
             this.lbl_sizes.Location = new System.Drawing.Point(3, 10);
             this.lbl_sizes.Name = "lbl_sizes";
-            this.lbl_sizes.Size = new System.Drawing.Size(182, 27);
+            this.lbl_sizes.Size = new System.Drawing.Size(115, 20);
             this.lbl_sizes.TabIndex = 6;
             this.lbl_sizes.Text = "Available Sizes";
             this.lbl_sizes.Visible = false;
@@ -378,7 +378,7 @@
             // 
             this.txt_brand.Location = new System.Drawing.Point(421, 41);
             this.txt_brand.Name = "txt_brand";
-            this.txt_brand.Size = new System.Drawing.Size(138, 35);
+            this.txt_brand.Size = new System.Drawing.Size(138, 26);
             this.txt_brand.TabIndex = 5;
             this.txt_brand.Visible = false;
             // 
@@ -387,7 +387,7 @@
             this.lbl_brand.AutoSize = true;
             this.lbl_brand.Location = new System.Drawing.Point(419, 10);
             this.lbl_brand.Name = "lbl_brand";
-            this.lbl_brand.Size = new System.Drawing.Size(78, 27);
+            this.lbl_brand.Size = new System.Drawing.Size(52, 20);
             this.lbl_brand.TabIndex = 4;
             this.lbl_brand.Text = "Brand";
             this.lbl_brand.Visible = false;
@@ -396,7 +396,7 @@
             // 
             this.txt_warranty.Location = new System.Drawing.Point(8, 41);
             this.txt_warranty.Name = "txt_warranty";
-            this.txt_warranty.Size = new System.Drawing.Size(105, 35);
+            this.txt_warranty.Size = new System.Drawing.Size(105, 26);
             this.txt_warranty.TabIndex = 3;
             this.txt_warranty.Visible = false;
             // 
@@ -405,7 +405,7 @@
             this.lbl_warranty.AutoSize = true;
             this.lbl_warranty.Location = new System.Drawing.Point(3, 10);
             this.lbl_warranty.Name = "lbl_warranty";
-            this.lbl_warranty.Size = new System.Drawing.Size(221, 27);
+            this.lbl_warranty.Size = new System.Drawing.Size(142, 20);
             this.lbl_warranty.TabIndex = 2;
             this.lbl_warranty.Text = "Warranty (months)";
             this.lbl_warranty.Visible = false;
@@ -414,7 +414,7 @@
             // 
             this.dtp_expiryDate.Location = new System.Drawing.Point(8, 41);
             this.dtp_expiryDate.Name = "dtp_expiryDate";
-            this.dtp_expiryDate.Size = new System.Drawing.Size(200, 35);
+            this.dtp_expiryDate.Size = new System.Drawing.Size(200, 26);
             this.dtp_expiryDate.TabIndex = 1;
             this.dtp_expiryDate.Visible = false;
             // 
@@ -423,15 +423,16 @@
             this.lbl_expiryDate.AutoSize = true;
             this.lbl_expiryDate.Location = new System.Drawing.Point(3, 11);
             this.lbl_expiryDate.Name = "lbl_expiryDate";
-            this.lbl_expiryDate.Size = new System.Drawing.Size(139, 27);
+            this.lbl_expiryDate.Size = new System.Drawing.Size(90, 20);
             this.lbl_expiryDate.TabIndex = 0;
             this.lbl_expiryDate.Text = "Expiry Date";
             this.lbl_expiryDate.Visible = false;
             // 
             // Product
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(246)))));
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.cboCategory);
             this.Controls.Add(this.panel1);
