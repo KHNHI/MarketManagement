@@ -150,6 +150,12 @@
     <Compile Include="UserControls\Seller.Designer.cs">
       <DependentUpon>Seller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Wellcome.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Wellcome.Designer.cs">
+      <DependentUpon>Wellcome.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -183,6 +189,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Seller.resx">
       <DependentUpon>Seller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wellcome.resx">
+      <DependentUpon>Wellcome.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\BaseProduct.datasource" />
