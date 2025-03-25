@@ -19,7 +19,7 @@ using MarketManagement.Manager;
 
 namespace MarketManagement.UserControls
 {
-    public partial class Billing : UserControl
+    public partial class Billing : System.Windows.Forms.UserControl
     {
         public static string invoiceid;
         private readonly BillManager _billManager;

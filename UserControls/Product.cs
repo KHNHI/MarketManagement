@@ -350,7 +350,6 @@ namespace MarketManagement.UseControl
         {
             if (product != null)
             {
-                txtProductID.Text = product.Id;
                 txtProductName.Text = product.ProductName;
                 txtProductQuantity.Text = product.Quantity.ToString();
                 txtProductPrice.Text = product.Price.ToString();
@@ -586,7 +585,6 @@ namespace MarketManagement.UseControl
 
         private void ClearInputs()
         {
-            txtProductID.Clear();
             txtProductName.Clear();
             txtProductPrice.Clear();
             txtProductQuantity.Clear();

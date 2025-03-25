@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtProductID = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.txtProductName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -68,26 +66,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label1.Location = new System.Drawing.Point(52, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 27);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Product ID";
-            // 
-            // txtProductID
-            // 
-            this.txtProductID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductID.Location = new System.Drawing.Point(55, 42);
-            this.txtProductID.Name = "txtProductID";
-            this.txtProductID.Size = new System.Drawing.Size(250, 35);
-            this.txtProductID.TabIndex = 1;
             // 
             // contextMenuStrip1
             // 
@@ -167,7 +145,7 @@
             // txtProductQuantity
             // 
             this.txtProductQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProductQuantity.Location = new System.Drawing.Point(476, 42);
+            this.txtProductQuantity.Location = new System.Drawing.Point(57, 40);
             this.txtProductQuantity.Name = "txtProductQuantity";
             this.txtProductQuantity.Size = new System.Drawing.Size(250, 35);
             this.txtProductQuantity.TabIndex = 8;
@@ -177,7 +155,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
-            this.label6.Location = new System.Drawing.Point(473, 12);
+            this.label6.Location = new System.Drawing.Point(52, 10);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(199, 27);
             this.label6.TabIndex = 7;
@@ -469,8 +447,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtProductName);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtProductID);
-            this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Product";
@@ -485,9 +461,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtProductID;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TextBox txtProductName;
         private System.Windows.Forms.Label label2;

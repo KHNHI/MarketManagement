@@ -45,17 +45,10 @@
             this.txt_address = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.txt_invoiceno = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.dtp_invoicedate = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lbl_customerid = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btn_removecart = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.btn_update = new System.Windows.Forms.Button();
             this.btn_print = new System.Windows.Forms.Button();
             this.txt_totalprice = new System.Windows.Forms.TextBox();
@@ -73,12 +66,15 @@
             this.categoryDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.baseProductBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.panel2.SuspendLayout();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txt_invoiceno = new System.Windows.Forms.TextBox();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.db_dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.baseProductBindingSource)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_remove_selected
@@ -140,7 +136,7 @@
             this.txt_productprice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_productprice.Location = new System.Drawing.Point(328, 37);
             this.txt_productprice.Name = "txt_productprice";
-            this.txt_productprice.Size = new System.Drawing.Size(262, 30);
+            this.txt_productprice.Size = new System.Drawing.Size(262, 35);
             this.txt_productprice.TabIndex = 28;
             // 
             // label4
@@ -151,7 +147,7 @@
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label4.Location = new System.Drawing.Point(325, 12);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(132, 23);
+            this.label4.Size = new System.Drawing.Size(160, 27);
             this.label4.TabIndex = 27;
             this.label4.Text = "Product Price";
             // 
@@ -160,7 +156,7 @@
             this.txt_contact.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_contact.Location = new System.Drawing.Point(328, 36);
             this.txt_contact.Name = "txt_contact";
-            this.txt_contact.Size = new System.Drawing.Size(262, 30);
+            this.txt_contact.Size = new System.Drawing.Size(262, 35);
             this.txt_contact.TabIndex = 26;
             // 
             // label5
@@ -170,7 +166,7 @@
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label5.Location = new System.Drawing.Point(325, 11);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(146, 23);
+            this.label5.Size = new System.Drawing.Size(179, 27);
             this.label5.TabIndex = 25;
             this.label5.Text = "Phone Number";
             // 
@@ -179,7 +175,7 @@
             this.txt_productId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_productId.Location = new System.Drawing.Point(16, 37);
             this.txt_productId.Name = "txt_productId";
-            this.txt_productId.Size = new System.Drawing.Size(262, 30);
+            this.txt_productId.Size = new System.Drawing.Size(262, 35);
             this.txt_productId.TabIndex = 22;
             // 
             // txt_customerid
@@ -187,7 +183,7 @@
             this.txt_customerid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_customerid.Location = new System.Drawing.Point(16, 36);
             this.txt_customerid.Name = "txt_customerid";
-            this.txt_customerid.Size = new System.Drawing.Size(262, 30);
+            this.txt_customerid.Size = new System.Drawing.Size(262, 35);
             this.txt_customerid.TabIndex = 20;
             this.txt_customerid.TextChanged += new System.EventHandler(this.txt_customerid_TextChanged);
             // 
@@ -198,7 +194,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label2.Location = new System.Drawing.Point(-371, -13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 23);
+            this.label2.Size = new System.Drawing.Size(148, 27);
             this.label2.TabIndex = 19;
             this.label2.Text = "Customer ID";
             // 
@@ -215,7 +211,7 @@
             this.lbl_productid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.lbl_productid.Location = new System.Drawing.Point(13, 12);
             this.lbl_productid.Name = "lbl_productid";
-            this.lbl_productid.Size = new System.Drawing.Size(104, 23);
+            this.lbl_productid.Size = new System.Drawing.Size(126, 27);
             this.lbl_productid.TabIndex = 21;
             this.lbl_productid.Text = "Product ID";
             // 
@@ -224,7 +220,7 @@
             this.txt_productquantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_productquantity.Location = new System.Drawing.Point(640, 37);
             this.txt_productquantity.Name = "txt_productquantity";
-            this.txt_productquantity.Size = new System.Drawing.Size(262, 30);
+            this.txt_productquantity.Size = new System.Drawing.Size(262, 35);
             this.txt_productquantity.TabIndex = 38;
             this.txt_productquantity.TextChanged += new System.EventHandler(this.txt_productquantity_TextChanged);
             // 
@@ -233,7 +229,7 @@
             this.txt_address.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_address.Location = new System.Drawing.Point(640, 36);
             this.txt_address.Name = "txt_address";
-            this.txt_address.Size = new System.Drawing.Size(262, 30);
+            this.txt_address.Size = new System.Drawing.Size(262, 35);
             this.txt_address.TabIndex = 36;
             // 
             // label7
@@ -243,7 +239,7 @@
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label7.Location = new System.Drawing.Point(637, 11);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(84, 23);
+            this.label7.Size = new System.Drawing.Size(101, 27);
             this.label7.TabIndex = 35;
             this.label7.Text = "Address";
             // 
@@ -254,59 +250,9 @@
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label8.Location = new System.Drawing.Point(637, 12);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(89, 23);
+            this.label8.Size = new System.Drawing.Size(107, 27);
             this.label8.TabIndex = 37;
             this.label8.Text = "Quantity";
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.txt_invoiceno);
-            this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.dtp_invoicedate);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(3, 15);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(925, 81);
-            this.panel2.TabIndex = 39;
-            // 
-            // txt_invoiceno
-            // 
-            this.txt_invoiceno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txt_invoiceno.Location = new System.Drawing.Point(327, 34);
-            this.txt_invoiceno.Name = "txt_invoiceno";
-            this.txt_invoiceno.Size = new System.Drawing.Size(262, 30);
-            this.txt_invoiceno.TabIndex = 24;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
-            this.label6.Location = new System.Drawing.Point(324, 8);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(101, 23);
-            this.label6.TabIndex = 23;
-            this.label6.Text = "Invoice ID";
-            // 
-            // dtp_invoicedate
-            // 
-            this.dtp_invoicedate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dtp_invoicedate.Location = new System.Drawing.Point(15, 34);
-            this.dtp_invoicedate.Name = "dtp_invoicedate";
-            this.dtp_invoicedate.Size = new System.Drawing.Size(262, 30);
-            this.dtp_invoicedate.TabIndex = 18;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label1.Location = new System.Drawing.Point(12, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(127, 23);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Invoice Date";
             // 
             // panel3
             // 
@@ -329,7 +275,7 @@
             this.lbl_customerid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.lbl_customerid.Location = new System.Drawing.Point(18, 6);
             this.lbl_customerid.Name = "lbl_customerid";
-            this.lbl_customerid.Size = new System.Drawing.Size(121, 23);
+            this.lbl_customerid.Size = new System.Drawing.Size(148, 27);
             this.lbl_customerid.TabIndex = 37;
             this.lbl_customerid.Text = "Customer ID";
             // 
@@ -364,26 +310,6 @@
             this.btn_removecart.UseVisualStyleBackColor = false;
             this.btn_removecart.Click += new System.EventHandler(this.btn_removecart_Click);
             // 
-            // textBox3
-            // 
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(643, 49);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(262, 30);
-            this.textBox3.TabIndex = 40;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label9.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
-            this.label9.Location = new System.Drawing.Point(640, 24);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(88, 23);
-            this.label9.TabIndex = 39;
-            this.label9.Text = "Discount";
-            // 
             // btn_update
             // 
             this.btn_update.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(221)))), ((int)(((byte)(143)))));
@@ -400,7 +326,6 @@
             this.btn_update.TabIndex = 43;
             this.btn_update.Text = "Update";
             this.btn_update.UseVisualStyleBackColor = false;
-            //this.btn_update.Click += new System.EventHandler(this.btn_update_Click);
             // 
             // btn_print
             // 
@@ -425,7 +350,7 @@
             this.txt_totalprice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_totalprice.Location = new System.Drawing.Point(20, 36);
             this.txt_totalprice.Name = "txt_totalprice";
-            this.txt_totalprice.Size = new System.Drawing.Size(262, 30);
+            this.txt_totalprice.Size = new System.Drawing.Size(262, 35);
             this.txt_totalprice.TabIndex = 26;
             // 
             // label10
@@ -436,7 +361,7 @@
             this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label10.Location = new System.Drawing.Point(17, 10);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(121, 23);
+            this.label10.Size = new System.Drawing.Size(146, 27);
             this.label10.TabIndex = 25;
             this.label10.Text = "TOTAL PRICE";
             // 
@@ -477,7 +402,7 @@
             this.txt_productname.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_productname.Location = new System.Drawing.Point(330, 328);
             this.txt_productname.Name = "txt_productname";
-            this.txt_productname.Size = new System.Drawing.Size(262, 30);
+            this.txt_productname.Size = new System.Drawing.Size(262, 35);
             this.txt_productname.TabIndex = 39;
             this.txt_productname.TextChanged += new System.EventHandler(this.txt_productId_TextChanged);
             // 
@@ -488,7 +413,7 @@
             this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label11.Location = new System.Drawing.Point(328, 292);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(143, 23);
+            this.label11.Size = new System.Drawing.Size(173, 27);
             this.label11.TabIndex = 37;
             this.label11.Text = "Product Name";
             // 
@@ -497,7 +422,7 @@
             this.txt_customername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_customername.Location = new System.Drawing.Point(20, 328);
             this.txt_customername.Name = "txt_customername";
-            this.txt_customername.Size = new System.Drawing.Size(262, 30);
+            this.txt_customername.Size = new System.Drawing.Size(262, 35);
             this.txt_customername.TabIndex = 37;
             // 
             // label13
@@ -508,7 +433,7 @@
             this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label13.Location = new System.Drawing.Point(16, 292);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(160, 23);
+            this.label13.Size = new System.Drawing.Size(195, 27);
             this.label13.TabIndex = 39;
             this.label13.Text = "Customer Name";
             // 
@@ -570,9 +495,37 @@
             // 
             this.baseProductBindingSource.DataSource = typeof(MarketManagement.BaseProduct);
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.txt_invoiceno);
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Location = new System.Drawing.Point(3, 15);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(925, 81);
+            this.panel2.TabIndex = 39;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
+            this.label6.Location = new System.Drawing.Point(18, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(124, 27);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "Invoice ID";
+            // 
+            // txt_invoiceno
+            // 
+            this.txt_invoiceno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_invoiceno.Location = new System.Drawing.Point(16, 39);
+            this.txt_invoiceno.Name = "txt_invoiceno";
+            this.txt_invoiceno.Size = new System.Drawing.Size(262, 35);
+            this.txt_invoiceno.TabIndex = 24;
+            // 
             // Billing
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label13);
             this.Controls.Add(this.txt_customername);
@@ -582,8 +535,6 @@
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.btn_print);
             this.Controls.Add(this.btn_update);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.btn_removecart);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -596,8 +547,6 @@
             this.Name = "Billing";
             this.Size = new System.Drawing.Size(1117, 696);
             this.Load += new System.EventHandler(this.UC_Billing_Load);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -606,6 +555,8 @@
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.db_dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.baseProductBindingSource)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -628,21 +579,14 @@
         private System.Windows.Forms.TextBox txt_address;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button btn_removecart;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btn_update;
         private System.Windows.Forms.Button btn_print;
         private System.Windows.Forms.TextBox txt_totalprice;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.TextBox txt_invoiceno;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox dtp_invoicedate;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView db_dataGridView1;
         private System.Windows.Forms.TextBox txt_productname;
         private System.Windows.Forms.Label label11;
@@ -656,5 +600,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn categoryDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource baseProductBindingSource;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.TextBox txt_invoiceno;
+        private System.Windows.Forms.Label label6;
     }
 }
