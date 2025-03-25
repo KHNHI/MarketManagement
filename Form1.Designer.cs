@@ -42,10 +42,10 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panelTitle = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             this.lblTitleName = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
             this.panelSlide.SuspendLayout();
             this.panelLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -269,6 +269,16 @@
             this.panelTitle.TabIndex = 0;
             this.panelTitle.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTitle_Paint);
             // 
+            // button2
+            // 
+            this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
+            this.button2.Location = new System.Drawing.Point(1053, 11);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(30, 33);
+            this.button2.TabIndex = 3;
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // lblTitleName
             // 
             this.lblTitleName.AutoSize = true;
@@ -302,15 +312,6 @@
             this.panel1.Size = new System.Drawing.Size(1105, 657);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint_1);
-            // 
-            // button2
-            // 
-            this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
-            this.button2.Location = new System.Drawing.Point(1053, 11);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(30, 33);
-            this.button2.TabIndex = 3;
-            this.button2.UseVisualStyleBackColor = true;
             // 
             // panelMain
             // 

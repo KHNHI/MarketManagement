@@ -149,5 +149,10 @@ namespace MarketManagement
             panel1.Controls.Add(seller);
             seller.Dock = DockStyle.Fill;
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

@@ -62,7 +62,7 @@
             this.txt_customerId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_customerId.Location = new System.Drawing.Point(24, 49);
             this.txt_customerId.Name = "txt_customerId";
-            this.txt_customerId.Size = new System.Drawing.Size(325, 30);
+            this.txt_customerId.Size = new System.Drawing.Size(325, 26);
             this.txt_customerId.TabIndex = 12;
             // 
             // label6
@@ -72,7 +72,7 @@
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label6.Location = new System.Drawing.Point(21, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(121, 23);
+            this.label6.Size = new System.Drawing.Size(97, 18);
             this.label6.TabIndex = 11;
             this.label6.Text = "Customer ID";
             // 
@@ -139,7 +139,7 @@
             this.txt_invoiceno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txt_invoiceno.Location = new System.Drawing.Point(24, 49);
             this.txt_invoiceno.Name = "txt_invoiceno";
-            this.txt_invoiceno.Size = new System.Drawing.Size(325, 30);
+            this.txt_invoiceno.Size = new System.Drawing.Size(325, 26);
             this.txt_invoiceno.TabIndex = 12;
             // 
             // label2
@@ -149,7 +149,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label2.Location = new System.Drawing.Point(21, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 23);
+            this.label2.Size = new System.Drawing.Size(82, 18);
             this.label2.TabIndex = 11;
             this.label2.Text = "Invoice ID";
             // 
@@ -273,14 +273,15 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(58)))), ((int)(((byte)(94)))));
             this.label1.Location = new System.Drawing.Point(390, 38);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(411, 23);
+            this.label1.Size = new System.Drawing.Size(337, 18);
             this.label1.TabIndex = 33;
             this.label1.Text = "Enter the invoice ID or customer ID to search";
             // 
             // Order
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(246)))));
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.btn_refresh);
