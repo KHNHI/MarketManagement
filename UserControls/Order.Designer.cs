@@ -174,7 +174,7 @@
             this.db_ordersDataGridView.RowHeadersWidth = 62;
             this.db_ordersDataGridView.RowTemplate.Height = 28;
             this.db_ordersDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.db_ordersDataGridView.Size = new System.Drawing.Size(1111, 296);
+            this.db_ordersDataGridView.Size = new System.Drawing.Size(1111, 369);
             this.db_ordersDataGridView.TabIndex = 0;
             // 
             // invoiceDateDataGridViewTextBoxColumn
@@ -239,7 +239,7 @@
             this.panel3.Controls.Add(this.db_ordersDataGridView);
             this.panel3.Location = new System.Drawing.Point(0, 321);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1117, 341);
+            this.panel3.Size = new System.Drawing.Size(1117, 375);
             this.panel3.TabIndex = 32;
             // 
             // btn_refresh

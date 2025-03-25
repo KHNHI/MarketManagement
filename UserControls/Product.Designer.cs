@@ -229,14 +229,15 @@
             this.dvgProduct.AllowUserToAddRows = false;
             this.dvgProduct.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dvgProduct.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dvgProduct.Location = new System.Drawing.Point(3, 3);
+            this.dvgProduct.Location = new System.Drawing.Point(3, 0);
             this.dvgProduct.MultiSelect = false;
             this.dvgProduct.Name = "dvgProduct";
             this.dvgProduct.RowHeadersWidth = 62;
             this.dvgProduct.RowTemplate.Height = 28;
             this.dvgProduct.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dvgProduct.Size = new System.Drawing.Size(1111, 296);
+            this.dvgProduct.Size = new System.Drawing.Size(1111, 299);
             this.dvgProduct.TabIndex = 0;
+            this.dvgProduct.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dvgProduct_CellContentClick);
             // 
             // cboCategory
             // 
@@ -453,6 +454,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Product";
             this.Size = new System.Drawing.Size(1117, 696);
+            this.Load += new System.EventHandler(this.Product_Load_1);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).EndInit();
             this.ResumeLayout(false);

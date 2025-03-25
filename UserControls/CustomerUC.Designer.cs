@@ -60,7 +60,7 @@
             this.dvgProduct.RowHeadersWidth = 62;
             this.dvgProduct.RowTemplate.Height = 28;
             this.dvgProduct.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dvgProduct.Size = new System.Drawing.Size(1111, 296);
+            this.dvgProduct.Size = new System.Drawing.Size(1111, 373);
             this.dvgProduct.TabIndex = 0;
             // 
             // panel1
@@ -72,7 +72,7 @@
             this.panel1.Controls.Add(this.dvgProduct);
             this.panel1.Location = new System.Drawing.Point(0, 319);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1117, 341);
+            this.panel1.Size = new System.Drawing.Size(1117, 377);
             this.panel1.TabIndex = 32;
             // 
             // btnDeleteCustomer

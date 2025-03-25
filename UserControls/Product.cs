@@ -777,6 +777,16 @@ namespace MarketManagement.UseControl
 
         }
 
+        private void dvgProduct_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void Product_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
         // Hủy đăng ký sự kiện khi UserControl bị disposed
         //protected override void Dispose(bool disposing)
         //{
