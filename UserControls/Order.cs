@@ -225,7 +225,8 @@ namespace MarketManagement.UserControls
                         {
                             if (dynamicData.Orders != null)
                             {
-                                foreach (var order in dynamicData.Orders)
+                                IEnumerable<dynamic> orders = dynamicData.Orders;
+                                foreach (dynamic order in orders)
                                 {
                                     DataRow row = dt.NewRow();
 
@@ -266,12 +267,13 @@ namespace MarketManagement.UserControls
                         // Duyệt qua tất cả thuộc tính để tìm một mảng
                         if (fullData != null)
                         {
-                            foreach (var prop in fullData)
+                            IEnumerable<dynamic> properties = fullData;
+                            foreach (dynamic prop in properties)
                             {
                                 if (prop is JArray array)
                                 {
                                     // Thử đọc từng mảng
-                                    foreach (var item in array)
+                                    foreach (JToken item in array)
                                     {
                                         if (item["InvoiceNo"] != null || item["CustomerName"] != null)
                                         {
@@ -345,24 +347,19 @@ namespace MarketManagement.UserControls
                 }
 
                 // Thử cả hai đường dẫn có thể
-                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
-                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
                 string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
 
                 string jsonFilePath = "";
 
                 // Kiểm tra file tồn tại ở đường dẫn nào
-                if (File.Exists(filePath1))
-                {
-                    jsonFilePath = filePath1;
-                }
-                else if (File.Exists(filePath2))
+                
+                 if (File.Exists(filePath2))
                 {
                     jsonFilePath = filePath2;
                 }
                 else
                 {
-                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                    MessageBox.Show("Orders file not found. Checked paths:\n" +  "\n" + filePath2,
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -437,7 +434,8 @@ namespace MarketManagement.UserControls
                     else
                     {
                         // Thử xem có mảng nào khác không
-                        foreach (var prop in jsonObject.Properties())
+                        IEnumerable<JProperty> properties = jsonObject.Properties();
+                        foreach (JProperty prop in properties)
                         {
                             Console.WriteLine("Checking property: " + prop.Name);
                             if (prop.Value.Type == JTokenType.Array)
@@ -480,7 +478,8 @@ namespace MarketManagement.UserControls
                         dynamic dynamicData = JsonConvert.DeserializeObject(jsonData);
                         if (dynamicData != null && dynamicData.Orders != null)
                         {
-                            foreach (var order in dynamicData.Orders)
+                            IEnumerable<dynamic> orders = dynamicData.Orders;
+                            foreach (dynamic order in orders)
                             {
                                 string invoiceNo = order.InvoiceNo?.ToString();
                                 if (!string.IsNullOrEmpty(invoiceNo) &&
@@ -545,33 +544,26 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                // Kiểm tra nếu không có tên khách hàng nhập vào
+                // Kiểm tra nếu không có ID khách hàng nhập vào
                 if (string.IsNullOrWhiteSpace(txt_customerId.Text))
                 {
-                    MessageBox.Show("Please enter a customer name to search.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Please enter a customer ID to search.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txt_customerId.Focus();
                     return;
                 }
 
                 // Thử cả hai đường dẫn có thể
-                string dataFolderPath = Path.Combine(Application.StartupPath, "Data");
-                string filePath1 = Path.Combine(dataFolderPath, "orders.json");
                 string filePath2 = Path.Combine(Application.StartupPath, "orders.json");
-
                 string jsonFilePath = "";
 
                 // Kiểm tra file tồn tại ở đường dẫn nào
-                if (File.Exists(filePath1))
-                {
-                    jsonFilePath = filePath1;
-                }
-                else if (File.Exists(filePath2))
+                if (File.Exists(filePath2))
                 {
                     jsonFilePath = filePath2;
                 }
                 else
                 {
-                    MessageBox.Show("Orders file not found. Checked paths:\n" + filePath1 + "\n" + filePath2,
+                    MessageBox.Show("Orders file not found. Checked paths:\n" + "\n" + filePath2,
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -597,10 +589,10 @@ namespace MarketManagement.UserControls
                 dt.Columns.Add("GrandTotal", typeof(decimal));
 
                 bool orderFound = false;
-                string searchCustomerName = txt_customerId.Text.Trim().ToLower();
+                string searchCustomerId = txt_customerId.Text.Trim();
 
                 // Debug info
-                Console.WriteLine("Searching for customer name: " + searchCustomerName);
+                Console.WriteLine("Searching for customer ID: " + searchCustomerId);
                 Console.WriteLine("JSON file path: " + jsonFilePath);
 
                 try
@@ -616,18 +608,18 @@ namespace MarketManagement.UserControls
 
                         foreach (JToken orderToken in ordersArray)
                         {
-                            string customerName = orderToken["CustomerName"]?.ToString() ?? "";
-                            Console.WriteLine($"Checking customer: {customerName} contains {searchCustomerName}");
+                            string customerId = orderToken["CustomerId"]?.ToString() ?? "";
+                            Console.WriteLine($"Checking customer ID: {customerId} against {searchCustomerId}");
 
-                            if (!string.IsNullOrEmpty(customerName) &&
-                                customerName.ToLower().Contains(searchCustomerName))
+                            if (!string.IsNullOrEmpty(customerId) &&
+                                customerId.Equals(searchCustomerId, StringComparison.OrdinalIgnoreCase))
                             {
-                                Console.WriteLine("Customer match found!");
+                                Console.WriteLine("Customer ID match found!");
                                 DataRow row = dt.NewRow();
                                 row["InvoiceDate"] = orderToken["InvoiceDate"]?.ToString() ?? "";
                                 row["InvoiceNo"] = orderToken["InvoiceNo"]?.ToString() ?? "";
-                                row["CustomerId"] = orderToken["CustomerId"]?.ToString() ?? "";
-                                row["CustomerName"] = customerName;
+                                row["CustomerId"] = customerId;
+                                row["CustomerName"] = orderToken["CustomerName"]?.ToString() ?? "";
                                 row["Contact"] = orderToken["Contact"]?.ToString() ?? "";
                                 row["Address"] = orderToken["Address"]?.ToString() ?? "";
 
@@ -646,7 +638,8 @@ namespace MarketManagement.UserControls
                     else
                     {
                         // Thử xem có mảng nào khác không
-                        foreach (var prop in jsonObject.Properties())
+                        IEnumerable<JProperty> properties = jsonObject.Properties();
+                        foreach (JProperty prop in properties)
                         {
                             Console.WriteLine("Checking property: " + prop.Name);
                             if (prop.Value.Type == JTokenType.Array)
@@ -656,15 +649,15 @@ namespace MarketManagement.UserControls
 
                                 foreach (JToken item in array)
                                 {
-                                    string customerName = item["CustomerName"]?.ToString() ?? "";
-                                    if (!string.IsNullOrEmpty(customerName) &&
-                                        customerName.ToLower().Contains(searchCustomerName))
+                                    string customerId = item["CustomerId"]?.ToString() ?? "";
+                                    if (!string.IsNullOrEmpty(customerId) &&
+                                        customerId.Equals(searchCustomerId, StringComparison.OrdinalIgnoreCase))
                                     {
                                         DataRow row = dt.NewRow();
                                         row["InvoiceDate"] = item["InvoiceDate"]?.ToString() ?? "";
                                         row["InvoiceNo"] = item["InvoiceNo"]?.ToString() ?? "";
-                                        row["CustomerId"] = item["CustomerId"]?.ToString() ?? "";
-                                        row["CustomerName"] = customerName;
+                                        row["CustomerId"] = customerId;
+                                        row["CustomerName"] = item["CustomerName"]?.ToString() ?? "";
                                         row["Contact"] = item["Contact"]?.ToString() ?? "";
                                         row["Address"] = item["Address"]?.ToString() ?? "";
 
@@ -689,17 +682,18 @@ namespace MarketManagement.UserControls
                         dynamic dynamicData = JsonConvert.DeserializeObject(jsonData);
                         if (dynamicData != null && dynamicData.Orders != null)
                         {
-                            foreach (var order in dynamicData.Orders)
+                            IEnumerable<dynamic> orders = dynamicData.Orders;
+                            foreach (dynamic order in orders)
                             {
-                                string customerName = order.CustomerName?.ToString() ?? "";
-                                if (!string.IsNullOrEmpty(customerName) &&
-                                    customerName.ToLower().Contains(searchCustomerName))
+                                string customerId = order.CustomerId?.ToString() ?? "";
+                                if (!string.IsNullOrEmpty(customerId) &&
+                                    customerId.Equals(searchCustomerId, StringComparison.OrdinalIgnoreCase))
                                 {
                                     DataRow row = dt.NewRow();
                                     row["InvoiceDate"] = order.InvoiceDate?.ToString() ?? "";
                                     row["InvoiceNo"] = order.InvoiceNo?.ToString() ?? "";
-                                    row["CustomerId"] = order.CustomerId?.ToString() ?? "";
-                                    row["CustomerName"] = customerName;
+                                    row["CustomerId"] = customerId;
+                                    row["CustomerName"] = order.CustomerName?.ToString() ?? "";
                                     row["Contact"] = order.Contact?.ToString() ?? "";
                                     row["Address"] = order.Address?.ToString() ?? "";
 
@@ -741,7 +735,7 @@ namespace MarketManagement.UserControls
                 // Hiển thị thông báo nếu không tìm thấy hóa đơn
                 if (!orderFound)
                 {
-                    MessageBox.Show("No invoices found for customer name: " + searchCustomerName,
+                    MessageBox.Show("No invoices found for customer ID: " + searchCustomerId,
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
