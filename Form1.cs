@@ -21,6 +21,7 @@ namespace MarketManagement
         UserControls.Billing billing = new UserControls.Billing();
         UserControls.Staff staff = new UserControls.Staff();
 
+
         public panelMain()
         {
             InitializeComponent();
@@ -114,6 +115,8 @@ namespace MarketManagement
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
             
+            panel1.Controls.Add(dashboard);
+            dashboard.Dock = DockStyle.Fill;
 
         }
 
@@ -153,6 +156,13 @@ namespace MarketManagement
         private void button2_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Wellcome wellcome = new Wellcome();
+            wellcome.Show();
+            this.Hide();
         }
     }
 }

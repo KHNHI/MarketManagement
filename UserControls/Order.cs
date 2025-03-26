@@ -760,6 +760,9 @@ namespace MarketManagement.UserControls
             }
         }
 
+        private void db_ordersDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
+        }
     }
 }

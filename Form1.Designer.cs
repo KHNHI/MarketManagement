@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(panelMain));
             this.panelSlide = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
@@ -60,6 +61,7 @@
             this.panelSlide.AutoScroll = true;
             this.panelSlide.BackColor = System.Drawing.Color.White;
             this.panelSlide.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSlide.Controls.Add(this.button3);
             this.panelSlide.Controls.Add(this.button1);
             this.panelSlide.Controls.Add(this.btnSetting);
             this.panelSlide.Controls.Add(this.btnRecord);
@@ -75,9 +77,24 @@
             this.panelSlide.TabIndex = 0;
             this.panelSlide.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(246)))));
+            this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
+            this.button3.Location = new System.Drawing.Point(22, 683);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(174, 50);
+            this.button3.TabIndex = 0;
+            this.button3.Text = "LOG OUT";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.White;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button1.Dock = System.Windows.Forms.DockStyle.Top;
             this.button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.button1.FlatAppearance.BorderSize = 0;
@@ -100,6 +117,7 @@
             // btnSetting
             // 
             this.btnSetting.BackColor = System.Drawing.Color.White;
+            this.btnSetting.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSetting.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnSetting.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.btnSetting.FlatAppearance.BorderSize = 0;
@@ -122,6 +140,7 @@
             // btnRecord
             // 
             this.btnRecord.BackColor = System.Drawing.Color.White;
+            this.btnRecord.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnRecord.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnRecord.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.btnRecord.FlatAppearance.BorderSize = 0;
@@ -144,6 +163,7 @@
             // btnCustomer
             // 
             this.btnCustomer.BackColor = System.Drawing.Color.White;
+            this.btnCustomer.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCustomer.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCustomer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.btnCustomer.FlatAppearance.BorderSize = 0;
@@ -166,7 +186,7 @@
             // btnProduct
             // 
             this.btnProduct.BackColor = System.Drawing.Color.White;
-            this.btnProduct.Cursor = System.Windows.Forms.Cursors.No;
+            this.btnProduct.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnProduct.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnProduct.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.btnProduct.FlatAppearance.BorderSize = 0;
@@ -189,6 +209,7 @@
             // btnDashboard
             // 
             this.btnDashboard.BackColor = System.Drawing.Color.White;
+            this.btnDashboard.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDashboard.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(239)))), ((int)(((byte)(222)))));
             this.btnDashboard.FlatAppearance.BorderSize = 0;
@@ -361,6 +382,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 
