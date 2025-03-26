@@ -194,7 +194,7 @@ namespace MarketManagement.UserControls
 
         private void ClearProductFields()
         {
-            txt_productId.Clear();
+           // txt_productId.Clear();
             txt_productname.Clear();
             txt_productprice.Clear();
             txt_productquantity.Clear();
