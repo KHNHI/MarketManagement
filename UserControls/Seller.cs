@@ -62,5 +62,15 @@ namespace MarketManagement.UserControls
         {
             // Xử lý khi label1 được click
         }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Seller_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
