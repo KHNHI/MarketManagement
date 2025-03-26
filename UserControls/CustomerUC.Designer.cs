@@ -117,7 +117,7 @@
             this.btnAddCustomer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(201)))), ((int)(((byte)(50)))), ((int)(((byte)(93)))));
             this.btnAddCustomer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.btnAddCustomer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAddCustomer.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddCustomer.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddCustomer.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnAddCustomer.Location = new System.Drawing.Point(914, 82);
             this.btnAddCustomer.Name = "btnAddCustomer";
@@ -134,7 +134,7 @@
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label4.Location = new System.Drawing.Point(483, 193);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(31, 18);
+            this.label4.Size = new System.Drawing.Size(39, 23);
             this.label4.TabIndex = 27;
             this.label4.Text = "VIP";
             // 
@@ -143,7 +143,7 @@
             this.txtCustomerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCustomerPhone.Location = new System.Drawing.Point(57, 137);
             this.txtCustomerPhone.Name = "txtCustomerPhone";
-            this.txtCustomerPhone.Size = new System.Drawing.Size(356, 26);
+            this.txtCustomerPhone.Size = new System.Drawing.Size(356, 30);
             this.txtCustomerPhone.TabIndex = 26;
             // 
             // label5
@@ -153,7 +153,7 @@
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(120)))), ((int)(((byte)(153)))));
             this.label5.Location = new System.Drawing.Point(52, 107);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(117, 18);
+            this.label5.Size = new System.Drawing.Size(146, 23);
             this.label5.TabIndex = 25;
             this.label5.Text = "Phone Number";
             // 
@@ -162,17 +162,17 @@
             this.txtCustomerAddress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCustomerAddress.Location = new System.Drawing.Point(476, 53);
             this.txtCustomerAddress.Name = "txtCustomerAddress";
-            this.txtCustomerAddress.Size = new System.Drawing.Size(356, 26);
+            this.txtCustomerAddress.Size = new System.Drawing.Size(356, 30);
             this.txtCustomerAddress.TabIndex = 24;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label6.Location = new System.Drawing.Point(483, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(66, 18);
+            this.label6.Size = new System.Drawing.Size(81, 22);
             this.label6.TabIndex = 23;
             this.label6.Text = "Address";
             // 
@@ -181,7 +181,7 @@
             this.txtCustomerEmail.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCustomerEmail.Location = new System.Drawing.Point(476, 137);
             this.txtCustomerEmail.Name = "txtCustomerEmail";
-            this.txtCustomerEmail.Size = new System.Drawing.Size(356, 26);
+            this.txtCustomerEmail.Size = new System.Drawing.Size(356, 30);
             this.txtCustomerEmail.TabIndex = 22;
             // 
             // txtCustomerName
@@ -189,7 +189,7 @@
             this.txtCustomerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCustomerName.Location = new System.Drawing.Point(55, 53);
             this.txtCustomerName.Name = "txtCustomerName";
-            this.txtCustomerName.Size = new System.Drawing.Size(356, 26);
+            this.txtCustomerName.Size = new System.Drawing.Size(356, 30);
             this.txtCustomerName.TabIndex = 20;
             // 
             // label2
@@ -199,7 +199,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(79)))), ((int)(((byte)(172)))), ((int)(((byte)(189)))));
             this.label2.Location = new System.Drawing.Point(52, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(127, 18);
+            this.label2.Size = new System.Drawing.Size(160, 23);
             this.label2.TabIndex = 19;
             this.label2.Text = "Customer Name";
             // 
@@ -216,7 +216,7 @@
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(211)))), ((int)(((byte)(57)))));
             this.label3.Location = new System.Drawing.Point(483, 107);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 18);
+            this.label3.Size = new System.Drawing.Size(61, 23);
             this.label3.TabIndex = 21;
             this.label3.Text = "Email";
             // 
@@ -225,13 +225,13 @@
             this.chkbIsVip.AutoSize = true;
             this.chkbIsVip.Location = new System.Drawing.Point(536, 196);
             this.chkbIsVip.Name = "chkbIsVip";
-            this.chkbIsVip.Size = new System.Drawing.Size(15, 14);
+            this.chkbIsVip.Size = new System.Drawing.Size(18, 17);
             this.chkbIsVip.TabIndex = 33;
             this.chkbIsVip.UseVisualStyleBackColor = true;
             // 
             // CustomerUC
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(246)))));
             this.Controls.Add(this.chkbIsVip);

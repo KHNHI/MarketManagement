@@ -29,11 +29,11 @@ namespace MarketManagement.UserControls
         {
             dataGridViewStaff.Columns.Clear();
             dataGridViewStaff.Columns.Add("Id", "ID");
-            dataGridViewStaff.Columns.Add("UserName", "Tên nhân viên");
-            dataGridViewStaff.Columns.Add("PhoneNumber", "Số điện thoại");
-            dataGridViewStaff.Columns.Add("DateOfBirth", "Ngày sinh");
-            dataGridViewStaff.Columns.Add("Position", "Vị trí");
-            dataGridViewStaff.Columns.Add("Shift", "Ca làm việc");
+            dataGridViewStaff.Columns.Add("UserName", "User Name");
+            dataGridViewStaff.Columns.Add("PhoneNumber", "Phone Number");
+            dataGridViewStaff.Columns.Add("DateOfBirth", "Date of Birth");
+            dataGridViewStaff.Columns.Add("Position", "Position");
+            dataGridViewStaff.Columns.Add("Shift", "Shift");
 
             dataGridViewStaff.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewStaff.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -162,6 +162,11 @@ namespace MarketManagement.UserControls
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
         {
 
         }
