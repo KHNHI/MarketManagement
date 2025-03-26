@@ -20,8 +20,23 @@ namespace MarketManagement.UserControls
         public Order()
         {
             InitializeComponent();
+            
+            // Add event handler for cell double-click
+            db_ordersDataGridView.CellDoubleClick += Db_ordersDataGridView_CellDoubleClick;
         }
 
+        private void Db_ordersDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the click was on a valid row (not header, not -1)
+            if (e.RowIndex >= 0 && e.RowIndex < db_ordersDataGridView.Rows.Count)
+            {
+                // Process the double-click on a valid row here
+                // For example, you could show order details
+                DataGridViewRow row = db_ordersDataGridView.Rows[e.RowIndex];
+                // Do something with the row data
+            }
+            // If index is -1 or otherwise invalid, we do nothing, preventing the exception
+        }
 
         // Phương thức tải danh sách hóa đơn
         private void UC_orders_Load(object sender, EventArgs e)

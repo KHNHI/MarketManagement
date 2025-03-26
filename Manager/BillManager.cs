@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using MarketManagement.Model;
 
@@ -50,7 +50,10 @@ namespace MarketManagement.Manager
             if (File.Exists(_billsFilePath))
             {
                 string jsonData = File.ReadAllText(_billsFilePath);
-                _bills = JsonConvert.DeserializeObject<List<Bill>>(jsonData) ?? new List<Bill>();
+                _bills = JsonConvert.DeserializeObject<List<Bill>>(jsonData, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto
+                }) ?? new List<Bill>();
             }
             else
             {
@@ -117,12 +120,7 @@ namespace MarketManagement.Manager
 
         public Bill CreateNewBill()
         {
-            return new Bill
-            {
-                BillId = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                Date = DateTime.Now,
-                Items = new List<BillItem>()
-            };
+            return new Bill();
         }
 
         public void AddItemToBill(Bill bill, string productId, string productName, int quantity, decimal unitPrice)
@@ -223,7 +221,11 @@ namespace MarketManagement.Manager
 
         private void SaveBills()
         {
-            string jsonData = JsonConvert.SerializeObject(_bills, Formatting.Indented);
+            string jsonData = JsonConvert.SerializeObject(_bills, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            });
             File.WriteAllText(_billsFilePath, jsonData);
         }
 

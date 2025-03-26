@@ -42,15 +42,59 @@ namespace MarketManagement
 
         private void LoadInvoiceData()
         {
-            string tempPath = Path.Combine(Application.StartupPath, "Data", "temp_invoice.json");
+            string appPath = Application.StartupPath;
+            string tempPath = Path.Combine(appPath, "Data", "temp_invoice.json");
+            
             if (File.Exists(tempPath))
             {
-                string jsonData = File.ReadAllText(tempPath);
-                _invoiceData = JsonConvert.DeserializeObject<InvoiceData>(jsonData);
+                try
+                {
+                    string jsonData = File.ReadAllText(tempPath);
+                    
+                    // Deserialize JSON thành đối tượng động
+                    dynamic jsonObject = JsonConvert.DeserializeObject(jsonData);
+                    
+                    // Tạo InvoiceData từ đối tượng JSON
+                    _invoiceData = new InvoiceData
+                    {
+                        InvoiceNo = jsonObject.InvoiceNo,
+                        InvoiceDate = jsonObject.InvoiceDate,
+                        CustomerName = jsonObject.CustomerName,
+                        CustomerContact = jsonObject.CustomerContact,
+                        CustomerAddress = jsonObject.CustomerAddress,
+                        GrandTotal = jsonObject.GrandTotal
+                    };
+                    
+                    // Tạo DataTable từ danh sách sản phẩm
+                    DataTable productsTable = new DataTable();
+                    productsTable.Columns.Add("ProductID", typeof(string));
+                    productsTable.Columns.Add("ProductName", typeof(string));
+                    productsTable.Columns.Add("ProductQuantity", typeof(int));
+                    productsTable.Columns.Add("ProductPrice", typeof(decimal));
+                    productsTable.Columns.Add("TotalAmount", typeof(decimal));
+                    
+                    foreach (var product in jsonObject.Products)
+                    {
+                        productsTable.Rows.Add(
+                            product.ProductID.ToString(),
+                            product.ProductName.ToString(),
+                            Convert.ToInt32(product.ProductQuantity),
+                            Convert.ToDecimal(product.ProductPrice),
+                            Convert.ToDecimal(product.TotalAmount)
+                        );
+                    }
+                    
+                    _invoiceData.Products = productsTable;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error parsing invoice data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw;
+                }
             }
             else
             {
-                throw new FileNotFoundException("Invoice data not found.");
+                throw new FileNotFoundException("Invoice data not found at: " + tempPath);
             }
         }
 

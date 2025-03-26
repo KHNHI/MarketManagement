@@ -103,10 +103,10 @@
     <Compile Include="Model\DrinkProduct.cs" />
     <Compile Include="Model\Exceptions\StaffValidationException.cs" />
     <Compile Include="Model\FoodProduct.cs" />
+    <Compile Include="Model\InvoiceData.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OtherProduct.cs" />
     <Compile Include="Model\ProductCategory.cs" />
-  
     <Compile Include="Model\ShiftType.cs" />
     <Compile Include="Model\Staff.cs" />
     <Compile Include="Model\StaffPosition.cs" />

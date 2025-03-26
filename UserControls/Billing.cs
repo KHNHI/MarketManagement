@@ -37,6 +37,7 @@ namespace MarketManagement.UserControls
             // Đăng ký các sự kiện để cập nhật tổng giá
             db_dataGridView1.CellValueChanged += db_dataGridView1_CellValueChanged;
             db_dataGridView1.UserDeletedRow += db_dataGridView1_UserDeletedRow;
+            db_dataGridView1.CellDoubleClick += Db_dataGridView1_CellDoubleClick;
         }
 
         public static string GetUniqueKey(int maxSize)
@@ -87,7 +88,7 @@ namespace MarketManagement.UserControls
         {
             if (!string.IsNullOrWhiteSpace(txt_customerid.Text))
             {
-                var customer = _customerManager.GetById(txt_customerid.Text);
+                BaseCustomer customer = _customerManager.GetById(txt_customerid.Text);
                 if (customer != null)
                 {
                     txt_customername.Text = customer.CustomerName;
@@ -222,7 +223,7 @@ namespace MarketManagement.UserControls
                         return;
                     }
 
-                    var product = _billManager.GetProductByName(txt_productname.Text);
+                    BaseProduct product = _billManager.GetProductByName(txt_productname.Text);
                         if (product != null)
                         {
                         if (!_billManager.ValidateQuantity(txt_productname.Text, quantity))
@@ -260,7 +261,7 @@ namespace MarketManagement.UserControls
                     return;
                 }
 
-                var product = _billManager.GetProductByName(txt_productname.Text);
+                BaseProduct product = _billManager.GetProductByName(txt_productname.Text);
                 if (product != null)
                 {
                     if (int.TryParse(txt_productquantity.Text, out int quantity))
@@ -291,9 +292,10 @@ namespace MarketManagement.UserControls
                 dt.Columns.Add("Id", typeof(string));
 
                 // Thêm dữ liệu từ _currentBill vào DataTable
-                foreach (var item in _currentBill.Items)
+                for (int i = 0; i < _currentBill.Items.Count; i++)
                 {
-                    var product = _billManager.GetProductById(item.ProductId);
+                    BillItem item = _currentBill.Items[i];
+                    BaseProduct product = _billManager.GetProductById(item.ProductId);
                     if (product != null)
                     {
                         dt.Rows.Add(
@@ -330,7 +332,11 @@ namespace MarketManagement.UserControls
                     db_dataGridView1.Columns["Price"].DefaultCellStyle.Format = "N0";
 
                 // Tính tổng tiền
-                decimal total = _currentBill.Items.Sum(item => item.TotalPrice);
+                decimal total = 0;
+                for (int i = 0; i < _currentBill.Items.Count; i++)
+                {
+                    total += _currentBill.Items[i].TotalPrice;
+                }
                 txt_totalprice.Text = total.ToString("N0");
             }
             catch (Exception ex)
@@ -363,8 +369,9 @@ namespace MarketManagement.UserControls
                 _currentBill.Contact = txt_contact.Text;
                 _currentBill.Address = txt_address.Text;
 
-                foreach (var item in _currentBill.Items)
+                for (int i = 0; i < _currentBill.Items.Count; i++)
                 {
+                    BillItem item = _currentBill.Items[i];
                     _billManager.UpdateProductQuantity(item.ProductId, item.Quantity);
                 }
 
@@ -395,12 +402,12 @@ namespace MarketManagement.UserControls
 
         private bool EventExists(Control control, string eventName, string handlerName)
         {
-            var eventField = typeof(Control).GetField(eventName,
+            System.Reflection.FieldInfo eventField = typeof(Control).GetField(eventName,
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             if (eventField != null)
             {
-                var eventValue = eventField.GetValue(control);
+                object eventValue = eventField.GetValue(control);
                 if (eventValue != null && eventValue.ToString().Contains(handlerName))
                     return true;
             }
@@ -414,7 +421,7 @@ namespace MarketManagement.UserControls
             {
                 if (!string.IsNullOrWhiteSpace(txt_productId.Text))
                 {
-                    var product = _billManager.GetProductById(txt_productId.Text);
+                    BaseProduct product = _billManager.GetProductById(txt_productId.Text);
                         if (product != null)
                         {
                             txt_productname.Text = product.ProductName;
@@ -444,10 +451,10 @@ namespace MarketManagement.UserControls
         {
             if (string.IsNullOrWhiteSpace(txt_productId.Text) && txt_productname.Text.Length >= 3)
             {
-                var products = _billManager.SearchProductsByName(txt_productname.Text);
+                List<BaseProduct> products = _billManager.SearchProductsByName(txt_productname.Text);
                 if (products.Count > 0)
                 {
-                    var product = products[0]; // Lấy sản phẩm đầu tiên tìm thấy
+                    BaseProduct product = products[0]; // Lấy sản phẩm đầu tiên tìm thấy
                         txt_productId.Text = product.Id;
                         txt_productname.Text = product.ProductName;
                         txt_productprice.Text = product.Price.ToString();
@@ -574,6 +581,13 @@ namespace MarketManagement.UserControls
                     return;
                 }
 
+                // Tính tổng giá trị hóa đơn
+                decimal grandTotal = 0;
+                for (int i = 0; i < _currentBill.Items.Count; i++)
+                {
+                    grandTotal += _currentBill.Items[i].TotalPrice;
+                }
+
                 // Tạo đối tượng chứa thông tin hóa đơn
                 InvoiceData invoiceInfo = new InvoiceData()
                 {
@@ -582,7 +596,7 @@ namespace MarketManagement.UserControls
                     CustomerName = txt_customername.Text,
                     CustomerContact = txt_contact.Text,
                     CustomerAddress = txt_address.Text,
-                    GrandTotal = _currentBill.Items.Sum(item => item.TotalPrice),
+                    GrandTotal = grandTotal,
                     Products = ConvertBillItemsToDataTable(_currentBill.Items)
                 };
 
@@ -610,8 +624,9 @@ namespace MarketManagement.UserControls
             dt.Columns.Add("TotalAmount", typeof(decimal));
 
             int stt = 1;
-            foreach (var item in items)
+            for (int i = 0; i < items.Count; i++)
             {
+                BillItem item = items[i];
                 dt.Rows.Add(
                     stt++,
                     item.ProductId,
@@ -629,14 +644,52 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                string tempPath = Path.Combine(Application.StartupPath, "Data", "temp_invoice.json");
-                string jsonData = JsonConvert.SerializeObject(invoiceInfo, Formatting.Indented);
+                // Chuyển DataTable thành một danh sách các đối tượng
+                List<ProductRow> productRows = new List<ProductRow>();
+                for (int i = 0; i < invoiceInfo.Products.Rows.Count; i++)
+                {
+                    DataRow row = invoiceInfo.Products.Rows[i];
+                    ProductRow productRow = new ProductRow
+                    {
+                        STT = Convert.ToInt32(row["STT"]),
+                        ProductID = row["ProductID"].ToString(),
+                        ProductName = row["ProductName"].ToString(),
+                        ProductQuantity = Convert.ToInt32(row["ProductQuantity"]),
+                        ProductPrice = Convert.ToDecimal(row["ProductPrice"]),
+                        TotalAmount = Convert.ToDecimal(row["TotalAmount"])
+                    };
+                    productRows.Add(productRow);
+                }
+
+                // Tạo đối tượng dữ liệu mới với danh sách sản phẩm
+                object invoiceData = new
+                {
+                    InvoiceNo = invoiceInfo.InvoiceNo,
+                    InvoiceDate = invoiceInfo.InvoiceDate,
+                    CustomerName = invoiceInfo.CustomerName,
+                    CustomerContact = invoiceInfo.CustomerContact,
+                    CustomerAddress = invoiceInfo.CustomerAddress,
+                    GrandTotal = invoiceInfo.GrandTotal,
+                    Products = productRows
+                };
+
+                string jsonData = JsonConvert.SerializeObject(invoiceData, Formatting.Indented);
+                
+                // Tạo thư mục Data nếu chưa tồn tại
+                string appPath = Application.StartupPath;
+                string dataDir = Path.Combine(appPath, "Data");
+                if (!Directory.Exists(dataDir))
+                {
+                    Directory.CreateDirectory(dataDir);
+                }
+                
+                // Lưu file vào thư mục Data
+                string tempPath = Path.Combine(dataDir, "temp_invoice.json");
                 File.WriteAllText(tempPath, jsonData);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error saving invoice data to cache: " + ex.Message);
-                // Không ném lại ngoại lệ để không gián đoạn quy trình in
+                MessageBox.Show("Error saving invoice data to cache: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -763,18 +816,31 @@ namespace MarketManagement.UserControls
             }
             txt_totalprice.Text = total.ToString("N0");
         }
+
+        private void Db_dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the click was on a valid row (not header, not -1)
+            if (e.RowIndex >= 0 && e.RowIndex < db_dataGridView1.Rows.Count)
+            {
+                // Process the double-click on a valid row here
+                DataGridViewRow row = db_dataGridView1.Rows[e.RowIndex];
+                // Do something with the row data, like selecting it or showing details
+            }
+            // If index is -1 or otherwise invalid, we do nothing, preventing the exception
+        }
     }
 
-    // Thêm lớp này vào namespace hoặc tạo một file riêng
-    public class InvoiceData
+   
+
+    // Class để lưu thông tin từng dòng sản phẩm khi serialization
+    public class ProductRow
     {
-        public string InvoiceNo { get; set; }
-        public string InvoiceDate { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerContact { get; set; }
-        public string CustomerAddress { get; set; }
-        public decimal GrandTotal { get; set; }
-        public DataTable Products { get; set; }
+        public int STT { get; set; }
+        public string ProductID { get; set; }
+        public string ProductName { get; set; }
+        public int ProductQuantity { get; set; }
+        public decimal ProductPrice { get; set; }
+        public decimal TotalAmount { get; set; }
     }
 }
 
