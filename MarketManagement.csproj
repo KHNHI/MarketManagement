@@ -83,7 +83,7 @@
   <ItemGroup>
     <Compile Include="Manager\BillManager.cs" />
     <Compile Include="Manager\CustomerManager.cs" />
-    <Compile Include="Manager\SellerManager.cs" />
+    <Compile Include="Manager\StaffManager.cs" />
     <Compile Include="Model\ApplianceProduct.cs" />
     <Compile Include="Model\BaseEntity.cs" />
     <Compile Include="BaseManager.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OtherProduct.cs" />
     <Compile Include="Model\ProductCategory.cs" />
-    <Compile Include="Model\Seller.cs" />
+  
     <Compile Include="Model\ShiftType.cs" />
     <Compile Include="Model\Staff.cs" />
     <Compile Include="Model\StaffPosition.cs" />
@@ -148,11 +148,11 @@
     <Compile Include="UserControls\Product.Designer.cs">
       <DependentUpon>Product.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Seller.cs">
+    <Compile Include="UserControls\Staff.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControls\Seller.Designer.cs">
-      <DependentUpon>Seller.cs</DependentUpon>
+    <Compile Include="UserControls\Staff.Designer.cs">
+      <DependentUpon>Staff.cs</DependentUpon>
     </Compile>
     <Compile Include="Wellcome.cs">
       <SubType>Form</SubType>
@@ -191,8 +191,8 @@
     <EmbeddedResource Include="UserControls\Product.resx">
       <DependentUpon>Product.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserControls\Seller.resx">
-      <DependentUpon>Seller.cs</DependentUpon>
+    <EmbeddedResource Include="UserControls\Staff.resx">
+      <DependentUpon>Staff.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wellcome.resx">
       <DependentUpon>Wellcome.cs</DependentUpon>

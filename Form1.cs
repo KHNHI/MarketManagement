@@ -19,7 +19,7 @@ namespace MarketManagement
         UserControls.Order order = new UserControls.Order();
         UserControls.Dashboard dashboard = new UserControls.Dashboard();
         UserControls.Billing billing = new UserControls.Billing();
-        UserControls.Seller seller = new UserControls.Seller();
+        UserControls.Staff staff = new UserControls.Staff();
 
         public panelMain()
         {
@@ -146,8 +146,8 @@ namespace MarketManagement
         private void button1_Click_1(object sender, EventArgs e)
         {
             panel1.Controls.Clear();
-            panel1.Controls.Add(seller);
-            seller.Dock = DockStyle.Fill;
+            panel1.Controls.Add(staff);
+            staff.Dock = DockStyle.Fill;
         }
 
         private void button2_Click(object sender, EventArgs e)
