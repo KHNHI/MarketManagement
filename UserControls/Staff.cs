@@ -160,5 +160,10 @@ namespace MarketManagement.UserControls
             comboBoxPosition.SelectedIndex = -1;
             comboBoxShift.SelectedIndex = -1;
         }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
