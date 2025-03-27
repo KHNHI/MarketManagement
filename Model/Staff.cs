@@ -158,7 +158,7 @@ namespace MarketManagement.Model
                     tienTo = "ST";
                     break;
             }
-            return tienTo + DateTime.Now.ToString("yyyyMMdd");
+            return tienTo + DateTime.Now.ToString("HHmmssyyyyMMdd");
         }
 
         public int CalculateAge()
