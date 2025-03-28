@@ -115,8 +115,8 @@ namespace MarketManagement
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
             
-            panel1.Controls.Add(dashboard);
-            dashboard.Dock = DockStyle.Fill;
+            //panel1.Controls.Add(dashboard);
+            //dashboard.Dock = DockStyle.Fill;
 
         }
 
