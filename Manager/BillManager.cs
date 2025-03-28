@@ -4,10 +4,13 @@ using System.IO;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using MarketManagement.Model;
+using System.Security.Cryptography;
+using System.Text;
+using MarketManagement.UseControl;
 
 namespace MarketManagement.Manager
 {
-    public class BillManager
+    public class BillManager 
     {
         private readonly FileHandler _productsFileHandler;
         private readonly FileHandler _billsFileHandler;
@@ -15,9 +18,16 @@ namespace MarketManagement.Manager
         private readonly JsonSerializerSettings _jsonSettings;
         private List<BaseProduct> _products;
         private List<Bill> _bills;
+        private Bill _bill;
+        public List<BillItem> Items;
 
+        public BillItem Item;
+
+        
         public BillManager()
         {
+            Items = new List<BillItem>();
+            _bill = new Bill();
             _productsFileHandler = new FileHandler("products");
             _billsFileHandler = new FileHandler("bills");
             _ordersFileHandler = new FileHandler("orders");
@@ -63,16 +73,24 @@ namespace MarketManagement.Manager
             }
         }
 
-        public string GenerateBillId()
+
+        public BillItem GetItemById(string ProductId)
         {
-            return DateTime.Now.ToString("yyyyMMddHHmmss");
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (Items[i].ProductId.Equals(ProductId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Items[i];
+                }
+            }
+            return null;
         }
 
-        public BaseProduct GetProductById(string productId)
+        public BaseProduct GetProductById(string Id)
         {
             for (int i = 0; i < _products.Count; i++)
             {
-                if (_products[i].Id.Equals(productId, StringComparison.OrdinalIgnoreCase))
+                if (_products[i].Id.Equals(Id, StringComparison.OrdinalIgnoreCase))
                 {
                     return _products[i];
                 }
@@ -80,55 +98,46 @@ namespace MarketManagement.Manager
             return null;
         }
 
-        public BaseProduct GetProductByName(string productName)
+        public void AddItem(BillItem Item)
         {
-            for (int i = 0; i < _products.Count; i++)
+            Items.Add(Item);
+            CalculateTotalCart2();
+        }
+
+        public void RemoveItem(BillItem Item)
+        {
+            Items.Remove(Item);
+            CalculateTotalCart2();
+        }
+
+       
+
+
+
+              public decimal CalculateTotalCart2()
+        {
+            decimal total = 0;
+            for (int i = 0; i < Items.Count; i++)
             {
-                if (_products[i].ProductName != null &&
-                    _products[i].ProductName.Equals(productName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return _products[i];
-                }
+                total += Items[i].TotalPrice;
             }
-            return null;
+
+            _bill.TotalCart = total;
+            return _bill.TotalCart;
         }
 
-        public List<BaseProduct> SearchProductsByName(string searchTerm)
+        public bool ValidateQuantity(string productId, int quantity)
         {
-            List<BaseProduct> results = new List<BaseProduct>();
-            for (int i = 0; i < _products.Count; i++)
-            {
-                if (_products[i].ProductName != null &&
-                    _products[i].ProductName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    results.Add(_products[i]);
-                }
-            }
-            return results;
-        }
-
-        public decimal CalculateTotalPrice(string productName, int quantity)
-        {
-            var product = GetProductByName(productName);
-            if (product == null) return 0;
-            return product.Price * quantity;
-        }
-
-        public bool ValidateQuantity(string productName, int quantity)
-        {
-            var product = GetProductByName(productName);
+            var product = GetProductById(productId);
             return product != null && quantity <= product.Quantity;
         }
 
+        
         public Bill CreateNewBill()
         {
-            return new Bill();
-        }
-
-        public void AddItemToBill(Bill bill, string productId, string productName, int quantity, decimal unitPrice)
-        {
-            var item = new BillItem(productId, productName, quantity, unitPrice);
-            bill.AddItem(item);
+            // Tạo đối tượng Bill mới
+            Bill newBill = new Bill();
+            return newBill;
         }
 
         public void SaveBill(Bill bill)
@@ -156,7 +165,6 @@ namespace MarketManagement.Manager
                 SaveProducts();
 
                 // Lưu hóa đơn
-                _bills.Add(bill);
                 SaveBills();
 
                 // Lưu vào orders.json
@@ -197,7 +205,7 @@ namespace MarketManagement.Manager
                     CustomerName = bill.CustomerName,
                     Contact = bill.Contact,
                     Address = bill.Address,
-                    GrandTotal = bill.TotalAmount,
+                    GrandTotal = bill.TotalCart,
                     OrderDetails = new List<OrderDetail>()
                 };
 
@@ -233,6 +241,7 @@ namespace MarketManagement.Manager
             {
                 // Sử dụng FileHandler để lưu dữ liệu hóa đơn
                 _billsFileHandler.SaveToFile(_bills, _jsonSettings);
+                _bills.Add(_bill);
             }
             catch (Exception ex)
             {

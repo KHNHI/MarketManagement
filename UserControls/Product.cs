@@ -19,8 +19,7 @@ namespace MarketManagement.UseControl
         private ProductManager productManager;
         private BaseProduct currentProduct;
 
-        // Thư - 20/03. Thêm vào đề xài trong Billing 
-        public List<Product> Products { get; set; }
+       
         private void LoadCategories()
         {
             cboCategory.DataSource = Enum.GetValues(typeof(ProductCategory));

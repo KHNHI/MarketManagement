@@ -14,31 +14,23 @@ namespace MarketManagement.Model
         public string Contact { get; set; }
         public string Address { get; set; }
         public List<BillItem> Items { get; set; }
-        public decimal TotalAmount { get; set; }
-        public string PaymentMethod { get; set; }
+        public decimal TotalCart { get; set; }
+        
 
         public Bill()
         {
             Id = GenerateId();
             BillId = Id;
             Date = DateTime.Now;
+            CustomerId = CustomerId;
+            CustomerName = CustomerName;
+            Contact = Contact;
+            Address = Address;
             Items = new List<BillItem>();
-            TotalAmount = 0;
+            TotalCart = 0;
         }
 
-        protected Bill(SerializationInfo info, StreamingContext context)
-        {
-            Id = info.GetString("Id");
-            BillId = info.GetString("BillId");
-            Date = info.GetDateTime("Date");
-            CustomerId = info.GetString("CustomerId");
-            CustomerName = info.GetString("CustomerName");
-            Contact = info.GetString("Contact");
-            Address = info.GetString("Address");
-            Items = (List<BillItem>)info.GetValue("Items", typeof(List<BillItem>));
-            TotalAmount = info.GetDecimal("TotalAmount");
-            PaymentMethod = info.GetString("PaymentMethod");
-        }
+       
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -50,31 +42,31 @@ namespace MarketManagement.Model
             info.AddValue("Contact", Contact);
             info.AddValue("Address", Address);
             info.AddValue("Items", Items);
-            info.AddValue("TotalAmount", TotalAmount);
-            info.AddValue("PaymentMethod", PaymentMethod);
+            info.AddValue("TotalCart", TotalCart);
+           
         }
 
-        public void AddItem(BillItem item)
-        {
-            Items.Add(item);
-            CalculateTotalAmount();
-        }
+        //public void AddItem(BillItem item)
+        //{
+        //    Items.Add(item);
+        //    CalculateTotalCart();
+        //}
 
-        public void RemoveItem(BillItem item)
-        {
-            Items.Remove(item);
-            CalculateTotalAmount();
-        }
+        //public void RemoveItem(BillItem item)
+        //{
+        //    Items.Remove(item);
+        //    CalculateTotalCart();
+        //}
 
-        private void CalculateTotalAmount()
-        {
-            decimal total = 0;
-            for (int i = 0; i < Items.Count; i++)
-            {
-                total += Items[i].TotalPrice;
-            }
-            TotalAmount = total;
-        }
+        //private void CalculateTotalCart()
+        //{
+        //    decimal total = 0;
+        //    for (int i = 0; i < Items.Count; i++)
+        //    {
+        //        total += Items[i].TotalPrice;
+        //    }
+        //    TotalCart = total;
+        //}
 
         public override string GenerateId()
         {
