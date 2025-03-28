@@ -8,6 +8,11 @@ namespace MarketManagement.Model
     public class OrdersData
     {
         public List<Order> Orders { get; set; }
+        
+        public OrdersData()
+        {
+            Orders = new List<Order>();
+        }
     }
 
     [Serializable]

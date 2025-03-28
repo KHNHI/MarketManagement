@@ -13,13 +13,14 @@ namespace MarketManagement
     public class ProductManager : IManager<BaseProduct>
     {
         private List<BaseProduct> products;
-        private readonly string filePath;
+        private readonly FileHandler fileHandler;
+        private readonly JsonSerializerSettings jsonSettings;
 
         // Singleton instance
         private static ProductManager instance;
         // Lock object for thread safety
         private static readonly object lockObject = new object();
-        
+
         // Singleton accessor with thread safety
         public static ProductManager Instance
         {
@@ -48,8 +49,13 @@ namespace MarketManagement
         // Constructor là private để đảm bảo Singleton
         private ProductManager()
         {
-            filePath = "products.json";
-            products = LoadFromFile();
+            fileHandler = new FileHandler("products");
+            jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                Formatting = Formatting.Indented
+            };
+            LoadProducts();
         }
 
         // Phương thức để kích hoạt sự kiện
@@ -58,37 +64,27 @@ namespace MarketManagement
             ProductChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private List<BaseProduct> LoadFromFile()
+        private void LoadProducts()
         {
             try
             {
-                if (File.Exists(filePath))
-                {
-                    string jsonData = File.ReadAllText(filePath);
-                    JsonSerializerSettings settings = new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    };
-                    return JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, settings) ?? new List<BaseProduct>();
-                }
+                // Sử dụng LoadFromFile với JsonSerializerSettings
+                products = fileHandler.LoadFromFile<List<BaseProduct>>(jsonSettings) ?? new List<BaseProduct>();
             }
-            catch { }
-            return new List<BaseProduct>();
+            catch (Exception)
+            {
+                products = new List<BaseProduct>();
+            }
         }
 
         private void SaveToFile()
         {
             try
             {
-                JsonSerializerSettings settings = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All,
-                    Formatting = Formatting.Indented
-                };
-                string jsonData = JsonConvert.SerializeObject(products, settings);
-                File.WriteAllText(filePath, jsonData);
+                // Sử dụng SaveToFile với JsonSerializerSettings
+                fileHandler.SaveToFile(products, jsonSettings);
             }
-            catch { }
+            catch (Exception) { }
         }
 
         public bool Add(BaseProduct product)
@@ -105,7 +101,7 @@ namespace MarketManagement
 
             products.Add(product);
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnProductChanged();
             return true;
@@ -132,7 +128,7 @@ namespace MarketManagement
 
             products[index] = product;
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnProductChanged();
             return true;
@@ -156,7 +152,7 @@ namespace MarketManagement
 
             products.RemoveAt(index);
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnProductChanged();
             return true;
@@ -220,3 +216,4 @@ namespace MarketManagement
         }
     }
 }
+

@@ -13,13 +13,14 @@ namespace MarketManagement.Manager
     public class CustomerManager : IManager<BaseCustomer>
     {
         private List<BaseCustomer> customers;
-        private readonly string filePath;
+        private readonly FileHandler fileHandler;
+        private readonly JsonSerializerSettings jsonSettings;
 
         // Singleton instance
         private static CustomerManager instance;
         // Lock object for thread safety
         private static readonly object lockObject = new object();
-        
+
         // Singleton accessor with thread safety
         public static CustomerManager Instance
         {
@@ -48,7 +49,12 @@ namespace MarketManagement.Manager
         // Đổi constructor thành private
         private CustomerManager()
         {
-            filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "customers.json");
+            fileHandler = new FileHandler("customers");
+            jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
             LoadCustomers();
         }
 
@@ -60,15 +66,12 @@ namespace MarketManagement.Manager
 
         private void LoadCustomers()
         {
-            if (File.Exists(filePath))
+            try
             {
-                string jsonData = File.ReadAllText(filePath);
-                customers = JsonConvert.DeserializeObject<List<BaseCustomer>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                }) ?? new List<BaseCustomer>();
+                // Sử dụng FileHandler để load dữ liệu
+                customers = fileHandler.LoadFromFile<List<BaseCustomer>>(jsonSettings) ?? new List<BaseCustomer>();
             }
-            else
+            catch (Exception)
             {
                 customers = new List<BaseCustomer>();
             }
@@ -78,10 +81,10 @@ namespace MarketManagement.Manager
         {
             try
             {
-                string jsonData = JsonConvert.SerializeObject(customers, Formatting.Indented);
-                File.WriteAllText(filePath, jsonData);
+                // Sử dụng FileHandler để lưu dữ liệu
+                fileHandler.SaveToFile(customers, jsonSettings);
             }
-            catch { }
+            catch (Exception) { }
         }
 
         public bool Add(BaseCustomer customer)
@@ -91,7 +94,7 @@ namespace MarketManagement.Manager
 
             customers.Add(customer);
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnCustomerChanged();
             return true;
@@ -118,7 +121,7 @@ namespace MarketManagement.Manager
 
             customers[index] = customer;
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnCustomerChanged();
             return true;
@@ -142,7 +145,7 @@ namespace MarketManagement.Manager
 
             customers.RemoveAt(index);
             SaveToFile();
-            
+
             // Thông báo sự kiện
             OnCustomerChanged();
             return true;
@@ -182,30 +185,6 @@ namespace MarketManagement.Manager
             return vipCustomers;
         }
 
-        public BaseCustomer GetByPhoneNumber(string phoneNumber)
-        {
-            foreach (BaseCustomer customer in customers)
-            {
-                if (customer.PhoneNumber == phoneNumber)
-                {
-                    return customer;
-                }
-            }
-            return null;
-        }
 
-        public List<BaseCustomer> SearchByName(string searchTerm)
-        {
-            List<BaseCustomer> results = new List<BaseCustomer>();
-            foreach (BaseCustomer customer in customers)
-            {
-                if (customer.CustomerName != null &&
-                    customer.CustomerName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    results.Add(customer);
-                }
-            }
-            return results;
-        }
     }
 }

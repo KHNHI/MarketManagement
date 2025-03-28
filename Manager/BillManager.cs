@@ -9,17 +9,25 @@ namespace MarketManagement.Manager
 {
     public class BillManager
     {
-        private readonly string _productsFilePath;
-        private readonly string _billsFilePath;
-        private readonly string _ordersFilePath;
+        private readonly FileHandler _productsFileHandler;
+        private readonly FileHandler _billsFileHandler;
+        private readonly FileHandler _ordersFileHandler;
+        private readonly JsonSerializerSettings _jsonSettings;
         private List<BaseProduct> _products;
         private List<Bill> _bills;
 
         public BillManager()
         {
-            _productsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "products.json");
-            _billsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bills.json");
-            _ordersFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "orders.json");
+            _productsFileHandler = new FileHandler("products");
+            _billsFileHandler = new FileHandler("bills");
+            _ordersFileHandler = new FileHandler("orders");
+
+            _jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
+
             LoadData();
         }
 
@@ -31,15 +39,12 @@ namespace MarketManagement.Manager
 
         private void LoadProducts()
         {
-            if (File.Exists(_productsFilePath))
+            try
             {
-                string jsonData = File.ReadAllText(_productsFilePath);
-                _products = JsonConvert.DeserializeObject<List<BaseProduct>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                }) ?? new List<BaseProduct>();
+                // Sử dụng FileHandler để tải dữ liệu sản phẩm
+                _products = _productsFileHandler.LoadFromFile<List<BaseProduct>>(_jsonSettings) ?? new List<BaseProduct>();
             }
-            else
+            catch (Exception)
             {
                 _products = new List<BaseProduct>();
             }
@@ -47,15 +52,12 @@ namespace MarketManagement.Manager
 
         private void LoadBills()
         {
-            if (File.Exists(_billsFilePath))
+            try
             {
-                string jsonData = File.ReadAllText(_billsFilePath);
-                _bills = JsonConvert.DeserializeObject<List<Bill>>(jsonData, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                }) ?? new List<Bill>();
+                // Sử dụng FileHandler để tải dữ liệu hóa đơn
+                _bills = _billsFileHandler.LoadFromFile<List<Bill>>(_jsonSettings) ?? new List<Bill>();
             }
-            else
+            catch (Exception)
             {
                 _bills = new List<Bill>();
             }
@@ -82,7 +84,7 @@ namespace MarketManagement.Manager
         {
             for (int i = 0; i < _products.Count; i++)
             {
-                if (_products[i].ProductName != null && 
+                if (_products[i].ProductName != null &&
                     _products[i].ProductName.Equals(productName, StringComparison.OrdinalIgnoreCase))
                 {
                     return _products[i];
@@ -96,7 +98,7 @@ namespace MarketManagement.Manager
             List<BaseProduct> results = new List<BaseProduct>();
             for (int i = 0; i < _products.Count; i++)
             {
-                if (_products[i].ProductName != null && 
+                if (_products[i].ProductName != null &&
                     _products[i].ProductName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     results.Add(_products[i]);
@@ -171,12 +173,18 @@ namespace MarketManagement.Manager
             try
             {
                 OrdersData ordersData;
-                if (File.Exists(_ordersFilePath))
+                try
                 {
-                    string jsonData = File.ReadAllText(_ordersFilePath);
-                    ordersData = JsonConvert.DeserializeObject<OrdersData>(jsonData) ?? new OrdersData { Orders = new List<Order>() };
+                    // Sử dụng FileHandler để tải dữ liệu đơn hàng
+                    ordersData = _ordersFileHandler.LoadFromFile<OrdersData>() ?? new OrdersData { Orders = new List<Order>() };
+                    
+                    // Ensure Orders is not null
+                    if (ordersData.Orders == null)
+                    {
+                        ordersData.Orders = new List<Order>();
+                    }
                 }
-                else
+                catch
                 {
                     ordersData = new OrdersData { Orders = new List<Order>() };
                 }
@@ -210,8 +218,8 @@ namespace MarketManagement.Manager
 
                 ordersData.Orders.Add(order);
 
-                string updatedJsonData = JsonConvert.SerializeObject(ordersData, Formatting.Indented);
-                File.WriteAllText(_ordersFilePath, updatedJsonData);
+                // Sử dụng FileHandler để lưu dữ liệu đơn hàng
+                _ordersFileHandler.SaveToFile(ordersData, _jsonSettings);
             }
             catch (Exception ex)
             {
@@ -221,12 +229,15 @@ namespace MarketManagement.Manager
 
         private void SaveBills()
         {
-            string jsonData = JsonConvert.SerializeObject(_bills, new JsonSerializerSettings
+            try
             {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented
-            });
-            File.WriteAllText(_billsFilePath, jsonData);
+                // Sử dụng FileHandler để lưu dữ liệu hóa đơn
+                _billsFileHandler.SaveToFile(_bills, _jsonSettings);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error saving bills: {ex.Message}");
+            }
         }
 
         public List<Bill> GetAllBills()
@@ -274,12 +285,15 @@ namespace MarketManagement.Manager
 
         private void SaveProducts()
         {
-            string jsonData = JsonConvert.SerializeObject(_products, new JsonSerializerSettings
+            try
             {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented
-            });
-            File.WriteAllText(_productsFilePath, jsonData);
+                // Sử dụng FileHandler để lưu dữ liệu sản phẩm
+                _productsFileHandler.SaveToFile(_products, _jsonSettings);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error saving products: {ex.Message}");
+            }
         }
     }
-} 
+}

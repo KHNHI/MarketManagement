@@ -9,7 +9,8 @@ namespace MarketManagement.Manager
     public class StaffManager : IManager<Staff>
     {
         private List<Staff> staffs;
-        private readonly string filePath;
+        private readonly FileHandler fileHandler;
+        private readonly JsonSerializerSettings jsonSettings;
 
         // Singleton 
         private static StaffManager instance;
@@ -41,8 +42,12 @@ namespace MarketManagement.Manager
         // Đổi constructor thành private
         private StaffManager()
         {
-            filePath = "staffs.json";
-            staffs = LoadFromFile();
+            fileHandler = new FileHandler("staffs");
+            jsonSettings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented
+            };
+            LoadStaffs();
         }
 
         // Phương thức để kích hoạt sự kiện
@@ -51,28 +56,27 @@ namespace MarketManagement.Manager
             StaffChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private List<Staff> LoadFromFile()
+        private void LoadStaffs()
         {
             try
             {
-                if (File.Exists(filePath))
-                {
-                    string jsonData = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<List<Staff>>(jsonData) ?? new List<Staff>();
-                }
+                // Sử dụng FileHandler để tải dữ liệu
+                staffs = fileHandler.LoadFromFile<List<Staff>>(jsonSettings) ?? new List<Staff>();
             }
-            catch { }
-            return new List<Staff>();
+            catch (Exception)
+            {
+                staffs = new List<Staff>();
+            }
         }
 
         private void SaveToFile()
         {
             try
             {
-                string jsonData = JsonConvert.SerializeObject(staffs, Formatting.Indented);
-                File.WriteAllText(filePath, jsonData);
+                // Sử dụng FileHandler để lưu dữ liệu
+                fileHandler.SaveToFile(staffs, jsonSettings);
             }
-            catch { }
+            catch (Exception) { }
         }
 
         public bool Add(Staff staff)
