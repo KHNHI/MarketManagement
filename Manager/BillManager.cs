@@ -9,8 +9,7 @@ using System.Text;
 using MarketManagement.UseControl;
 using System.Windows.Forms;
 
-namespace MarketManagement.Manager
-{
+namespace MarketManagement { 
     public class BillManager 
     {
         private readonly FileHandler _productsFileHandler;
