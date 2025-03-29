@@ -17,7 +17,7 @@ namespace MarketManagement
         public decimal Price { get; set; }
         public string Description { get; set; }
         public ProductCategory Category { get; set; }
-        //public List<BaseProduct> Products { get; set; }
+        public List<BaseProduct> Products { get; set; }
         public BaseProduct()
         {
             Id = GenerateId();
