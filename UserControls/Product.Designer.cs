@@ -237,7 +237,6 @@
             this.dvgProduct.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dvgProduct.Size = new System.Drawing.Size(1111, 299);
             this.dvgProduct.TabIndex = 0;
-            this.dvgProduct.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dvgProduct_CellContentClick);
             // 
             // cboCategory
             // 
@@ -254,7 +253,6 @@
             this.cboStorage.Name = "cboStorage";
             this.cboStorage.Size = new System.Drawing.Size(121, 30);
             this.cboStorage.TabIndex = 16;
-            this.cboStorage.SelectedIndexChanged += new System.EventHandler(this.cboStorage_SelectedIndexChanged);
             // 
             // lbl_storageCondition
             // 
@@ -265,7 +263,6 @@
             this.lbl_storageCondition.TabIndex = 15;
             this.lbl_storageCondition.Text = "Storage Condition";
             this.lbl_storageCondition.Visible = false;
-            this.lbl_storageCondition.Click += new System.EventHandler(this.lbl_storageCondition_Click);
             // 
             // chklst_sizes
             // 
@@ -284,7 +281,6 @@
             this.chklst_sizes.Size = new System.Drawing.Size(216, 129);
             this.chklst_sizes.TabIndex = 14;
             this.chklst_sizes.Visible = false;
-            this.chklst_sizes.SelectedIndexChanged += new System.EventHandler(this.chklst_sizes_SelectedIndexChanged);
             // 
             // txt_volume
             // 
@@ -293,7 +289,6 @@
             this.txt_volume.Size = new System.Drawing.Size(100, 30);
             this.txt_volume.TabIndex = 13;
             this.txt_volume.Visible = false;
-            this.txt_volume.TextChanged += new System.EventHandler(this.txt_volume_TextChanged);
             // 
             // lbl_volume
             // 
@@ -304,7 +299,6 @@
             this.lbl_volume.TabIndex = 12;
             this.lbl_volume.Text = "Volume (ml)";
             this.lbl_volume.Visible = false;
-            this.lbl_volume.Click += new System.EventHandler(this.lbl_volume_Click);
             // 
             // chk_isAlcoholic
             // 
@@ -326,7 +320,6 @@
             this.lbl_isAlcoholic.TabIndex = 10;
             this.lbl_isAlcoholic.Text = "Alcoholic";
             this.lbl_isAlcoholic.Visible = false;
-            this.lbl_isAlcoholic.Click += new System.EventHandler(this.lbl_isAlcoholic_Click);
             // 
             // txt_material
             // 
@@ -335,7 +328,6 @@
             this.txt_material.Size = new System.Drawing.Size(100, 30);
             this.txt_material.TabIndex = 9;
             this.txt_material.Visible = false;
-            this.txt_material.TextChanged += new System.EventHandler(this.txt_material_TextChanged);
             // 
             // lbl_material
             // 
@@ -346,7 +338,6 @@
             this.lbl_material.TabIndex = 8;
             this.lbl_material.Text = "Material";
             this.lbl_material.Visible = false;
-            this.lbl_material.Click += new System.EventHandler(this.lbl_material_Click);
             // 
             // lbl_sizes
             // 
@@ -365,7 +356,6 @@
             this.txt_brand.Size = new System.Drawing.Size(138, 30);
             this.txt_brand.TabIndex = 5;
             this.txt_brand.Visible = false;
-            this.txt_brand.TextChanged += new System.EventHandler(this.txt_brand_TextChanged);
             // 
             // lbl_brand
             // 
@@ -376,7 +366,6 @@
             this.lbl_brand.TabIndex = 4;
             this.lbl_brand.Text = "Brand";
             this.lbl_brand.Visible = false;
-            this.lbl_brand.Click += new System.EventHandler(this.lbl_brand_Click);
             // 
             // txt_warranty
             // 
@@ -413,7 +402,6 @@
             this.lbl_expiryDate.TabIndex = 0;
             this.lbl_expiryDate.Text = "Expiry Date";
             this.lbl_expiryDate.Visible = false;
-            this.lbl_expiryDate.Click += new System.EventHandler(this.lbl_expiryDate_Click);
             // 
             // Product
             // 
@@ -454,7 +442,6 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Product";
             this.Size = new System.Drawing.Size(1117, 696);
-            this.Load += new System.EventHandler(this.Product_Load_1);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dvgProduct)).EndInit();
             this.ResumeLayout(false);

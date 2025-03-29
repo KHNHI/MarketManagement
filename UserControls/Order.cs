@@ -24,16 +24,30 @@ namespace MarketManagement.UserControls
 
             // Khởi tạo OrderManager
             _orderManager = new OrderManager(_ordersJsonPath);
+            
+            // Thêm context menu cho tính năng copy
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ToolStripMenuItem copyMenuItem = new ToolStripMenuItem("Copy Value");
+            copyMenuItem.Click += CopyMenuItem_Click;
+            contextMenu.Items.Add(copyMenuItem);
+            db_ordersDataGridView.ContextMenuStrip = contextMenu;
+            
+            // Thêm hỗ trợ phím tắt Ctrl+C
+            db_ordersDataGridView.KeyDown += Db_ordersDataGridView_KeyDown;
         }
 
         private void Db_ordersDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             // Check if the click was on a valid row (not header, not -1)
-            if (e.RowIndex >= 0 && e.RowIndex < db_ordersDataGridView.Rows.Count)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && e.RowIndex < db_ordersDataGridView.Rows.Count)
             {
-                // Process the double-click on a valid row here
-                DataGridViewRow row = db_ordersDataGridView.Rows[e.RowIndex];
-                // Do something with the row data
+                // Lấy giá trị từ cell và copy vào clipboard
+                object cellValue = db_ordersDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (cellValue != null)
+                {
+                    Clipboard.SetText(cellValue.ToString());
+                    MessageBox.Show("Copied to clipboard: " + cellValue.ToString(), "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 
@@ -178,6 +192,47 @@ namespace MarketManagement.UserControls
         private void ShowErrorMessage(string message, Exception ex)
         {
             MessageBox.Show(message + ": " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void CopyMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyCellValueToClipboard();
+        }
+
+        private void Db_ordersDataGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Kiểm tra phím tắt Ctrl+C để copy
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopyCellValueToClipboard();
+                e.Handled = true;
+            }
+        }
+
+        private void CopyCellValueToClipboard()
+        {
+            try
+            {
+                // Kiểm tra xem có cell nào được chọn không
+                if (db_ordersDataGridView.CurrentCell != null && db_ordersDataGridView.CurrentCell.Value != null)
+                {
+                    // Copy giá trị vào clipboard
+                    Clipboard.SetText(db_ordersDataGridView.CurrentCell.Value.ToString());
+                }
+                else if (db_ordersDataGridView.SelectedRows.Count > 0)
+                {
+                    // Nếu chọn cả hàng, lấy giá trị từ cột đầu tiên
+                    DataGridViewRow row = db_ordersDataGridView.SelectedRows[0];
+                    if (row.Cells[0].Value != null)
+                    {
+                        Clipboard.SetText(row.Cells[0].Value.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("Error copying value", ex);
+            }
         }
     }
 }

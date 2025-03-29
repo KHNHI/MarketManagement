@@ -734,70 +734,9 @@ namespace MarketManagement.UseControl
             LoadData();
         }
 
-        private void lbl_storageCondition_Click(object sender, EventArgs e)
-        {
 
-        }
 
-        private void cboStorage_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txt_volume_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_volume_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txt_material_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_material_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txt_brand_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_brand_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void chklst_sizes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_expiryDate_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_isAlcoholic_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dvgProduct_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Không cần xử lý gì ở đây, bởi vì đã có CellDoubleClick
-        }
-
-        private void Product_Load_1(object sender, EventArgs e)
-        {
-
-        }
+  
 
         private void DvgProduct_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -855,7 +794,7 @@ namespace MarketManagement.UseControl
             }
         }
 
-        // Hủy đăng ký sự kiện khi UserControl bị disposed
+        //Hủy đăng ký sự kiện khi UserControl bị disposed
         //protected override void Dispose(bool disposing)
         //{
         //    if (disposing)
