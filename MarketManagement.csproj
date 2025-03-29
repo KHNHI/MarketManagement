@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Manager\BillManager.cs" />
     <Compile Include="Manager\CustomerManager.cs" />
+    <Compile Include="Manager\OrderManager.cs" />
     <Compile Include="Manager\StaffManager.cs" />
     <Compile Include="Model\ApplianceProduct.cs" />
     <Compile Include="Model\BaseEntity.cs" />

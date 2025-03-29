@@ -7,6 +7,7 @@ using MarketManagement.Model;
 using System.Security.Cryptography;
 using System.Text;
 using MarketManagement.UseControl;
+using System.Windows.Forms;
 
 namespace MarketManagement.Manager
 {

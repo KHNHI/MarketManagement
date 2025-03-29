@@ -154,10 +154,11 @@ namespace MarketManagement.UserControls
             try
             {
                 if (string.IsNullOrEmpty(txt_productId.Text) ||
-                    string.IsNullOrEmpty(txt_productquantity.Text))
+                    string.IsNullOrEmpty(txt_productquantity.Text)||
+                    string.IsNullOrEmpty(txt_customerid.Text))
 
                 {
-                    MessageBox.Show("Vui lòng điền đầy đủ thông tin sản phẩm", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Vui lòng điền đầy đủ thông tin hóa đơn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -197,7 +198,7 @@ namespace MarketManagement.UserControls
                 dt.Columns.Add("ProductId", typeof(string));
                 dt.Columns.Add("TotalPrice", typeof(decimal));
 
-                foreach (var item in _currentBill.Items)
+                foreach (BillItem item in _currentBill.Items)
                 {
                     BillItem _item = _billManager.GetItemById(item.ProductId);
                     if (_item == null)
