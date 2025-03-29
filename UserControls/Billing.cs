@@ -26,20 +26,20 @@ namespace MarketManagement.UserControls
         private readonly CustomerManager _customerManager;
         private Bill _currentBill;
         private BillItem _item;
-        //private List<BillItem> _items;
+        private List<Bill> bills;
 
         public Billing()
         {
             InitializeComponent();
             _billManager = new BillManager();
             _customerManager =CustomerManager.Instance;
-           // _items = new List<BillItem>();
+            bills = new List<Bill>();
 
             _currentBill = _billManager.CreateNewBill();
 
             // Đăng ký các sự kiện để cập nhật tổng giá
            // db_dataGridView1.CellValueChanged += db_dataGridView1_CellValueChanged;
-            db_dataGridView1.UserDeletedRow += db_dataGridView1_UserDeletedRow;
+         //   db_dataGridView1.UserDeletedRow += db_dataGridView1_UserDeletedRow;
             db_dataGridView1.CellDoubleClick += Db_dataGridView1_CellDoubleClick;
         }
         private void auto()
@@ -136,11 +136,6 @@ namespace MarketManagement.UserControls
                             quantity = product.Quantity;
                             }
                         }
-                        else
-                        {
-                        MessageBox.Show("Không tìm thấy sản phẩm trong cơ sở dữ liệu", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            txt_totalprice.Clear();
-                    }
                 }
             }
             catch (Exception ex)
@@ -170,13 +165,16 @@ namespace MarketManagement.UserControls
                     {
                         BillItem _item = new BillItem(txt_productId.Text, txt_productname.Text, quantity, product.Price);
                       
+                        // Thêm sản phẩm vào BillManager
                         _billManager.AddItem(_item);
+                        
+                        // Cập nhật tổng giá
                         txt_totalprice.Text = _billManager.CalculateTotalCart2().ToString("N0");
-                        _currentBill.Items.Add(_item);
+                        
+                        // Cập nhật giao diện
                         UpdateDataGridView();
                         ClearProductFields();
                     }
-
                 }
             }
             catch (Exception ex)
@@ -194,68 +192,51 @@ namespace MarketManagement.UserControls
                 dt.Columns.Add("ProductName", typeof(string));
                 dt.Columns.Add("Quantity", typeof(int));
                 dt.Columns.Add("UnitPrice", typeof(decimal));
-               
                 dt.Columns.Add("ProductId", typeof(string));
                 dt.Columns.Add("TotalPrice", typeof(decimal));
 
-                foreach (BillItem item in _currentBill.Items)
+                // Chỉ hiển thị sản phẩm từ _billManager.Items
+                foreach (BillItem item in _billManager.Items)
                 {
-                    BillItem _item = _billManager.GetItemById(item.ProductId);
-                    if (_item == null)
-                        continue;
-
                     dt.Rows.Add(
-                        _item.ProductName,
-                        _item.Quantity,
-                        _item.UnitPrice,
-                        _item.ProductId,
-                        _item.TotalPrice
+                        item.ProductName,
+                        item.Quantity,
+                        item.UnitPrice,
+                        item.ProductId,
+                        item.TotalPrice
                     );
                 }
 
+                // Cập nhật DataGridView
                 db_dataGridView1.DataSource = dt;
 
                 // Định dạng số tiền
-                if (db_dataGridView1.Columns["Price"] != null)
-                    db_dataGridView1.Columns["Price"].DefaultCellStyle.Format = "N0";
-                if (db_dataGridView1.Columns["TotalProductPrice"] != null)
-                    db_dataGridView1.Columns["TotalProductPrice"].DefaultCellStyle.Format = "N0";
+                if (db_dataGridView1.Columns["UnitPrice"] != null)
+                    db_dataGridView1.Columns["UnitPrice"].DefaultCellStyle.Format = "N0";
+                if (db_dataGridView1.Columns["TotalPrice"] != null)
+                    db_dataGridView1.Columns["TotalPrice"].DefaultCellStyle.Format = "N0";
 
-                // Tính tổng tiền
-                decimal total = 0;
-                for (int i = 0; i < _currentBill.Items.Count; i++)
-                {
-                    total += _currentBill.Items[i].TotalPrice;
-                }
-                txt_totalprice.Text = total.ToString("N0");
+                // Cập nhật tổng tiền vào textbox
+                txt_totalprice.Text = _billManager.CalculateTotalCart2().ToString("N0");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error updating grid: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi cập nhật bảng dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void ClearCart()
         {
-            // Xóa DataSource trước
+            // Xóa tất cả sản phẩm trong BillManager
+            _billManager.ClearAllItems();
+           
             db_dataGridView1.DataSource = null;
 
             // Xóa tất cả các hàng dữ liệu
             if (db_dataGridView1.Rows.Count > 0)
-            {
-                try
-                {
-                    db_dataGridView1.Rows.Clear();
-
-                }
-                catch
-                {
-                    // Bỏ qua lỗi nếu không thể xóa
-                }
+            {  db_dataGridView1.Rows.Clear();
+               
             }
-
-         
-            // Cập nhật tổng giá
             txt_totalprice.Text = "0";
         }
         private void ClearInputFields()
@@ -276,47 +257,49 @@ namespace MarketManagement.UserControls
         {
             try
             {
-                if (_currentBill.Items.Count == 0)
+                if (_billManager.Items.Count == 0)
                 {
                     MessageBox.Show("Vui lòng thêm sản phẩm vào hóa đơn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                // Cập nhật dữ liệu từ BillManager vào _currentBill
+                _currentBill.Items = new List<BillItem>(_billManager.Items);
+                
                 // Cập nhật thông tin khách hàng vào hóa đơn
                 _currentBill.CustomerName = txt_customername.Text;
                 _currentBill.CustomerId = txt_customerid.Text;
                 _currentBill.Contact = txt_contact.Text;
                 _currentBill.Address = txt_address.Text;
-                _currentBill.TotalCart= _billManager.CalculateTotalCart2();
-                for (int i = 0; i < _currentBill.Items.Count; i++)
+                _currentBill.TotalCart = _billManager.CalculateTotalCart2();
+                
+                // Cập nhật số lượng sản phẩm trong kho
+                foreach (BillItem item in _currentBill.Items)
                 {
-                    BillItem item = _currentBill.Items[i];
                     _billManager.UpdateProductQuantity(item.ProductId, item.Quantity);
                 }
                
+                // Lưu hóa đơn
                 _billManager.SaveBill(_currentBill);
                 MessageBox.Show("Lưu hóa đơn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Lưu hóa đơn vào danh sách bills (nếu cần)
+                bills.Add(_currentBill);
+                
+                // Xóa toàn bộ giỏ hàng hiện tại
+                _billManager.ClearAllItems();
                 
                 // Tạo hóa đơn mới
                 _currentBill = _billManager.CreateNewBill();
                 txt_invoiceno.Text = _currentBill.BillId;
+                
+                // Cập nhật giao diện
                 UpdateDataGridView();
                 ClearInputFields();
-                
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi lưu hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void db_dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            if (e.Row.DataBoundItem is BillItem item)
-            {
-                _billManager.RemoveItem(item);
-                txt_totalprice.Text = _billManager.CalculateTotalCart2().ToString("N0");
-                UpdateDataGridView();
             }
         }
 
@@ -341,7 +324,7 @@ namespace MarketManagement.UserControls
             {
                 if (!string.IsNullOrWhiteSpace(txt_productId.Text))
                 {
-                    BaseProduct product = _billManager.GetProductById(txt_productId.Text);
+                BaseProduct product = _billManager.GetProductById(txt_productId.Text);
                         if (product != null)
                         {
                             txt_productname.Text = product.ProductName;
@@ -371,7 +354,7 @@ namespace MarketManagement.UserControls
                 // Kiểm tra xem có hàng nào được chọn trong DataGridView không
                 if (db_dataGridView1.SelectedRows.Count == 0 && db_dataGridView1.SelectedCells.Count == 0)
                 {
-                    MessageBox.Show("Please, select a product to remove.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Vui lòng chọn sản phẩm để xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -390,24 +373,29 @@ namespace MarketManagement.UserControls
                 // Kiểm tra xem hàng được chọn có phải là hàng mới không
                 if (selectedRow.IsNewRow)
                 {
-                    MessageBox.Show("Cannot remove the new row.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Không thể xóa hàng mới.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
-                // Xóa hàng được chọn
-                db_dataGridView1.Rows.Remove(selectedRow);
-
-                // Cập nhật tổng giá
-                txt_totalprice.Text = _billManager.CalculateTotalCart2().ToString("N0");
-
-                // Xóa thông tin sản phẩm hiện tại
-                ClearProductFields();
-
-                MessageBox.Show("Product removed from cart successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                MessageBox.Show("Error removing product: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string productId = selectedRow.Cells["ProductId"].Value.ToString();
+                
+                bool removed = _billManager.RemoveSelectedItem(productId);
+                
+                if (removed)
+                {
+                    UpdateDataGridView();
+                     txt_totalprice.Text = _billManager.CalculateTotalCart2().ToString("N0");
+                     ClearProductFields();
+                    
+                    MessageBox.Show("Đã xóa sản phẩm khỏi giỏ hàng thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy sản phẩm cần xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xóa sản phẩm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -469,18 +457,19 @@ namespace MarketManagement.UserControls
             try
             {
                 // Kiểm tra xem có sản phẩm nào trong giỏ hàng không
-                if (_currentBill.Items.Count == 0)
+                if (_billManager.Items.Count == 0)
                 {
-                    MessageBox.Show("No products in the cart to print invoice.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Không có sản phẩm nào trong giỏ hàng để in hóa đơn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // Tính tổng giá trị hóa đơn
-                decimal grandTotal = 0;
-                for (int i = 0; i < _currentBill.Items.Count; i++)
-                {
-                    grandTotal += _currentBill.Items[i].TotalPrice;
-                }
+                // Đồng bộ dữ liệu từ _billManager vào _currentBill
+                _currentBill.Items = new List<BillItem>(_billManager.Items);
+                _currentBill.CustomerName = txt_customername.Text;
+                _currentBill.CustomerId = txt_customerid.Text;
+                _currentBill.Contact = txt_contact.Text;
+                _currentBill.Address = txt_address.Text;
+                _currentBill.TotalCart = _billManager.CalculateTotalCart2();
 
                 // Tạo đối tượng chứa thông tin hóa đơn
                 InvoiceData invoiceInfo = new InvoiceData()
@@ -490,8 +479,8 @@ namespace MarketManagement.UserControls
                     CustomerName = txt_customername.Text,
                     CustomerContact = txt_contact.Text,
                     CustomerAddress = txt_address.Text,
-                    GrandTotal = grandTotal,
-                    Products = ConvertBillItemsToDataTable(_currentBill.Items)
+                    GrandTotal = _currentBill.TotalCart,
+                    Products = ConvertBillItemsToDataTable(_billManager.Items)
                 };
 
                 // Lưu thông tin hóa đơn vào cache
@@ -503,7 +492,7 @@ namespace MarketManagement.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error preparing invoice: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi chuẩn bị hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -622,12 +611,15 @@ namespace MarketManagement.UserControls
         {
             try
             {
+                // Cập nhật giao diện và xóa giỏ hàng
                 ClearCart();
-                MessageBox.Show("Cart cleared successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                // Hiển thị thông báo
+                MessageBox.Show("Đã xóa giỏ hàng thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error clearing cart: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi xóa giỏ hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
