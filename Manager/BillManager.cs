@@ -109,11 +109,6 @@ namespace MarketManagement.Manager
             Items.Remove(Item);
             CalculateTotalCart2();
         }
-
-       
-
-
-
               public decimal CalculateTotalCart2()
         {
             decimal total = 0;

@@ -46,27 +46,6 @@ namespace MarketManagement.Model
            
         }
 
-        //public void AddItem(BillItem item)
-        //{
-        //    Items.Add(item);
-        //    CalculateTotalCart();
-        //}
-
-        //public void RemoveItem(BillItem item)
-        //{
-        //    Items.Remove(item);
-        //    CalculateTotalCart();
-        //}
-
-        //private void CalculateTotalCart()
-        //{
-        //    decimal total = 0;
-        //    for (int i = 0; i < Items.Count; i++)
-        //    {
-        //        total += Items[i].TotalPrice;
-        //    }
-        //    TotalCart = total;
-        //}
 
         public override string GenerateId()
         {

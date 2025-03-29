@@ -176,7 +176,7 @@
             this.db_ordersDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.db_ordersDataGridView.Size = new System.Drawing.Size(1111, 369);
             this.db_ordersDataGridView.TabIndex = 0;
-            this.db_ordersDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.db_ordersDataGridView_CellContentClick);
+            //this.db_ordersDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.db_ordersDataGridView_CellContentClick);
             // 
             // panel3
             // 
