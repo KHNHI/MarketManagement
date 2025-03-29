@@ -64,7 +64,7 @@ namespace MarketManagement.Model
 
         public ValidationResult ValidateWithDetails()
         {
-            var result = new CustomerValidationResult();
+            CustomerValidationResult result = new CustomerValidationResult();
             result.IsValid = true;
 
             // Kiểm tra CustomerName

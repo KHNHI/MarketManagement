@@ -840,10 +840,6 @@ namespace MarketManagement.UseControl
             LoadData();
         }
 
-
-
-  
-
         private void DvgProduct_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             // Kiểm tra nếu click vào cell hợp lệ (không phải header, không phải index -1)
