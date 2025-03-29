@@ -20,12 +20,12 @@ namespace MarketManagement {
         private List<Bill> _bills;
         private Bill _bill;
         public List<BillItem> Items;
-
         public BillItem Item;
 
         
         public BillManager()
         {
+            _products= new List<BaseProduct>();
             Items = new List<BillItem>();
             _bill = new Bill();
             _productsFileHandler = new FileHandler("products");
@@ -109,8 +109,8 @@ namespace MarketManagement {
             Items.Remove(Item);
             CalculateTotalCart2();
         }
-              public decimal CalculateTotalCart2()
-        {
+         public decimal CalculateTotalCart2()
+         {
             decimal total = 0;
             for (int i = 0; i < Items.Count; i++)
             {
@@ -119,7 +119,7 @@ namespace MarketManagement {
 
             _bill.TotalCart = total;
             return _bill.TotalCart;
-        }
+         }
 
         public bool ValidateQuantity(string productId, int quantity)
         {
@@ -181,7 +181,6 @@ namespace MarketManagement {
                     // Sử dụng FileHandler để tải dữ liệu đơn hàng
                     ordersData = _ordersFileHandler.LoadFromFile<OrdersData>() ?? new OrdersData { Orders = new List<Order>() };
                     
-                    // Ensure Orders is not null
                     if (ordersData.Orders == null)
                     {
                         ordersData.Orders = new List<Order>();
@@ -244,22 +243,6 @@ namespace MarketManagement {
             }
         }
 
-        public List<Bill> GetAllBills()
-        {
-            return _bills;
-        }
-
-        public Bill GetBillById(string billId)
-        {
-            for (int i = 0; i < _bills.Count; i++)
-            {
-                if (_bills[i].BillId == billId)
-                {
-                    return _bills[i];
-                }
-            }
-            return null;
-        }
 
         public void UpdateProductQuantity(string productId, int soldQuantity)
         {
@@ -298,6 +281,38 @@ namespace MarketManagement {
             {
                 throw new Exception($"Error saving products: {ex.Message}");
             }
+        }
+
+      
+        public bool RemoveSelectedItem(string productId)
+        {
+            
+            BillItem itemToRemove = GetItemById(productId);
+            if (itemToRemove != null)
+            {
+                // Xóa khỏi danh sách Items
+                Items.Remove(itemToRemove);
+                
+                for (int i = 0; i < _bill.Items.Count; i++)
+                {
+                    if (_bill.Items[i].ProductId == productId)
+                    {
+                        _bill.Items.RemoveAt(i);
+                        break;
+                    }
+                }
+                CalculateTotalCart2();
+                return true;
+            }
+            return false;
+        }
+        
+        
+        public void ClearAllItems()
+        {
+            Items.Clear();
+            _bill.Items.Clear();
+            _bill.TotalCart = 0;
         }
     }
 }
