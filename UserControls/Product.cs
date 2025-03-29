@@ -160,6 +160,19 @@ namespace MarketManagement.UseControl
 
             // Add CellFormatting event handler
             dvgProduct.CellFormatting += DvgProduct_CellFormatting;
+            
+            // Thêm event handler cho double-click
+            dvgProduct.CellDoubleClick += DvgProduct_CellDoubleClick;
+            
+            // Thêm context menu cho tính năng copy
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ToolStripMenuItem copyMenuItem = new ToolStripMenuItem("Copy Value");
+            copyMenuItem.Click += CopyMenuItem_Click;
+            contextMenu.Items.Add(copyMenuItem);
+            dvgProduct.ContextMenuStrip = contextMenu;
+            
+            // Thêm hỗ trợ phím tắt Ctrl+C
+            dvgProduct.KeyDown += DvgProduct_KeyDown;
         }
 
         private void DvgProduct_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -778,12 +791,68 @@ namespace MarketManagement.UseControl
 
         private void dvgProduct_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            // Không cần xử lý gì ở đây, bởi vì đã có CellDoubleClick
         }
 
         private void Product_Load_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void DvgProduct_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Kiểm tra nếu click vào cell hợp lệ (không phải header, không phải index -1)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                // Lấy giá trị từ cell và copy vào clipboard
+                object cellValue = dvgProduct.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (cellValue != null)
+                {
+                    Clipboard.SetText(cellValue.ToString());
+                    MessageBox.Show("Copied to clipboard: " + cellValue.ToString(), "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void CopyMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyCellValueToClipboard();
+        }
+
+        private void DvgProduct_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Kiểm tra phím tắt Ctrl+C để copy
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopyCellValueToClipboard();
+                e.Handled = true;
+            }
+        }
+
+        private void CopyCellValueToClipboard()
+        {
+            try
+            {
+                // Kiểm tra xem có cell nào được chọn không
+                if (dvgProduct.CurrentCell != null && dvgProduct.CurrentCell.Value != null)
+                {
+                    // Copy giá trị vào clipboard
+                    Clipboard.SetText(dvgProduct.CurrentCell.Value.ToString());
+                }
+                else if (dvgProduct.SelectedRows.Count > 0)
+                {
+                    // Nếu chọn cả hàng, lấy giá trị từ cột đầu tiên
+                    DataGridViewRow row = dvgProduct.SelectedRows[0];
+                    if (row.Cells[0].Value != null)
+                    {
+                        Clipboard.SetText(row.Cells[0].Value.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error copying value: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Hủy đăng ký sự kiện khi UserControl bị disposed

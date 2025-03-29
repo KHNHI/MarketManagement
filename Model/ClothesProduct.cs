@@ -11,7 +11,6 @@ namespace MarketManagement.Model
     {
         public List<string> AvailableSizes { get; set; }
         public string Material { get; set; }
-        public string Color { get; set; }
 
         public ClothesProduct() : base()
         {
@@ -23,7 +22,6 @@ namespace MarketManagement.Model
         {
             AvailableSizes = (List<string>)info.GetValue("AvailableSizes", typeof(List<string>));
             Material = info.GetString("Material");
-            Color = info.GetString("Color");
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -31,10 +29,8 @@ namespace MarketManagement.Model
             base.GetObjectData(info, context);
             info.AddValue("AvailableSizes", AvailableSizes);
             info.AddValue("Material", Material);
-            info.AddValue("Color", Color);
         }
         
-        // Phương thức tiện ích để lấy chuỗi các kích thước
         public string GetSizesAsString()
         {
             return string.Join(", ", AvailableSizes);

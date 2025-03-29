@@ -39,6 +39,19 @@ namespace MarketManagement.UserControls
             dataGridViewStaff.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridViewStaff.MultiSelect = false;
             dataGridViewStaff.ReadOnly = true;
+            
+            // Thêm event handler cho double-click
+            dataGridViewStaff.CellDoubleClick += DataGridViewStaff_CellDoubleClick;
+            
+            // Thêm context menu cho tính năng copy
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ToolStripMenuItem copyMenuItem = new ToolStripMenuItem("Copy Value");
+            copyMenuItem.Click += CopyMenuItem_Click;
+            contextMenu.Items.Add(copyMenuItem);
+            dataGridViewStaff.ContextMenuStrip = contextMenu;
+            
+            // Thêm hỗ trợ phím tắt Ctrl+C
+            dataGridViewStaff.KeyDown += DataGridViewStaff_KeyDown;
         }
 
         private void LoadStaffData()
@@ -184,6 +197,62 @@ namespace MarketManagement.UserControls
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void DataGridViewStaff_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Kiểm tra nếu click vào cell hợp lệ (không phải header, không phải index -1)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                // Lấy giá trị từ cell và copy vào clipboard
+                object cellValue = dataGridViewStaff.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (cellValue != null)
+                {
+                    Clipboard.SetText(cellValue.ToString());
+                    MessageBox.Show("Copied to clipboard: " + cellValue.ToString(), "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void CopyMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyCellValueToClipboard();
+        }
+
+        private void DataGridViewStaff_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Kiểm tra phím tắt Ctrl+C để copy
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopyCellValueToClipboard();
+                e.Handled = true;
+            }
+        }
+
+        private void CopyCellValueToClipboard()
+        {
+            try
+            {
+                // Kiểm tra xem có cell nào được chọn không
+                if (dataGridViewStaff.CurrentCell != null && dataGridViewStaff.CurrentCell.Value != null)
+                {
+                    // Copy giá trị vào clipboard
+                    Clipboard.SetText(dataGridViewStaff.CurrentCell.Value.ToString());
+                }
+                else if (dataGridViewStaff.SelectedRows.Count > 0)
+                {
+                    // Nếu chọn cả hàng, lấy giá trị từ cột đầu tiên
+                    DataGridViewRow row = dataGridViewStaff.SelectedRows[0];
+                    if (row.Cells[0].Value != null)
+                    {
+                        Clipboard.SetText(row.Cells[0].Value.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error copying value: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
