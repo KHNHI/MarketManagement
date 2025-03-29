@@ -10,7 +10,7 @@ using MarketManagement.UseControl;
 using System.Windows.Forms;
 
 namespace MarketManagement { 
-    public class BillManager 
+    public class BillManager : IManager<Bill>
     {
         private readonly FileHandler _productsFileHandler;
         private readonly FileHandler _billsFileHandler;
@@ -22,8 +22,44 @@ namespace MarketManagement {
         public List<BillItem> Items;
         public BillItem Item;
 
+        // Singleton instance
+        private static BillManager instance;
+        // Lock object for thread safety
+        private static readonly object lockObject = new object();
+
+        // Singleton accessor with thread safety
+        public static BillManager Instance
+        {
+            get
+            {
+                // First check without locking
+                if (instance == null)
+                {
+                    // Lock for thread safety
+                    lock (lockObject)
+                    {
+                        // Second check inside lock
+                        if (instance == null)
+                        {
+                            instance = new BillManager();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
+        // Event đơn giản
+        public event EventHandler BillChanged;
+
+        // Phương thức để kích hoạt sự kiện
+        protected virtual void OnBillChanged()
+        {
+            BillChanged?.Invoke(this, EventArgs.Empty);
+        }
         
-        public BillManager()
+        // Constructor là private để đảm bảo Singleton
+        private BillManager()
         {
             _products= new List<BaseProduct>();
             Items = new List<BillItem>();
@@ -123,7 +159,7 @@ namespace MarketManagement {
 
         public bool ValidateQuantity(string productId, int quantity)
         {
-            var product = GetProductById(productId);
+            BaseProduct product = GetProductById(productId);
             return product != null && quantity <= product.Quantity;
         }
 
@@ -140,9 +176,9 @@ namespace MarketManagement {
             try
             {
                 // Cập nhật số lượng sản phẩm
-                foreach (var item in bill.Items)
+                foreach (BillItem item in bill.Items)
                 {
-                    var product = GetProductById(item.ProductId);
+                    BaseProduct product = GetProductById(item.ProductId);
                     if (product != null)
                     {
                         if (product.Quantity >= item.Quantity)
@@ -164,6 +200,9 @@ namespace MarketManagement {
 
                 // Lưu vào orders.json
                 SaveOrder(bill);
+                
+                // Kích hoạt sự kiện BillChanged
+                OnBillChanged();
             }
             catch (Exception ex)
             {
@@ -313,6 +352,117 @@ namespace MarketManagement {
             Items.Clear();
             _bill.Items.Clear();
             _bill.TotalCart = 0;
+        }
+
+        // Triển khai các phương thức từ interface IManager<Bill>
+        public bool Add(Bill bill)
+        {
+            try
+            {
+                if (bill == null || !bill.Validate())
+                    return false;
+
+                // Kiểm tra trùng ID
+                for (int i = 0; i < _bills.Count; i++)
+                {
+                    if (_bills[i].Id == bill.Id)
+                        return false;
+                }
+                
+                // Thực hiện lưu hóa đơn với logic hiện tại
+                SaveBill(bill);
+                
+                // Kích hoạt sự kiện
+                OnBillChanged();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Update(Bill bill)
+        {
+            try
+            {
+                if (bill == null || !bill.Validate())
+                    return false;
+
+                // Tìm index hóa đơn cần update
+                int index = -1;
+                for (int i = 0; i < _bills.Count; i++)
+                {
+                    if (_bills[i].Id == bill.Id)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index == -1)
+                    return false;
+
+                _bills[index] = bill;
+                _billsFileHandler.SaveToFile(_bills, _jsonSettings);
+                
+                // Kích hoạt sự kiện
+                OnBillChanged();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Remove(string id)
+        {
+            try
+            {
+                // Tìm index hóa đơn cần xóa
+                int index = -1;
+                for (int i = 0; i < _bills.Count; i++)
+                {
+                    if (_bills[i].Id == id)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index == -1)
+                    return false;
+
+                _bills.RemoveAt(index);
+                _billsFileHandler.SaveToFile(_bills, _jsonSettings);
+                
+                // Kích hoạt sự kiện
+                OnBillChanged();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public Bill GetById(string id)
+        {
+            for (int i = 0; i < _bills.Count; i++)
+            {
+                if (_bills[i].Id == id)
+                    return _bills[i];
+            }
+            return null;
+        }
+
+        public List<Bill> GetAll()
+        {
+            return _bills;
         }
     }
 }

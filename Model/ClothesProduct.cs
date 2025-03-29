@@ -31,6 +31,13 @@ namespace MarketManagement.Model
             info.AddValue("Material", Material);
         }
         
+        public override bool Validate()
+        {
+            return base.Validate() && 
+                   AvailableSizes != null && 
+                   AvailableSizes.Count > 0;
+        }
+        
         public string GetSizesAsString()
         {
             return string.Join(", ", AvailableSizes);

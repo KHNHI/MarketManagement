@@ -383,9 +383,52 @@ namespace MarketManagement.UseControl
                     return;
                 }
 
+                // Kiểm tra định dạng dữ liệu nhập
+                if (!ValidateInputFormat())
+                {
+                    return;
+                }
+
+                // Tạo đối tượng sản phẩm từ input
                 BaseProduct newProduct = GetProductFromInputs();
                 if (newProduct != null)
                 {
+                    // Sử dụng phương thức Validate() từ model
+                    if (!newProduct.Validate())
+                    {
+                        // Hiển thị thông báo lỗi phù hợp với từng loại sản phẩm
+                        if (newProduct is FoodProduct)
+                        {
+                            MessageBox.Show("Food product validation failed. Please check expiry date!", 
+                                "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            dtp_expiryDate.Focus();
+                        }
+                        else if (newProduct is DrinkProduct)
+                        {
+                            MessageBox.Show("Drink product validation failed. Please check volume!", 
+                                "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txt_volume.Focus();
+                        }
+                        else if (newProduct is ApplianceProduct)
+                        {
+                            MessageBox.Show("Appliance product validation failed. Please check brand and warranty!", 
+                                "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txt_brand.Focus();
+                        }
+                        else if (newProduct is ClothesProduct)
+                        {
+                            MessageBox.Show("Clothes product validation failed. Please select at least one size!", 
+                                "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            chklst_sizes.Focus();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Product validation failed. Please check all fields.", 
+                                "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        return;
+                    }
+
                     productManager.Add(newProduct);
                     MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -414,34 +457,16 @@ namespace MarketManagement.UseControl
 
             try
             {
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(txtProductName.Text) ||
-                    string.IsNullOrWhiteSpace(txtProductPrice.Text) ||
-                    string.IsNullOrWhiteSpace(txtProductQuantity.Text) ||
-                    cboCategory.SelectedItem == null)
+                // Kiểm tra định dạng dữ liệu nhập
+                if (!ValidateInputFormat())
                 {
-                    MessageBox.Show("Please fill in all required fields!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Parse and validate price
-                if (!decimal.TryParse(txtProductPrice.Text, out decimal price) || price < 0)
-                {
-                    MessageBox.Show("Please enter a valid price!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Parse and validate quantity
-                if (!int.TryParse(txtProductQuantity.Text, out int quantity) || quantity < 0)
-                {
-                    MessageBox.Show("Please enter a valid quantity!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 // Update basic properties
                 currentProduct.ProductName = txtProductName.Text;
-                currentProduct.Price = price;
-                currentProduct.Quantity = quantity;
+                currentProduct.Price = decimal.Parse(txtProductPrice.Text);
+                currentProduct.Quantity = int.Parse(txtProductQuantity.Text);
                 currentProduct.Description = txtProductDiscription.Text;
 
                 // Update specific properties based on product type
@@ -476,12 +501,48 @@ namespace MarketManagement.UseControl
                         {
                             clothesProduct.Material = txt_material.Text;
                             clothesProduct.AvailableSizes = new List<string>();
-                            foreach (var item in chklst_sizes.CheckedItems)
+                            foreach (object item in chklst_sizes.CheckedItems)
                             {
                                 clothesProduct.AvailableSizes.Add(item.ToString());
                             }
                         }
                         break;
+                }
+
+                // Sử dụng phương thức Validate() từ model
+                if (!currentProduct.Validate())
+                {
+                    // Hiển thị thông báo lỗi phù hợp với từng loại sản phẩm
+                    if (currentProduct is FoodProduct)
+                    {
+                        MessageBox.Show("Food product validation failed. Please check expiry date!", 
+                            "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        dtp_expiryDate.Focus();
+                    }
+                    else if (currentProduct is DrinkProduct)
+                    {
+                        MessageBox.Show("Drink product validation failed. Please check volume!", 
+                            "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txt_volume.Focus();
+                    }
+                    else if (currentProduct is ApplianceProduct)
+                    {
+                        MessageBox.Show("Appliance product validation failed. Please check brand and warranty!", 
+                            "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txt_brand.Focus();
+                    }
+                    else if (currentProduct is ClothesProduct)
+                    {
+                        MessageBox.Show("Clothes product validation failed. Please select at least one size!", 
+                            "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        chklst_sizes.Focus();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Product validation failed. Please check all fields.", 
+                            "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    return;
                 }
 
                 productManager.Update(currentProduct);
@@ -641,28 +702,72 @@ namespace MarketManagement.UseControl
             }
         }
 
+        private bool ValidateInputFormat()
+        {
+            // Validate required fields
+            if (cboCategory.SelectedItem == null ||
+                string.IsNullOrWhiteSpace(txtProductName.Text) ||
+                string.IsNullOrWhiteSpace(txtProductPrice.Text) ||
+                string.IsNullOrWhiteSpace(txtProductQuantity.Text))
+            {
+                MessageBox.Show("Please fill in all required fields!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Validate price - phải là số và lớn hơn 0
+            if (!decimal.TryParse(txtProductPrice.Text, out decimal price))
+            {
+                MessageBox.Show("Please enter a valid price!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtProductPrice.Focus();
+                return false;
+            }
+
+            // Validate quantity - phải là số nguyên
+            if (!int.TryParse(txtProductQuantity.Text, out int quantity))
+            {
+                MessageBox.Show("Please enter a valid quantity!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtProductQuantity.Focus();
+                return false;
+            }
+
+            // Validate format các trường đặc biệt
+            if (cboCategory.SelectedItem != null)
+            {
+                ProductCategory category = (ProductCategory)cboCategory.SelectedItem;
+                
+                switch (category)
+                {
+                    case ProductCategory.Drink:
+                        // Chỉ kiểm tra format của volume nếu có nhập liệu
+                        if (!string.IsNullOrEmpty(txt_volume.Text) && !double.TryParse(txt_volume.Text, out double volume))
+                        {
+                            MessageBox.Show("Please enter a valid volume!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txt_volume.Focus();
+                            return false;
+                        }
+                        break;
+                        
+                    case ProductCategory.Appliance:
+                        // Chỉ kiểm tra format của warranty nếu có nhập liệu
+                        if (!string.IsNullOrEmpty(txt_warranty.Text) && !int.TryParse(txt_warranty.Text, out int warranty))
+                        {
+                            MessageBox.Show("Please enter a valid warranty period!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txt_warranty.Focus();
+                            return false;
+                        }
+                        break;
+                }
+            }
+
+            return true;
+        }
+
         private BaseProduct GetProductFromInputs()
         {
             try
             {
-                // Validate required fields
-                if (cboCategory.SelectedItem == null || 
-                    string.IsNullOrWhiteSpace(txtProductName.Text) ||
-                    string.IsNullOrWhiteSpace(txtProductPrice.Text) ||
-                    string.IsNullOrWhiteSpace(txtProductQuantity.Text))
-                {
-                    return null;
-                }
-
-                if (!decimal.TryParse(txtProductPrice.Text, out decimal price) || price < 0)
-                {
-                    return null;
-                }
-
-                if (!int.TryParse(txtProductQuantity.Text, out int quantity) || quantity < 0)
-                {
-                    return null;
-                }
+                // Validation đã được xử lý ở phương thức ValidateInputFormat
+                // nên chúng ta có thể yên tâm tạo đối tượng ở đây
 
                 ProductCategory selectedCategory = (ProductCategory)cboCategory.SelectedItem;
                 
@@ -675,8 +780,8 @@ namespace MarketManagement.UseControl
                 
                 // Thiết lập các thuộc tính cơ bản
                 product.ProductName = txtProductName.Text;
-                product.Quantity = quantity;
-                product.Price = price;
+                product.Quantity = int.Parse(txtProductQuantity.Text);
+                product.Price = decimal.Parse(txtProductPrice.Text);
                 product.Description = txtProductDiscription.Text;
 
                 // Thiết lập các thuộc tính đặc biệt dựa trên loại sản phẩm
@@ -711,7 +816,7 @@ namespace MarketManagement.UseControl
                         {
                             clothesProduct.Material = txt_material.Text;
                             clothesProduct.AvailableSizes = new List<string>();
-                            foreach (var item in chklst_sizes.CheckedItems)
+                            foreach (object item in chklst_sizes.CheckedItems)
                             {
                                 clothesProduct.AvailableSizes.Add(item.ToString());
                             }
@@ -721,8 +826,9 @@ namespace MarketManagement.UseControl
                 
                 return product;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show("Error creating product: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
         }

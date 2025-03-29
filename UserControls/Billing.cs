@@ -31,17 +31,28 @@ namespace MarketManagement.UserControls
         public Billing()
         {
             InitializeComponent();
-            _billManager = new BillManager();
-            _customerManager =CustomerManager.Instance;
+            _billManager = BillManager.Instance;
+            _customerManager = CustomerManager.Instance;
             bills = new List<Bill>();
 
             _currentBill = _billManager.CreateNewBill();
 
             // Đăng ký các sự kiện để cập nhật tổng giá
-           // db_dataGridView1.CellValueChanged += db_dataGridView1_CellValueChanged;
-         //   db_dataGridView1.UserDeletedRow += db_dataGridView1_UserDeletedRow;
+            // db_dataGridView1.CellValueChanged += db_dataGridView1_CellValueChanged;
+            // db_dataGridView1.UserDeletedRow += db_dataGridView1_UserDeletedRow;
             db_dataGridView1.CellDoubleClick += Db_dataGridView1_CellDoubleClick;
+            
+            // Đăng ký sự kiện BillChanged
+            _billManager.BillChanged += BillManager_BillChanged;
         }
+        
+        // Xử lý khi có thay đổi trong BillManager
+        private void BillManager_BillChanged(object sender, EventArgs e)
+        {
+            // Cập nhật lại dữ liệu nếu cần
+            UpdateDataGridView();
+        }
+
         private void auto()
         {
             txt_invoiceno.Text = _currentBill.GenerateId();

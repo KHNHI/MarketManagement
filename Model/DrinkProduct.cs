@@ -29,5 +29,10 @@ namespace MarketManagement.Model
             info.AddValue("Volume", Volume);
             info.AddValue("IsAlcoholic", IsAlcoholic);
         }
+
+        public override bool Validate()
+        {
+            return base.Validate() && (Volume > 0);
+        }
     }
 }

@@ -29,5 +29,12 @@ namespace MarketManagement.Model
             info.AddValue("Brand", Brand);
             info.AddValue("WarrantyMonths", WarrantyMonths);
         }
+        
+        public override bool Validate()
+        {
+            return base.Validate() && 
+                   !string.IsNullOrEmpty(Brand) && 
+                   WarrantyMonths >= 0;
+        }
     }
 }
