@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using MarketManagement.Manager;
 using MarketManagement.Model;
 
+
 namespace MarketManagement.UseControl
 {
     public partial class CustomerUC : System.Windows.Forms.UserControl
@@ -16,24 +17,27 @@ namespace MarketManagement.UseControl
         private CustomerManager customerManager;
         private BaseCustomer currentCustomer;
 
+
         public List<CustomerUC> Customers { get; set; }
+
 
         public CustomerUC()
         {
             InitializeComponent();
-            
+
             // Sử dụng Singleton Pattern
             customerManager = CustomerManager.Instance;
-            
+
             // Đăng ký sự kiện CustomerChanged
             customerManager.CustomerChanged += CustomerManager_CustomerChanged;
-            
+
             // Đăng ký sự kiện Load của UserControl
             this.Load += CustomerUC_Load;
-            
+
             SetupDataGridView();
             ClearInputs();
         }
+
 
         private void CustomerUC_Load(object sender, EventArgs e)
         {
@@ -45,6 +49,7 @@ namespace MarketManagement.UseControl
             }
         }
 
+
         private void SetupDataGridView()
         {
             // Prevent auto selection of first row
@@ -54,33 +59,34 @@ namespace MarketManagement.UseControl
             dvgProduct.ReadOnly = true;
             dvgProduct.AutoGenerateColumns = true;
             dvgProduct.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            
+
             // Thêm thuộc tính này để ngăn tự động chọn
             dvgProduct.TabStop = false;
-            
+
             // Đăng ký sự kiện khi người dùng chọn 1 hàng trong DataGridView
             dvgProduct.SelectionChanged += DvgCustomer_SelectionChanged;
             dvgProduct.DataBindingComplete += DvgProduct_DataBindingComplete;
-            
+
             btnDeleteCustomer.Click += btnDeleteCustomer_Click;
             btnAddCustomer.Click += btnAddCustomer_Click;
             btnUpdateCustomer.Click += btnUpdateCustomer_Click;
             btnUpdateCustomer.Enabled = false;
             btnDeleteCustomer.Enabled = false;
-            
+
             // Thêm event handler cho double-click
             dvgProduct.CellDoubleClick += DvgProduct_CellDoubleClick;
-            
+
             // Thêm context menu cho tính năng copy
             ContextMenuStrip contextMenu = new ContextMenuStrip();
             ToolStripMenuItem copyMenuItem = new ToolStripMenuItem("Copy Value");
             copyMenuItem.Click += CopyMenuItem_Click;
             contextMenu.Items.Add(copyMenuItem);
             dvgProduct.ContextMenuStrip = contextMenu;
-            
+
             // Thêm hỗ trợ phím tắt Ctrl+C
             dvgProduct.KeyDown += DvgProduct_KeyDown;
         }
+
 
         private void DvgProduct_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -88,14 +94,15 @@ namespace MarketManagement.UseControl
             dvgProduct.CurrentCell = null;
         }
 
+
         public void LoadData()
         {
             // Tạm thời gỡ event handler để tránh trigger trong quá trình load
             dvgProduct.SelectionChanged -= DvgCustomer_SelectionChanged;
-            
+
             dvgProduct.DataSource = null;
             dvgProduct.DataSource = customerManager.GetAll();
-            
+
             foreach (DataGridViewColumn col in dvgProduct.Columns)
             {
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -104,14 +111,15 @@ namespace MarketManagement.UseControl
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
-            
+
             // Clear selection after loading data
             dvgProduct.ClearSelection();
             dvgProduct.CurrentCell = null;
-            
+
             // Gắn lại event handler
             dvgProduct.SelectionChanged += DvgCustomer_SelectionChanged;
         }
+
 
         private void DvgCustomer_SelectionChanged(object sender, EventArgs e)
         {
@@ -137,6 +145,7 @@ namespace MarketManagement.UseControl
             }
         }
 
+
         private void DisplayCustomerInfo(BaseCustomer customer)
         {
             if (customer != null)
@@ -150,52 +159,93 @@ namespace MarketManagement.UseControl
             }
         }
 
+
         private void btnAddCustomer_Click(object sender, EventArgs e)
         {
-            // Nếu đang trong chế độ update thì không cho phép Add
-            if (currentCustomer != null)
+            try
             {
-                MessageBox.Show("Please clear the form before adding a new customer!");
-                return;
-            }
-
-            BaseCustomer customer = GetCustomerFromInputs();
-            if (customer != null)
-            {
-                customerManager.Add(customer);
-                LoadData();
-                ClearInputs();
-                // Select empty row
-                if (dvgProduct.Rows.Count > 0)
+                // Nếu đang trong chế độ update thì không cho phép Add
+                if (currentCustomer != null)
                 {
-                    dvgProduct.ClearSelection();
-                    dvgProduct.CurrentCell = null;
+                    MessageBox.Show("Vui lòng xóa form trước khi thêm khách hàng mới!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+
+                BaseCustomer customer = GetCustomerFromInputs();
+                if (customer != null)
+                {
+                    var validationResult = customer.ValidateWithDetails();
+                    if (validationResult.IsValid)
+                    {
+                        customerManager.Add(customer);
+                        LoadData();
+                        ClearInputs(); // Chỉ clear khi thêm thành công
+                        if (dvgProduct.Rows.Count > 0)
+                        {
+                            dvgProduct.ClearSelection();
+                            dvgProduct.CurrentCell = null;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(validationResult.GetErrorMessage(), "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Không clear input để người dùng có thể sửa lỗi
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Không clear input khi có lỗi
+            }
         }
+
 
         private void btnUpdateCustomer_Click(object sender, EventArgs e)
         {
-            if (currentCustomer == null)
+            try
             {
-                MessageBox.Show("Please select a customer to update!");
-                return;
-            }
-
-            BaseCustomer customer = GetCustomerFromInputs();
-            if (customer != null)
-            {
-                customerManager.Update(customer);
-                LoadData();
-                ClearInputs();
-                // Select empty row
-                if (dvgProduct.Rows.Count > 0)
+                if (currentCustomer == null)
                 {
-                    dvgProduct.ClearSelection();
-                    dvgProduct.CurrentCell = null;
+                    MessageBox.Show("Vui lòng chọn khách hàng cần cập nhật!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+
+                BaseCustomer customer = GetCustomerFromInputs();
+                if (customer != null)
+                {
+                    var validationResult = customer.ValidateWithDetails();
+                    if (validationResult.IsValid)
+                    {
+                        customerManager.Update(customer);
+                        LoadData();
+                        ClearInputs(); // Chỉ clear khi cập nhật thành công
+                        if (dvgProduct.Rows.Count > 0)
+                        {
+                            dvgProduct.ClearSelection();
+                            dvgProduct.CurrentCell = null;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(validationResult.GetErrorMessage(), "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Không clear input để người dùng có thể sửa lỗi
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Không clear input khi có lỗi
+            }
         }
+
 
         private void btnDeleteCustomer_Click(object sender, EventArgs e)
         {
@@ -212,6 +262,7 @@ namespace MarketManagement.UseControl
             }
         }
 
+
         private BaseCustomer GetCustomerFromInputs()
         {
             try
@@ -220,11 +271,13 @@ namespace MarketManagement.UseControl
                 if (currentCustomer != null)
                     customer.Id = currentCustomer.Id;
 
+
                 customer.CustomerName = txtCustomerName.Text;
                 customer.Address = txtCustomerAddress.Text;
                 customer.PhoneNumber = txtCustomerPhone.Text;
                 customer.Email = txtCustomerEmail.Text;
                 customer.IsVIP = chkbIsVip.Checked;
+
 
                 return customer;
             }
@@ -233,6 +286,7 @@ namespace MarketManagement.UseControl
                 return null;
             }
         }
+
 
         private void ClearInputs()
         {
@@ -243,12 +297,12 @@ namespace MarketManagement.UseControl
             txtCustomerPhone.Clear();
             chkbIsVip.Checked = false;
             currentCustomer = null;
-            
+
             // Reset button states
             btnAddCustomer.Enabled = true;
             btnUpdateCustomer.Enabled = false;
             btnDeleteCustomer.Enabled = false;
-            
+
             // Enable all input controls
             txtCustomerName.Enabled = true;
             txtCustomerAddress.Enabled = true;
@@ -257,10 +311,12 @@ namespace MarketManagement.UseControl
             chkbIsVip.Enabled = true;
         }
 
+
         private void label1_Click(object sender, EventArgs e)
         {
             // Xử lý sự kiện click vào label1 nếu cần
         }
+
 
         // Xử lý sự kiện khi có thay đổi trong CustomerManager
         private void CustomerManager_CustomerChanged(object sender, EventArgs e)
@@ -268,6 +324,7 @@ namespace MarketManagement.UseControl
             // Cập nhật dữ liệu khi có thay đổi
             LoadData();
         }
+
 
         private void DvgProduct_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -284,10 +341,12 @@ namespace MarketManagement.UseControl
             }
         }
 
+
         private void CopyMenuItem_Click(object sender, EventArgs e)
         {
             CopyCellValueToClipboard();
         }
+
 
         private void DvgProduct_KeyDown(object sender, KeyEventArgs e)
         {
@@ -298,6 +357,7 @@ namespace MarketManagement.UseControl
                 e.Handled = true;
             }
         }
+
 
         private void CopyCellValueToClipboard()
         {
@@ -325,18 +385,9 @@ namespace MarketManagement.UseControl
             }
         }
 
-        // Hủy đăng ký sự kiện khi UserControl bị disposed
-        //protected override void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        // Hủy đăng ký sự kiện để tránh memory leak
-        //        if (customerManager != null)
-        //        {
-        //            customerManager.CustomerChanged -= CustomerManager_CustomerChanged;
-        //        }
-        //    }
-        //    base.Dispose(disposing);
-        //}
+
+
+
     }
 }
+

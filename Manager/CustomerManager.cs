@@ -7,6 +7,7 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using MarketManagement.UseControl;
+using System.Windows.Forms;
 
 namespace MarketManagement.Manager
 {
@@ -87,10 +88,38 @@ namespace MarketManagement.Manager
             catch (Exception) { }
         }
 
+        private bool IsPhoneNumberExists(string phoneNumber, string excludeCustomerId = null)
+        {
+            for (int i = 0; i < customers.Count; i++)
+            {
+                if (customers[i].PhoneNumber == phoneNumber && customers[i].Id != excludeCustomerId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool Add(BaseCustomer customer)
         {
-            if (customer == null || !customer.Validate())
+            if (customer == null)
                 return false;
+
+            var validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
+            if (validationResult == null)
+                return false;
+
+            // Kiểm tra số điện thoại trùng
+            if (IsPhoneNumberExists(customer.PhoneNumber))
+            {
+                validationResult.AddPhoneNumberDuplicationError(customer.PhoneNumber);
+            }
+
+            if (!validationResult.IsValid)
+            {
+                MessageBox.Show(validationResult.GetErrorMessage(), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
             customers.Add(customer);
             SaveToFile();
@@ -102,8 +131,24 @@ namespace MarketManagement.Manager
 
         public bool Update(BaseCustomer customer)
         {
-            if (customer == null || !customer.Validate())
+            if (customer == null)
                 return false;
+
+            var validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
+            if (validationResult == null)
+                return false;
+
+            // Kiểm tra số điện thoại trùng, loại trừ chính customer hiện tại
+            if (IsPhoneNumberExists(customer.PhoneNumber, customer.Id))
+            {
+                validationResult.AddPhoneNumberDuplicationError(customer.PhoneNumber);
+            }
+
+            if (!validationResult.IsValid)
+            {
+                MessageBox.Show(validationResult.GetErrorMessage(), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
             // Tìm index khách hàng cần update
             int index = -1;

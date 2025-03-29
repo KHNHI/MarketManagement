@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+
 
 namespace MarketManagement.Model
 {
@@ -16,13 +18,13 @@ namespace MarketManagement.Model
         public string Email { get; set; }
         public bool IsVIP { get; set; }
 
+
         public BaseCustomer()
         {
             Id = GenerateId();
         }
         public List<BaseCustomer> Customers { get; set; }
-      
-        public string GetId() => Id;
+
 
         protected BaseCustomer(SerializationInfo info, StreamingContext context)
         {
@@ -34,6 +36,7 @@ namespace MarketManagement.Model
             IsVIP = info.GetBoolean("IsVIP");
         }
 
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", Id);
@@ -43,6 +46,8 @@ namespace MarketManagement.Model
             info.AddValue("Email", Email);
             info.AddValue("IsVIP", IsVIP);
         }
+
+
 
         public override string GenerateId()
         {
@@ -56,10 +61,80 @@ namespace MarketManagement.Model
             }
         }
 
+
+        public ValidationResult ValidateWithDetails()
+        {
+            var result = new CustomerValidationResult();
+            result.IsValid = true;
+
+            // Kiểm tra CustomerName
+            if (string.IsNullOrEmpty(CustomerName))
+            {
+                result.Errors.Add("Tên khách hàng không được để trống");
+                result.IsValid = false;
+            }
+            else if (CustomerName.Length < 2)
+            {
+                result.Errors.Add("Tên khách hàng phải có ít nhất 2 ký tự");
+                result.IsValid = false;
+            }
+
+            // Kiểm tra PhoneNumber
+            if (string.IsNullOrEmpty(PhoneNumber))
+            {
+                result.Errors.Add("Số điện thoại không được để trống");
+                result.IsValid = false;
+            }
+            else
+            {
+                if (!System.Text.RegularExpressions.Regex.IsMatch(PhoneNumber, @"^\d{10}$"))
+                {
+                    result.Errors.Add("Số điện thoại phải có đúng 10 chữ số");
+                    result.IsValid = false;
+                }
+            }
+
+            // Kiểm tra Address - bắt buộc và phải có ít nhất 5 ký tự
+            if (string.IsNullOrEmpty(Address))
+            {
+                result.Errors.Add("Địa chỉ không được để trống");
+                result.IsValid = false;
+            }
+            else if (Address.Length < 5)
+            {
+                result.Errors.Add("Địa chỉ phải có ít nhất 5 ký tự");
+                result.IsValid = false;
+            }
+
+            // Kiểm tra Email - bắt buộc và phải đúng định dạng
+            if (string.IsNullOrEmpty(Email))
+            {
+                result.Errors.Add("Email không được để trống");
+                result.IsValid = false;
+            }
+            else
+            {
+                string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+                if (!System.Text.RegularExpressions.Regex.IsMatch(Email, emailPattern))
+                {
+                    result.Errors.Add("Địa chỉ email không hợp lệ");
+                    result.IsValid = false;
+                }
+            }
+
+            return result;
+        }
+
+
         public override bool Validate()
         {
-           
-            return !string.IsNullOrEmpty(CustomerName) && !string.IsNullOrEmpty(PhoneNumber);
+            var result = ValidateWithDetails();
+            if (!result.IsValid)
+            {
+                MessageBox.Show(result.GetErrorMessage(), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return result.IsValid;
         }
     }
 }
+
