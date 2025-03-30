@@ -128,7 +128,7 @@ namespace MarketManagement.Model
 
         public override bool Validate()
         {
-            var result = ValidateWithDetails();
+            ValidationResult result = ValidateWithDetails();
             if (!result.IsValid)
             {
                 MessageBox.Show(result.GetErrorMessage(), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);

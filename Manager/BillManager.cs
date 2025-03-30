@@ -285,27 +285,28 @@ namespace MarketManagement {
 
         public void UpdateProductQuantity(string productId, int soldQuantity)
         {
-            BaseProduct product = null;
-            for (int i = 0; i < _products.Count; i++)
-            {
-                if (_products[i].Id == productId)
-                {
-                    product = _products[i];
-                    break;
-                }
-            }
+            // Sử dụng ProductManager để lấy và cập nhật sản phẩm
+            ProductManager productManager = ProductManager.Instance;
+            BaseProduct product = productManager.GetById(productId);
 
             if (product != null)
             {
                 if (product.Quantity >= soldQuantity)
                 {
+                    // Giảm số lượng sản phẩm
                     product.Quantity -= soldQuantity;
-                    SaveProducts();
+                    
+                    // Cập nhật sản phẩm thông qua ProductManager
+                    productManager.Update(product);
                 }
                 else
                 {
                     throw new Exception($"Not enough quantity for product {product.ProductName}");
                 }
+            }
+            else
+            {
+                throw new Exception($"Product with ID {productId} not found");
             }
         }
 

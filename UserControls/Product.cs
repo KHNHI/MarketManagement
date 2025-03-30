@@ -430,7 +430,9 @@ namespace MarketManagement.UseControl
                     }
 
                     productManager.Add(newProduct);
+                    
                     MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                     LoadData();
                     ClearInputs();
                     // Select empty row
