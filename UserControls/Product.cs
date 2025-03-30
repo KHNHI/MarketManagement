@@ -664,7 +664,7 @@ namespace MarketManagement.UseControl
             txtProductDiscription.Clear();
             
             // Không reset Category để tránh trigger validation
-            //cboCategory.SelectedIndex = -1;
+           // cboCategory.SelectedIndex = -1;
             
             // Xóa dữ liệu trong các trường đặc biệt
             // Food
@@ -714,7 +714,7 @@ namespace MarketManagement.UseControl
                 return false;
             }
 
-            // Validate price - phải là số và lớn hơn 0
+            // Validate price 
             if (!decimal.TryParse(txtProductPrice.Text, out decimal price))
             {
                 MessageBox.Show("Please enter a valid price!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -722,7 +722,7 @@ namespace MarketManagement.UseControl
                 return false;
             }
 
-            // Validate quantity - phải là số nguyên
+            // Validate quantity 
             if (!int.TryParse(txtProductQuantity.Text, out int quantity))
             {
                 MessageBox.Show("Please enter a valid quantity!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);

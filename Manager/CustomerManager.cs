@@ -105,7 +105,7 @@ namespace MarketManagement.Manager
             if (customer == null)
                 return false;
 
-            var validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
+            CustomerValidationResult validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
             if (validationResult == null)
                 return false;
 
@@ -134,7 +134,7 @@ namespace MarketManagement.Manager
             if (customer == null)
                 return false;
 
-            var validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
+            CustomerValidationResult validationResult = customer.ValidateWithDetails() as CustomerValidationResult;
             if (validationResult == null)
                 return false;
 
